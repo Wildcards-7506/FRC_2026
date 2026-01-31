@@ -19,11 +19,15 @@ import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.ShooterCommands;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -37,10 +41,11 @@ import java.util.List;
  */
 public class RobotContainer {
   // The robot's subsystems
-  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final DriveSubsystem drivetrain = new DriveSubsystem();
 
   // The driver's controller
-  XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+    public final CommandXboxController controller0 = new CommandXboxController(0);
+    public final CommandXboxController controller1 = new CommandXboxController(1);
     public static SlewRateLimiter xLimiter = new SlewRateLimiter(1);
     public static SlewRateLimiter yLimiter = new SlewRateLimiter(1);
     boolean boostToggle = false;
@@ -51,6 +56,9 @@ public class RobotContainer {
     double boostDriveSpeed = 0.5;
     double boostTurnSpeed = 0.25;
 
+  public final Shooter shooter;
+  public final ShooterCommands shooterCommands;
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -59,23 +67,26 @@ public class RobotContainer {
     configureButtonBindings();
 
     // Configure default commands
-    m_robotDrive.setDefaultCommand(
+    drivetrain.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
         new RunCommand(
             () -> Drivespeed(),
-            m_robotDrive));
+            drivetrain));
+
+    shooter = new Shooter();
+    shooterCommands = new ShooterCommands(shooter);
   }
   void Drivespeed(){
 
-    double forwardspeed = m_driverController.getLeftY()*((m_driverController.getRightTriggerAxis()>0.2)?boostDriveSpeed:fullDriveSpeed);
-    double strafingSpeed = m_driverController.getLeftX()*((m_driverController.getRightTriggerAxis()>0.2)?boostDriveSpeed:fullDriveSpeed);
-    double rotationSpeed = m_driverController.getRightX()*((m_driverController.getRightTriggerAxis()>0.2)?boostTurnSpeed:fullTurnSpeed);
+    double forwardspeed = controller0.getLeftY()*((controller0.getRightTriggerAxis()>0.2)?boostDriveSpeed:fullDriveSpeed);
+    double strafingSpeed = controller0.getLeftX()*((controller0.getRightTriggerAxis()>0.2)?boostDriveSpeed:fullDriveSpeed);
+    double rotationSpeed = controller0.getRightX()*((controller0.getRightTriggerAxis()>0.2)?boostTurnSpeed:fullTurnSpeed);
 
     forwardspeed = xLimiter.calculate(forwardspeed);
     strafingSpeed = xLimiter.calculate(strafingSpeed);
 
-    m_robotDrive.drive(
+    drivetrain.drive(
                 -MathUtil.applyDeadband(forwardspeed, OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(strafingSpeed, OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(rotationSpeed, OIConstants.kDriveDeadband),
@@ -97,17 +108,61 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    // new JoystickButton(m_driverController, Button.kR1.value)
-    //     .whileTrue(new RunCommand(
-    //         () -> m_robotDrive.setX(),
-    //         m_robotDrive));
 
-    new JoystickButton(m_driverController, XboxController.Button.kB.value)
-        .onTrue(new InstantCommand(
-            () -> m_robotDrive.zeroHeading(),
-            m_robotDrive));
+    controller0.b().onTrue(
+      Commands.runOnce(
+          () -> drivetrain.zeroHeading()
+      )
+    );
     
+    controller1.leftTrigger().onTrue(
+      Commands.runOnce(
+        () -> {
+          shooter.setIntakeVoltage(12);
+          shooter.setLoaderVoltage(12);
+        }
+      )
+    );
+    controller1.leftTrigger().onFalse(
+      Commands.runOnce(
+        () -> {
+          shooter.setIntakeVoltage(0);
+          shooter.setLoaderVoltage(0);
+        }
+      )
+    );
     
+    controller1.rightTrigger().onTrue(
+      Commands.runOnce(
+        () -> {
+          shooter.setFlywheelVoltage(12);
+        }
+      )
+    );
+    controller1.rightTrigger().onFalse(
+      Commands.runOnce(
+        () -> { 
+          shooter.setFlywheelVoltage(0);
+        }
+      )
+    );
+
+    controller1.a().onTrue (
+      Commands.runOnce (
+        () -> {
+          shooter.setIntakeVoltage(12);
+          shooter.setLoaderVoltage(-12);
+        }
+      )
+    );
+    controller1.a().onFalse (
+      Commands.runOnce (
+        () -> {
+          shooter.setIntakeVoltage(0);
+          shooter.setLoaderVoltage(0);
+        }
+      )
+    );
   }
 
   /**
@@ -139,20 +194,20 @@ public class RobotContainer {
 
     SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
         exampleTrajectory,
-        m_robotDrive::getPose, // Functional interface to feed supplier
+        drivetrain::getPose, // Functional interface to feed supplier
         DriveConstants.kDriveKinematics,
 
         // Position controllers
         new PIDController(AutoConstants.kPXController, 0, 0),
         new PIDController(AutoConstants.kPYController, 0, 0),
         thetaController,
-        m_robotDrive::setModuleStates,
-        m_robotDrive);
+        drivetrain::setModuleStates,
+        drivetrain);
 
     // Reset odometry to the starting pose of the trajectory.
-    m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
+    drivetrain.resetOdometry(exampleTrajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
+    return swerveControllerCommand.andThen(() -> drivetrain.drive(0, 0, 0, false));
   }
 }
