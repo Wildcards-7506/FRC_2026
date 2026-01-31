@@ -135,14 +135,16 @@ public class RobotContainer {
     controller1.rightTrigger().onTrue(
       Commands.runOnce(
         () -> {
-          shooter.setFlywheelVoltage(12);
+          // shooter.setFlywheelVoltage(12);
+          shooter.setFlywheelRPM(4000);
         }
       )
     );
     controller1.rightTrigger().onFalse(
       Commands.runOnce(
         () -> { 
-          shooter.setFlywheelVoltage(0);
+          // shooter.setFlywheelVoltage(0);
+          shooter.setFlywheelRPM(0);
         }
       )
     );
