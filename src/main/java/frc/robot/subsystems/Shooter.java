@@ -3,19 +3,16 @@ package frc.robot.subsystems;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.FeedbackSensor;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ShooterConstants;
-
-import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase {
     SparkMax loader = new SparkMax(2, MotorType.kBrushless);
@@ -49,15 +46,21 @@ public class Shooter extends SubsystemBase {
             
         flywheelConfig
             .smartCurrentLimit(80)
+            .inverted(true)
             .idleMode(IdleMode.kCoast)
         .softLimit
             .forwardSoftLimitEnabled(false)
             .reverseSoftLimitEnabled(false);
         flywheelConfig.encoder
+            .positionConversionFactor(1)
             .velocityConversionFactor(1); // 1 is for RPM
         flywheelConfig.closedLoop
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-            .pid(0.005,0,0);
+            // .pid(0.005,0,0)
+            .p(0.0007)
+            .i(0.0)
+            .d(0.0)
+            .outputRange(0, 1);
             
         intakeConfig
             .smartCurrentLimit(40)
@@ -68,8 +71,8 @@ public class Shooter extends SubsystemBase {
             .reverseSoftLimitEnabled(false);
 
         loader.configure(loaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        flywheel.configure(loaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        intake.configure(loaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        flywheel.configure(flywheelConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        intake.configure(intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
     
     // public void toggleIntake(double voltage) {

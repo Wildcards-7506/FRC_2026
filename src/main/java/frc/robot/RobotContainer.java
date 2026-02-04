@@ -136,7 +136,7 @@ public class RobotContainer {
       Commands.runOnce(
         () -> {
           // shooter.setFlywheelVoltage(12);
-          shooter.setFlywheelRPM(4000);
+          shooter.setFlywheelRPM(5000);
         }
       )
     );
