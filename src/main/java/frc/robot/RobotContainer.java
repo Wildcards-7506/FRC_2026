@@ -16,6 +16,7 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
@@ -78,14 +79,21 @@ public class RobotContainer {
     shooterCommands = new ShooterCommands(shooter);
   }
   void Drivespeed(){
-
-    double forwardspeed = controller0.getLeftY()*((controller0.getRightTriggerAxis()>0.2)?boostDriveSpeed:fullDriveSpeed);
-    double strafingSpeed = controller0.getLeftX()*((controller0.getRightTriggerAxis()>0.2)?boostDriveSpeed:fullDriveSpeed);
-    double rotationSpeed = controller0.getRightX()*((controller0.getRightTriggerAxis()>0.2)?boostTurnSpeed:fullTurnSpeed);
-
-    forwardspeed = xLimiter.calculate(forwardspeed);
+    SmartDashboard.putNumber("DriverForward", controller0.getLeftY());
+    SmartDashboard.putNumber("DriverRight", controller0.getLeftX());
+    SmartDashboard.putNumber("DriverTurn", controller0.getRightX());
+    
+    double forwardspeed = controller0.getLeftY()*((Math.abs(controller0.getRightTriggerAxis())>0.2)?boostDriveSpeed:fullDriveSpeed);
+    double strafingSpeed = controller0.getLeftX()*((Math.abs(controller0.getRightTriggerAxis())>0.2)?boostDriveSpeed:fullDriveSpeed);
+    double rotationSpeed = controller0.getRightX()*((Math.abs(controller0.getRightTriggerAxis())>0.2)?boostTurnSpeed:fullTurnSpeed);
+    
+    forwardspeed = yLimiter.calculate(forwardspeed);
     strafingSpeed = xLimiter.calculate(strafingSpeed);
-
+    
+    SmartDashboard.putNumber("ForwardSpeed", forwardspeed);
+    SmartDashboard.putNumber("StrafeSpeed", strafingSpeed);
+    SmartDashboard.putNumber("RotSpeed", rotationSpeed);
+    
     drivetrain.drive(
                 -MathUtil.applyDeadband(forwardspeed, OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(strafingSpeed, OIConstants.kDriveDeadband),
