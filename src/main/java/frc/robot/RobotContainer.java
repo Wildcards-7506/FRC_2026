@@ -24,6 +24,7 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.commands.ShooterCommands;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Shooter;
+import frc.robot.utils.LimelightHelpers;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -33,6 +34,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 /*
@@ -43,7 +45,7 @@ import java.util.List;
  */
 public class RobotContainer {
   // The robot's subsystems
-  private final DriveSubsystem drivetrain = new DriveSubsystem();
+  final DriveSubsystem drivetrain = new DriveSubsystem();
 
   // The driver's controller
     public final CommandXboxController controller0 = new CommandXboxController(0);
@@ -179,6 +181,20 @@ public class RobotContainer {
         }
       )
     );
+
+    controller0.leftBumper()
+    .whileTrue(new RunCommand(
+        () -> drivetrain.drive(
+          controller0.getLeftY(),
+          controller0.getLeftX(),
+          LimelightHelpers.getTX("limelight") * 0.05, //Placeholder
+          false
+        ),
+
+        drivetrain
+
+      ));
+
   }
 
   /**
