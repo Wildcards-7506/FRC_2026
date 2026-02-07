@@ -15,8 +15,6 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
-import edu.wpi.first.wpilibj.PS4Controller.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
@@ -26,12 +24,10 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import java.util.List;
 
@@ -98,7 +94,7 @@ public class RobotContainer {
     SmartDashboard.putNumber("StrafeSpeed", strafingSpeed);
     SmartDashboard.putNumber("RotSpeed", rotationSpeed);
     SmartDashboard.putNumber("GyroHeading", drivetrain.getHeading());
-    SmartDashboard.putNumber("GyroAngleZ", drivetrain.m_gyro.getAngle(IMUAxis.kZ));
+    SmartDashboard.putNumber("GyroAngleZ", drivetrain.m_gyro.getAngle());
     
     drivetrain.drive(
                 -MathUtil.applyDeadband(forwardspeed, OIConstants.kDriveDeadband),
