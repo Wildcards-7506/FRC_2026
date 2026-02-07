@@ -65,12 +65,12 @@ public class RobotContainer {
     configureButtonBindings();
 
     // Configure default commands
-    drivetrain.setDefaultCommand(
-        // The left stick controls translation of the robot.
-        // Turning is controlled by the X axis of the right stick.
-        new RunCommand(
-            () -> driveRobot(),
-            drivetrain));
+    // drivetrain.setDefaultCommand(
+    //     // The left stick controls translation of the robot.
+    //     // Turning is controlled by the X axis of the right stick.
+    //     new RunCommand(
+    //         () -> driveRobot(),
+    //         drivetrain));
 
     shooter = new Shooter();
     shooterCommands = new ShooterCommands(shooter);
@@ -144,7 +144,13 @@ public class RobotContainer {
       Commands.runOnce(
         () -> {
           // shooter.setFlywheelVoltage(12);
-          shooter.setFlywheelRPM(5000);
+          // actual is ~80% of target, so target of 5000 rpm is ~4000 rpm
+          //                     setpoint  // resulting rpm
+          // shooter.setFlywheelRPM(5000); // 4000
+          // shooter.setFlywheelRPM(4375); // 3500
+          shooter.setFlywheelRPM(4000); // 3200 next test after 2/7
+          // shooter.setFlywheelRPM(3750); // 3000
+          // shooter.setFlywheelRPM(3125); // 2500
         }
       )
     );
