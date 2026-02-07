@@ -39,7 +39,7 @@ import java.util.List;
  */
 public class RobotContainer {
   // The robot's subsystems
-  private final DriveSubsystem drivetrain = new DriveSubsystem();
+  public final DriveSubsystem drivetrain = new DriveSubsystem();
 
   // The driver's controller
     public final CommandXboxController controller0 = new CommandXboxController(0);
@@ -93,14 +93,12 @@ public class RobotContainer {
     SmartDashboard.putNumber("ForwardSpeed", forwardspeed);
     SmartDashboard.putNumber("StrafeSpeed", strafingSpeed);
     SmartDashboard.putNumber("RotSpeed", rotationSpeed);
-    SmartDashboard.putNumber("GyroHeading", drivetrain.getHeading());
-    SmartDashboard.putNumber("GyroAngleZ", drivetrain.m_gyro.getAngle());
     
     drivetrain.drive(
                 -MathUtil.applyDeadband(forwardspeed, OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(strafingSpeed, OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(rotationSpeed, OIConstants.kDriveDeadband),
-                false);
+                true);
   }
     // private double getDriveSpeed(double input) {
     //     return this.boostToggle ?
