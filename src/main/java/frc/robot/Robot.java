@@ -50,8 +50,8 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
     LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
-    if(mt1.tagCount != 0){
-      m_robotContainer.drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5,.5,9999999));
+    if(mt1.tagCount != 0 && mt1 != null){
+      m_robotContainer.drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.5,0.5,0.5));
       m_robotContainer.drivetrain.m_poseEstimator.addVisionMeasurement(
             mt1.pose,
             mt1.timestampSeconds);
