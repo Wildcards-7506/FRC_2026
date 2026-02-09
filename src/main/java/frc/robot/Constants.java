@@ -57,6 +57,13 @@ public final class Constants {
     public static final int kRearRightTurningCanId = 16;
 
     public static final boolean kGyroReversed = false;
+
+    public static final double fullTurnSpeed = 0.30;
+    public static final double fullDriveSpeed = 0.20;
+    public static final double fineTurnSpeed = 0.2; // current default state
+    public static final double fineDriveSpeed = 0.1; // current default state
+    public static final double boostDriveSpeed = 0.5;
+    public static final double boostTurnSpeed = 0.25;
   }
 
   public static final class ModuleConstants {

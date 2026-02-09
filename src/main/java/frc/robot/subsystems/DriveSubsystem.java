@@ -9,6 +9,7 @@ import com.studica.frc.AHRS;
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -56,6 +57,9 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearLeft.getPosition(),
           m_rearRight.getPosition()
       });
+
+  private static SlewRateLimiter xLimiter = new SlewRateLimiter(1);
+  private static SlewRateLimiter yLimiter = new SlewRateLimiter(1);
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
@@ -128,6 +132,17 @@ public class DriveSubsystem extends SubsystemBase {
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_rearLeft.setDesiredState(swerveModuleStates[2]);
     m_rearRight.setDesiredState(swerveModuleStates[3]);
+  }
+
+  public void driveRobot(double xSpeed, double ySpeed, double rotSpeed, boolean boost){
+    double forwardspeed = xSpeed * (boost ? DriveConstants.boostDriveSpeed : DriveConstants.fullDriveSpeed);
+    double strafingSpeed = ySpeed * (boost ? DriveConstants.boostDriveSpeed : DriveConstants.fullDriveSpeed);
+    double rotationSpeed = rotSpeed * (boost ? DriveConstants.boostTurnSpeed : DriveConstants.fullTurnSpeed);
+    
+    forwardspeed = yLimiter.calculate(forwardspeed);
+    strafingSpeed = xLimiter.calculate(strafingSpeed);
+
+    drive(forwardspeed, strafingSpeed, rotationSpeed, true);
   }
 
   /**
