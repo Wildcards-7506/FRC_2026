@@ -73,7 +73,15 @@ public class SuperStructure extends SubsystemBase {
     //Flywheel Commands
     public Command primeFlywheel() {
         return Commands.runEnd(
-            () -> setFlywheelRPM(4000), 
+            // () -> setFlywheelRPM(4000), 
+            // shooter.setFlywheelVoltage(12);
+          // actual is ~80% of target, so target of 5000 rpm is ~4000 rpm
+          //                     setpoint  // resulting rpm
+          // shooter.setFlywheelRPM(5000); // 4000
+          // shooter.setFlywheelRPM(4375); // 3500
+          () -> setFlywheelRPM(4000), // 3200 next test after 2/7
+          // shooter.setFlywheelRPM(3750); // 3000
+          // shooter.setFlywheelRPM(3125); // 2500
             () -> setFlywheelRPM(0)
         );
     }
@@ -127,5 +135,10 @@ public class SuperStructure extends SubsystemBase {
 
     public double getRPM() {
         return flywheel.getEncoder().getVelocity();
+    }
+
+    /* Increases RPM by 20% */
+    public double fixRPM(double rpm) {
+        return rpm * 1.2;
     }
 }
