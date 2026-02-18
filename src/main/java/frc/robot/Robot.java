@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.Limelight;
 import frc.robot.utils.LimelightHelpers;
 
 /**
@@ -60,6 +59,7 @@ public class Robot extends TimedRobot {
             mt1.timestampSeconds);
     }
     m_field.setRobotPose(m_robotContainer.drivetrain.getPose());
+
     SmartDashboard.putNumber("Flywheel RPM", m_robotContainer.superStructure.getRPM());
     SmartDashboard.putNumber("GyroHeading", m_robotContainer.drivetrain.getHeading());
     SmartDashboard.putNumber("GyroAngleZ", m_robotContainer.drivetrain.m_gyro.getAngle());
@@ -68,7 +68,6 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("RX", m_robotContainer.controller0.getRightX());
     SmartDashboard.putBoolean("FieldRelative", m_robotContainer.drivetrain.isFieldRel);
 
-    
     double omegaRps = Units.degreesToRotations(m_robotContainer.drivetrain.getTurnRate());
     var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
 
