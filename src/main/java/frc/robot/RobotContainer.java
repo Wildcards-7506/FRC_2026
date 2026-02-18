@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 /*
@@ -109,6 +110,20 @@ public class RobotContainer {
     controller1.a().whileTrue(
       superStructure.runIntake().alongWith(superStructure.rejectLoader())
     );
+
+    controller0.leftBumper()
+    .whileTrue(new RunCommand(
+        () -> drivetrain.drive(
+          controller0.getLeftY(),
+          controller0.getLeftX(),
+          LimelightHelpers.getTX("limelight") * 0.05, //Placeholder
+          false
+        ),
+
+        drivetrain
+
+      ));
+
   }
 
   /**
