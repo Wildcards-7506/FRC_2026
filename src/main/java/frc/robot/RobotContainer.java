@@ -4,10 +4,8 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -15,13 +13,10 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.OIConstants;
-import frc.robot.commands.ShooterCommands;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.SuperStructure;
 import frc.robot.utils.LimelightHelpers;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -41,72 +36,24 @@ import java.util.List;
  */
 public class RobotContainer {
   // The robot's subsystems
-  public final DriveSubsystem drivetrain = new DriveSubsystem();
+  public final DriveSubsystem drivetrain;
+  public final SuperStructure superStructure;
 
   // The driver's controller
     public final CommandXboxController controller0 = new CommandXboxController(0);
     public final CommandXboxController controller1 = new CommandXboxController(1);
-    public static SlewRateLimiter xLimiter = new SlewRateLimiter(1);
-    public static SlewRateLimiter yLimiter = new SlewRateLimiter(1);
-    boolean boostToggle = false;
-    double fullTurnSpeed = 0.30;
-    double fullDriveSpeed = 0.20;
-    double fineTurnSpeed = 0.2; // current default state
-    double fineDriveSpeed = 0.1; // current default state
-    double boostDriveSpeed = 0.5;
-    double boostTurnSpeed = 0.25;
-
-  public final Shooter shooter;
-  public final ShooterCommands shooterCommands;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    drivetrain = new DriveSubsystem();
+    superStructure = new SuperStructure();
+
     // Configure the button bindings
-    configureButtonBindings();
-
-    // Configure default commands
-    // drivetrain.setDefaultCommand(
-    //     // The left stick controls translation of the robot.
-    //     // Turning is controlled by the X axis of the right stick.
-    //     new RunCommand(
-    //         () -> driveRobot(),
-    //         drivetrain));
-
-    shooter = new Shooter();
-    shooterCommands = new ShooterCommands(shooter);
+    configureButtonBindings();    
   }
 
-  private void driveRobot(){
-    SmartDashboard.putNumber("DriverForward", controller0.getLeftY());
-    SmartDashboard.putNumber("DriverRight", controller0.getLeftX());
-    SmartDashboard.putNumber("DriverTurn", controller0.getRightX());
-    
-    boolean boostOn = Math.abs(controller0.getRightTriggerAxis())>0.2;
-
-    double forwardspeed = controller0.getLeftY()*(boostOn?boostDriveSpeed:fullDriveSpeed);
-    double strafingSpeed = controller0.getLeftX()*(boostOn?boostDriveSpeed:fullDriveSpeed);
-    double rotationSpeed = controller0.getRightX()*(boostOn?boostTurnSpeed:fullTurnSpeed);
-    
-    forwardspeed = yLimiter.calculate(forwardspeed);
-    strafingSpeed = xLimiter.calculate(strafingSpeed);
-    
-    SmartDashboard.putNumber("ForwardSpeed", forwardspeed);
-    SmartDashboard.putNumber("StrafeSpeed", strafingSpeed);
-    SmartDashboard.putNumber("RotSpeed", rotationSpeed);
-    
-    drivetrain.drive(
-                -MathUtil.applyDeadband(forwardspeed, OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(strafingSpeed, OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(rotationSpeed, OIConstants.kDriveDeadband),
-                true);
-  }
-    // private double getDriveSpeed(double input) {
-    //     return this.boostToggle ?
-    //             PlayerConfigs.boostDriveSpeed * input :
-    //             PlayerConfigs.fullDriveSpeed * input;
-    // }
 
   /**
    * Use this method to define your button->command mappings. Buttons can be
@@ -119,67 +66,51 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
+    drivetrain.setDefaultCommand(
+    Commands.runOnce(
+      () -> drivetrain.driveRobot(
+        controller0.getLeftX(),
+        -controller0.getLeftY(),
+        -controller0.getRightX(),
+        controller0.getRightTriggerAxis() < 0.2
+      ), drivetrain));
+
     controller0.b().onTrue(
       Commands.runOnce(
           () -> drivetrain.zeroHeading()
       )
     );
     
-    controller1.leftTrigger().onTrue(
-      Commands.runOnce(
-        () -> {
-          shooter.setIntakeVoltage(12);
-          shooter.setLoaderVoltage(12);
-        }
-      )
-    );
-    controller1.leftTrigger().onFalse(
-      Commands.runOnce(
-        () -> {
-          shooter.setIntakeVoltage(0);
-          shooter.setLoaderVoltage(0);
-        }
-      )
+    //Run intake and loader inwards
+    controller1.leftTrigger().whileTrue(
+      superStructure.runIntake().alongWith(superStructure.runLoader())
     );
     
-    controller1.rightTrigger().onTrue(
-      Commands.runOnce(
-        () -> {
-          // shooter.setFlywheelVoltage(12);
-          // actual is ~80% of target, so target of 5000 rpm is ~4000 rpm
-          //                     setpoint  // resulting rpm
-          // shooter.setFlywheelRPM(5000); // 4000
-          // shooter.setFlywheelRPM(4375); // 3500
-          shooter.setFlywheelRPM(4000); // 3200 next test after 2/7
-          // shooter.setFlywheelRPM(3750); // 3000
-          // shooter.setFlywheelRPM(3125); // 2500
-        }
-      )
-    );
-    controller1.rightTrigger().onFalse(
-      Commands.runOnce(
-        () -> { 
-          // shooter.setFlywheelVoltage(0);
-          shooter.setFlywheelRPM(0);
-        }
-      )
+    //Spin up the shooter
+    // controller1.y().whileTrue(
+    //   superStructure.primeFlywheel(3200) // diffrerent button will call this with diffrerent rpm
+    // );
+
+    // controller1.b().whileTrue(
+    //   superStructure.primeFlywheel()
+    // );
+
+    // controller1.a().whileTrue(
+    //   superStructure.primeFlywheel()
+    // );
+
+    // controller1.rightTrigger().whileTrue(
+      // superStructure.runIntake().alongWith(superStructure.rejectLoader());
+    // );
+    
+    //Spin up the shooter
+    controller1.rightTrigger().whileTrue(
+      superStructure.primeFlywheel(3200)
     );
 
-    controller1.a().onTrue (
-      Commands.runOnce (
-        () -> {
-          shooter.setIntakeVoltage(12);
-          shooter.setLoaderVoltage(-12);
-        }
-      )
-    );
-    controller1.a().onFalse (
-      Commands.runOnce (
-        () -> {
-          shooter.setIntakeVoltage(0);
-          shooter.setLoaderVoltage(0);
-        }
-      )
+    //run intake inwards and loader outwards, use for firing shooter
+    controller1.a().whileTrue(
+      superStructure.runIntake().alongWith(superStructure.rejectLoader())
     );
 
     controller0.leftBumper()
