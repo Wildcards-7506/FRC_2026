@@ -68,7 +68,7 @@ public class RobotContainer {
       () -> drivetrain.driveRobot(
         controller0.getLeftX(),
         -controller0.getLeftY(),
-        controller0.getRightX(),
+        -controller0.getRightX(),
         controller0.getRightTriggerAxis() < 0.2
       ), drivetrain));
 

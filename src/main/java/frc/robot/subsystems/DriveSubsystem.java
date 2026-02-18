@@ -153,9 +153,9 @@ public class DriveSubsystem extends SubsystemBase {
     strafingSpeed = xLimiter.calculate(strafingSpeed);
     
     drive(
-      MathUtil.applyDeadband(forwardspeed, OIConstants.kDriveDeadband),
-      MathUtil.applyDeadband(strafingSpeed, OIConstants.kDriveDeadband),
-      MathUtil.applyDeadband(rotationSpeed, OIConstants.kDriveDeadband),
+      -MathUtil.applyDeadband(forwardspeed, OIConstants.kDriveDeadband),
+      -MathUtil.applyDeadband(strafingSpeed, OIConstants.kDriveDeadband),
+      -MathUtil.applyDeadband(rotationSpeed, OIConstants.kDriveDeadband),
       isFieldRel);
   }
 
