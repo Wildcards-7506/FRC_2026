@@ -9,6 +9,7 @@ import com.studica.frc.AHRS;
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -20,9 +21,12 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.OIConstants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveSubsystem extends SubsystemBase {
+  public boolean isFieldRel = true;
+
   // Create MAXSwerveModules
   private final MAXSwerveModule m_frontLeft = new MAXSwerveModule(
       DriveConstants.kFrontLeftDrivingCanId,
@@ -147,8 +151,12 @@ public class DriveSubsystem extends SubsystemBase {
     
     forwardspeed = yLimiter.calculate(forwardspeed);
     strafingSpeed = xLimiter.calculate(strafingSpeed);
-
-    drive(forwardspeed, strafingSpeed, rotationSpeed, true);
+    
+    drive(
+      MathUtil.applyDeadband(forwardspeed, OIConstants.kDriveDeadband),
+      MathUtil.applyDeadband(strafingSpeed, OIConstants.kDriveDeadband),
+      MathUtil.applyDeadband(rotationSpeed, OIConstants.kDriveDeadband),
+      isFieldRel);
   }
 
   /**

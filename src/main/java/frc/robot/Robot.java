@@ -60,6 +60,10 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Flywheel RPM", m_robotContainer.superStructure.getRPM());
     SmartDashboard.putNumber("GyroHeading", m_robotContainer.drivetrain.getHeading());
     SmartDashboard.putNumber("GyroAngleZ", m_robotContainer.drivetrain.m_gyro.getAngle());
+    SmartDashboard.putNumber("LX", m_robotContainer.controller0.getLeftX());
+    SmartDashboard.putNumber("LY", m_robotContainer.controller0.getLeftY());
+    SmartDashboard.putNumber("RX", m_robotContainer.controller0.getRightX());
+    SmartDashboard.putBoolean("FieldRelative", m_robotContainer.drivetrain.isFieldRel);
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
