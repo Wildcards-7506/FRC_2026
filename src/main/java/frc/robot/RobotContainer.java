@@ -15,6 +15,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
@@ -23,6 +24,7 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.commands.ShooterCommands;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Shooter;
+import frc.robot.utils.LimelightHelpers;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -32,6 +34,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 /*
@@ -42,7 +45,7 @@ import java.util.List;
  */
 public class RobotContainer {
   // The robot's subsystems
-  private final DriveSubsystem drivetrain = new DriveSubsystem();
+  final DriveSubsystem drivetrain = new DriveSubsystem();
 
   // The driver's controller
     public final CommandXboxController controller0 = new CommandXboxController(0);
@@ -72,20 +75,23 @@ public class RobotContainer {
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
         new RunCommand(
-            () -> Drivespeed(),
+            () -> driveRobot(),
             drivetrain));
 
     shooter = new Shooter();
     shooterCommands = new ShooterCommands(shooter);
   }
-  void Drivespeed(){
+
+  private void driveRobot(){
     SmartDashboard.putNumber("DriverForward", controller0.getLeftY());
     SmartDashboard.putNumber("DriverRight", controller0.getLeftX());
     SmartDashboard.putNumber("DriverTurn", controller0.getRightX());
     
-    double forwardspeed = controller0.getLeftY()*((Math.abs(controller0.getRightTriggerAxis())>0.2)?boostDriveSpeed:fullDriveSpeed);
-    double strafingSpeed = controller0.getLeftX()*((Math.abs(controller0.getRightTriggerAxis())>0.2)?boostDriveSpeed:fullDriveSpeed);
-    double rotationSpeed = controller0.getRightX()*((Math.abs(controller0.getRightTriggerAxis())>0.2)?boostTurnSpeed:fullTurnSpeed);
+    boolean boostOn = Math.abs(controller0.getRightTriggerAxis())>0.2;
+
+    double forwardspeed = controller0.getLeftY()*(boostOn?boostDriveSpeed:fullDriveSpeed);
+    double strafingSpeed = controller0.getLeftX()*(boostOn?boostDriveSpeed:fullDriveSpeed);
+    double rotationSpeed = controller0.getRightX()*(boostOn?boostTurnSpeed:fullTurnSpeed);
     
     forwardspeed = yLimiter.calculate(forwardspeed);
     strafingSpeed = xLimiter.calculate(strafingSpeed);
@@ -93,12 +99,14 @@ public class RobotContainer {
     SmartDashboard.putNumber("ForwardSpeed", forwardspeed);
     SmartDashboard.putNumber("StrafeSpeed", strafingSpeed);
     SmartDashboard.putNumber("RotSpeed", rotationSpeed);
+    SmartDashboard.putNumber("GyroHeading", drivetrain.getHeading());
+    SmartDashboard.putNumber("GyroAngleZ", drivetrain.m_gyro.getAngle(IMUAxis.kZ));
     
     drivetrain.drive(
                 -MathUtil.applyDeadband(forwardspeed, OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(strafingSpeed, OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(rotationSpeed, OIConstants.kDriveDeadband),
-                true);
+                false);
   }
     // private double getDriveSpeed(double input) {
     //     return this.boostToggle ?
@@ -173,6 +181,20 @@ public class RobotContainer {
         }
       )
     );
+
+    controller0.leftBumper()
+    .whileTrue(new RunCommand(
+        () -> drivetrain.drive(
+          controller0.getLeftY(),
+          controller0.getLeftX(),
+          LimelightHelpers.getTX("limelight") * 0.05, //Placeholder
+          false
+        ),
+
+        drivetrain
+
+      ));
+
   }
 
   /**
