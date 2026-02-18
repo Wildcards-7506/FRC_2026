@@ -84,8 +84,25 @@ public class RobotContainer {
     );
     
     //Spin up the shooter
+    // controller1.y().whileTrue(
+    //   superStructure.primeFlywheel(3200) // diffrerent button will call this with diffrerent rpm
+    // );
+
+    // controller1.b().whileTrue(
+    //   superStructure.primeFlywheel()
+    // );
+
+    // controller1.a().whileTrue(
+    //   superStructure.primeFlywheel()
+    // );
+
+    // controller1.rightTrigger().whileTrue(
+      // superStructure.runIntake().alongWith(superStructure.rejectLoader());
+    // );
+    
+    //Spin up the shooter
     controller1.rightTrigger().whileTrue(
-      superStructure.primeFlywheel()
+      superStructure.primeFlywheel(3200)
     );
 
     //run intake inwards and loader outwards, use for firing shooter
