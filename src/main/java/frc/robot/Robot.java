@@ -48,6 +48,10 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    SmartDashboard.putNumber("Flywheel Setpoint", m_robotContainer.shooter.flywheelSetpoint);
+    SmartDashboard.putNumber("Flywheel RPM", m_robotContainer.shooter.getRPM());
+    SmartDashboard.putNumber("GyroHeading", m_robotContainer.drivetrain.getHeading());
+    SmartDashboard.putNumber("GyroAngleZ", m_robotContainer.drivetrain.m_gyro.getAngle());
 
     
     double omegaRps = Units.degreesToRotations(m_robotContainer.drivetrain.getTurnRate());
@@ -102,8 +106,6 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    SmartDashboard.putNumber("Flywheel Setpoint", m_robotContainer.shooter.flywheelSetpoint);
-    SmartDashboard.putNumber("Flywheel RPM", m_robotContainer.shooter.getRPM());
   }
 
   @Override

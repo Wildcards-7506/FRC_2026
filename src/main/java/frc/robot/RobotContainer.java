@@ -15,8 +15,6 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
-import edu.wpi.first.wpilibj.PS4Controller.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
@@ -27,12 +25,10 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.utils.LimelightHelpers;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -45,7 +41,7 @@ import java.util.List;
  */
 public class RobotContainer {
   // The robot's subsystems
-  final DriveSubsystem drivetrain = new DriveSubsystem();
+  public final DriveSubsystem drivetrain = new DriveSubsystem();
 
   // The driver's controller
     public final CommandXboxController controller0 = new CommandXboxController(0);
@@ -71,12 +67,12 @@ public class RobotContainer {
     configureButtonBindings();
 
     // Configure default commands
-    drivetrain.setDefaultCommand(
-        // The left stick controls translation of the robot.
-        // Turning is controlled by the X axis of the right stick.
-        new RunCommand(
-            () -> driveRobot(),
-            drivetrain));
+    // drivetrain.setDefaultCommand(
+    //     // The left stick controls translation of the robot.
+    //     // Turning is controlled by the X axis of the right stick.
+    //     new RunCommand(
+    //         () -> driveRobot(),
+    //         drivetrain));
 
     shooter = new Shooter();
     shooterCommands = new ShooterCommands(shooter);
@@ -99,14 +95,12 @@ public class RobotContainer {
     SmartDashboard.putNumber("ForwardSpeed", forwardspeed);
     SmartDashboard.putNumber("StrafeSpeed", strafingSpeed);
     SmartDashboard.putNumber("RotSpeed", rotationSpeed);
-    SmartDashboard.putNumber("GyroHeading", drivetrain.getHeading());
-    SmartDashboard.putNumber("GyroAngleZ", drivetrain.m_gyro.getAngle(IMUAxis.kZ));
     
     drivetrain.drive(
                 -MathUtil.applyDeadband(forwardspeed, OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(strafingSpeed, OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(rotationSpeed, OIConstants.kDriveDeadband),
-                false);
+                true);
   }
     // private double getDriveSpeed(double input) {
     //     return this.boostToggle ?
@@ -152,7 +146,13 @@ public class RobotContainer {
       Commands.runOnce(
         () -> {
           // shooter.setFlywheelVoltage(12);
-          shooter.setFlywheelRPM(5000);
+          // actual is ~80% of target, so target of 5000 rpm is ~4000 rpm
+          //                     setpoint  // resulting rpm
+          // shooter.setFlywheelRPM(5000); // 4000
+          // shooter.setFlywheelRPM(4375); // 3500
+          shooter.setFlywheelRPM(4000); // 3200 next test after 2/7
+          // shooter.setFlywheelRPM(3750); // 3000
+          // shooter.setFlywheelRPM(3125); // 2500
         }
       )
     );
