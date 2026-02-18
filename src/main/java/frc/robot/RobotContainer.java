@@ -22,6 +22,7 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.commands.ShooterCommands;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Shooter;
+import frc.robot.utils.LimelightHelpers;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -29,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 /*
@@ -179,6 +181,20 @@ public class RobotContainer {
         }
       )
     );
+
+    controller0.leftBumper()
+    .whileTrue(new RunCommand(
+        () -> drivetrain.drive(
+          controller0.getLeftY(),
+          controller0.getLeftX(),
+          LimelightHelpers.getTX("limelight") * 0.05, //Placeholder
+          false
+        ),
+
+        drivetrain
+
+      ));
+
   }
 
   /**
