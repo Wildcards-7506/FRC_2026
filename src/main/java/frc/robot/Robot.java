@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -92,6 +93,15 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     SmartDashboard.putNumber("Flywheel Setpoint", m_robotContainer.shooter.flywheelSetpoint);
     SmartDashboard.putNumber("Flywheel RPM", m_robotContainer.shooter.getRPM());
+    SmartDashboard.putNumber("Tx", (LimelightHelpers.getTX("limelight") / -40) * m_robotContainer.limelight_turn_output);
+
+
+    double omegaRps = Units.degreesToRotations(m_robotContainer.drivetrain.getTurnRate());
+    var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
+
+    if (llMeasurement != null & llMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0) {
+      m_robotContainer.drivetrain.resetOdometry(llMeasurement.pose);
+    }
   }
 
   @Override

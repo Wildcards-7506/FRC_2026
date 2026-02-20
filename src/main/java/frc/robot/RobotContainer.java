@@ -16,6 +16,7 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
@@ -41,7 +42,7 @@ import java.util.List;
  */
 public class RobotContainer {
   // The robot's subsystems
-  private final DriveSubsystem drivetrain = new DriveSubsystem();
+  final DriveSubsystem drivetrain = new DriveSubsystem();
 
   // The driver's controller
     public final CommandXboxController controller0 = new CommandXboxController(0);
@@ -55,6 +56,8 @@ public class RobotContainer {
     double fineDriveSpeed = 0.1; // current default state
     double boostDriveSpeed = 0.5;
     double boostTurnSpeed = 0.25;
+
+    double limelight_turn_output = 0.05;
 
   public final Shooter shooter;
   public final ShooterCommands shooterCommands;
@@ -78,14 +81,21 @@ public class RobotContainer {
     shooterCommands = new ShooterCommands(shooter);
   }
   void Drivespeed(){
-
-    double forwardspeed = controller0.getLeftY()*((controller0.getRightTriggerAxis()>0.2)?boostDriveSpeed:fullDriveSpeed);
-    double strafingSpeed = controller0.getLeftX()*((controller0.getRightTriggerAxis()>0.2)?boostDriveSpeed:fullDriveSpeed);
-    double rotationSpeed = controller0.getRightX()*((controller0.getRightTriggerAxis()>0.2)?boostTurnSpeed:fullTurnSpeed);
-
-    forwardspeed = xLimiter.calculate(forwardspeed);
+    SmartDashboard.putNumber("DriverForward", controller0.getLeftY());
+    SmartDashboard.putNumber("DriverRight", controller0.getLeftX());
+    SmartDashboard.putNumber("DriverTurn", controller0.getRightX());
+    
+    double forwardspeed = controller0.getLeftY()*((Math.abs(controller0.getRightTriggerAxis())>0.2)?boostDriveSpeed:fullDriveSpeed);
+    double strafingSpeed = controller0.getLeftX()*((Math.abs(controller0.getRightTriggerAxis())>0.2)?boostDriveSpeed:fullDriveSpeed);
+    double rotationSpeed = controller0.getRightX()*((Math.abs(controller0.getRightTriggerAxis())>0.2)?boostTurnSpeed:fullTurnSpeed);
+    
+    forwardspeed = yLimiter.calculate(forwardspeed);
     strafingSpeed = xLimiter.calculate(strafingSpeed);
-
+    
+    SmartDashboard.putNumber("ForwardSpeed", forwardspeed);
+    SmartDashboard.putNumber("StrafeSpeed", strafingSpeed);
+    SmartDashboard.putNumber("RotSpeed", rotationSpeed);
+    
     drivetrain.drive(
                 -MathUtil.applyDeadband(forwardspeed, OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(strafingSpeed, OIConstants.kDriveDeadband),
@@ -165,7 +175,27 @@ public class RobotContainer {
         }
       )
     );
+
+    
+
+        controller0.leftBumper()
+    .whileTrue(new RunCommand(
+
+    //The code makes the robot move bakwards instead of aligning the heading to tag!
+        () -> drivetrain.drive(
+          -controller0.getLeftY() > 0.05 ? -controller0.getLeftY() : 0,
+          -controller0.getLeftX() > 0.05 ? -controller0.getLeftX() : 0,
+          (LimelightHelpers.getTX("limelight") / -40) * limelight_turn_output, //Placeholder
+          false
+        ),       
+        
+        drivetrain
+
+      ));
+
   }
+
+  
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
