@@ -4,11 +4,14 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.utils.LimelightHelpers;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -18,8 +21,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-
   private RobotContainer m_robotContainer;
+  private Field2d m_field;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -30,6 +33,8 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    m_field = new Field2d();
+    SmartDashboard.putData(m_field);
   }
 
   /**
@@ -46,6 +51,30 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
+    if(mt1.tagCount != 0 && mt1 != null){
+      m_robotContainer.drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.5,0.5,0.5));
+      m_robotContainer.drivetrain.m_poseEstimator.addVisionMeasurement(
+            mt1.pose,
+            mt1.timestampSeconds);
+    }
+    m_field.setRobotPose(m_robotContainer.drivetrain.getPose());
+
+    SmartDashboard.putNumber("Flywheel RPM", m_robotContainer.superStructure.getRPM());
+    SmartDashboard.putNumber("GyroHeading", m_robotContainer.drivetrain.getHeading());
+    SmartDashboard.putNumber("GyroAngleZ", m_robotContainer.drivetrain.m_gyro.getAngle());
+    SmartDashboard.putNumber("LX", m_robotContainer.controller0.getLeftX());
+    SmartDashboard.putNumber("LY", m_robotContainer.controller0.getLeftY());
+    SmartDashboard.putNumber("RX", m_robotContainer.controller0.getRightX());
+    SmartDashboard.putBoolean("FieldRelative", m_robotContainer.drivetrain.isFieldRel);
+
+    double omegaRps = Units.degreesToRotations(m_robotContainer.drivetrain.getTurnRate());
+    var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
+
+    if (llMeasurement != null & llMeasurement.tagCount > 0 && Math.abs(omegaRps) < 0.2) {
+      m_robotContainer.drivetrain.resetOdometry(llMeasurement.pose);
+    }
+
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -59,13 +88,6 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
-    /*
-     * String autoSelected = SmartDashboard.getString("Auto Selector",
-     * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
-     * = new MyAutoCommand(); break; case "Default Auto": default:
-     * autonomousCommand = new ExampleCommand(); break; }
-     */
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
@@ -90,19 +112,7 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {
-    SmartDashboard.putNumber("Flywheel Setpoint", m_robotContainer.shooter.flywheelSetpoint);
-    SmartDashboard.putNumber("Flywheel RPM", m_robotContainer.shooter.getRPM());
-    SmartDashboard.putNumber("Tx", (LimelightHelpers.getTX("limelight") / -40) * m_robotContainer.limelight_turn_output);
-
-
-    double omegaRps = Units.degreesToRotations(m_robotContainer.drivetrain.getTurnRate());
-    var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
-
-    if (llMeasurement != null & llMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0) {
-      m_robotContainer.drivetrain.resetOdometry(llMeasurement.pose);
-    }
-  }
+  public void teleopPeriodic() {}
 
   @Override
   public void testInit() {
