@@ -66,8 +66,8 @@ public final class Constants {
     public static final double boostTurnSpeed = 0.25;
   }
   public static final class SuperStructureConstants{
-    public static final int kRotator = 3;
-    public static final int kIntake2 = 4;
+    public static final int kRotator = 4;
+    public static final int kIntake2 = 5;
     public static final double rotatorMin = 3;
     public static final double rotatorMax = 87;
   }
