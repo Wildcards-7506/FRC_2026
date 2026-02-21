@@ -19,13 +19,14 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IOConstants;
 import frc.robot.Constants.SuperStructureConstants;
+import frc.robot.RobotContainer;
 
 public class SuperStructure extends SubsystemBase {
     private final SparkMax loader = new SparkMax(2, MotorType.kBrushless);
     private final SparkFlex flywheel = new SparkFlex(3, MotorType.kBrushless);
     private final SparkMax intake = new SparkMax(1, MotorType.kBrushless);
     private final SparkMax intake2 = new SparkMax(SuperStructureConstants.kIntake2, MotorType.kBrushless);
-    private final SparkMax rotator = new SparkMax(SuperStructureConstants.kIntake2, MotorType.kBrushless);
+    private final SparkMax rotator = new SparkMax(SuperStructureConstants.kRotator, MotorType.kBrushless);
 
     private final SparkMaxConfig loaderConfig = new SparkMaxConfig(); // Neo
     private final SparkFlexConfig flywheelConfig = new SparkFlexConfig(); // Vortex
@@ -52,7 +53,7 @@ public class SuperStructure extends SubsystemBase {
             
         flywheelConfig
             .smartCurrentLimit(80)
-            .inverted(true)
+            .inverted(false)
             .idleMode(IdleMode.kCoast)
         .softLimit
             .forwardSoftLimitEnabled(false)
@@ -63,7 +64,7 @@ public class SuperStructure extends SubsystemBase {
         flywheelConfig.closedLoop
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
             // .pid(0.005,0,0)
-            .p(0.0007)
+            .p(0.002)
             .i(0.0)
             .d(0.0)
             .outputRange(0, 1);
@@ -78,7 +79,7 @@ public class SuperStructure extends SubsystemBase {
 
         intake2Config
             .smartCurrentLimit(40)
-            .inverted(true)
+            .inverted(false)
             .idleMode(IdleMode.kBrake)
         .softLimit
             .forwardSoftLimitEnabled(false)
@@ -97,7 +98,7 @@ public class SuperStructure extends SubsystemBase {
         rotatorConfig.closedLoop
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
             // .pid(0.005,0,0)
-            .p(0.001)
+            .p(0.005)
             .i(0.0)
             .d(0.0)
             .outputRange(-1, 1);
@@ -112,7 +113,11 @@ public class SuperStructure extends SubsystemBase {
     //Flywheel Commands
     public Command primeFlywheel(double desiredRPM) {
         return Commands.runEnd(
-            () -> setFlywheelRPM(desiredRPM),
+            () -> {
+//                flywheelConfig.closedLoop.pid(SmartDashboard.getNumber("pidp", 0), 0, SmartDashboard.getNumber("pidd", 0));
+//                flywheel.configure(flywheelConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+                setFlywheelRPM(desiredRPM);
+            },
             () -> setFlywheelRPM(0)
         );
     }
@@ -147,11 +152,13 @@ public class SuperStructure extends SubsystemBase {
     }
 
     //Rotator Control Commands
-    public Command runRotator(double fineControl) {
-        double deadBandControl = MathUtil.applyDeadband(fineControl, IOConstants.kDriveDeadband);
+    public Command runRotator(RobotContainer container) {
         return Commands.runOnce(
             () -> {
+                double fineControl = container.controller1.getRightY();
+                double deadBandControl = MathUtil.applyDeadband(fineControl, IOConstants.kDriveDeadband);
                 rotatorSetpoint += (deadBandControl*0.1);
+                System.out.println("DBC: " + deadBandControl + " ROT: " + rotatorSetpoint + " FC: " + fineControl);
                 setRotatorPos(rotatorSetpoint);
             }
         );
@@ -187,12 +194,12 @@ public class SuperStructure extends SubsystemBase {
 
     private void setIntake2Voltage(double voltage) {
         SmartDashboard.putNumber("Intake2 Setting", voltage);
-        intake.setVoltage(voltage);
+        intake2.setVoltage(voltage);
     }
 
     private void setRotatorPos(double position){
-        SmartDashboard.putNumber("Rotator Target", position);
         rotatorSetpoint = filterValue(position, SuperStructureConstants.rotatorMin, SuperStructureConstants.rotatorMax);
+        SmartDashboard.putNumber("Rotator Target", rotatorSetpoint);
         rotatorPID.setSetpoint(rotatorSetpoint, ControlType.kPosition);
     }
     

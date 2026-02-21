@@ -13,6 +13,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
@@ -88,7 +89,7 @@ public class RobotContainer {
     );
 
     controller1.povLeft().whileTrue(
-      superStructure.runRotator(controller1.getRightY())
+      Commands.repeatingSequence(superStructure.runRotator(this))
     );
 
     //Spin up the shooter
@@ -110,6 +111,7 @@ public class RobotContainer {
     
     //Spin up the shooter
     controller1.rightTrigger().whileTrue(
+//      superStructure.primeFlywheel(SmartDashboard.getNumber("RPM", 3200))
       superStructure.primeFlywheel(3200)
     );
 

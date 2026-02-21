@@ -35,6 +35,9 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     m_field = new Field2d();
     SmartDashboard.putData(m_field);
+    SmartDashboard.putNumber("pidp", 0.002);
+//    SmartDashboard.putNumber("pid2", -1);
+    SmartDashboard.putNumber("pidd", 0.01);
   }
 
   /**
