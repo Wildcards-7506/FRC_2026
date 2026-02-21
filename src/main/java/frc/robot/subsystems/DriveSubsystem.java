@@ -145,6 +145,10 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void driveRobot(double xSpeed, double ySpeed, double rotSpeed, boolean boost){
+    driveRobot(xSpeed, ySpeed, rotSpeed, boost, false);
+  }
+
+  public void driveRobot(double xSpeed, double ySpeed, double rotSpeed, boolean boost, boolean ignoreRotDeadband) {
     double forwardspeed = xSpeed * (boost ? DriveConstants.boostDriveSpeed : DriveConstants.fullDriveSpeed);
     double strafingSpeed = ySpeed * (boost ? DriveConstants.boostDriveSpeed : DriveConstants.fullDriveSpeed);
     double rotationSpeed = rotSpeed * (boost ? DriveConstants.boostTurnSpeed : DriveConstants.fullTurnSpeed);
@@ -155,7 +159,7 @@ public class DriveSubsystem extends SubsystemBase {
     drive(
       -MathUtil.applyDeadband(forwardspeed, OIConstants.kDriveDeadband),
       -MathUtil.applyDeadband(strafingSpeed, OIConstants.kDriveDeadband),
-      -MathUtil.applyDeadband(rotationSpeed, OIConstants.kDriveDeadband),
+      ignoreRotDeadband ? -rotationSpeed : -MathUtil.applyDeadband(rotationSpeed, OIConstants.kDriveDeadband),
       isFieldRel);
   }
 
@@ -168,6 +172,20 @@ public class DriveSubsystem extends SubsystemBase {
     m_rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
     m_rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
   }
+
+  //LIMELIGHT DIstancing (Testing) 
+  public void move_to_position(double current_position, double target_position) {
+    final double forwardSpeed = 0.1;
+    if (current_position < target_position) {
+      driveRobot(-forwardSpeed, 0.0, 0.0, false);
+    }
+
+    if (current_position > target_position) {
+      driveRobot(forwardSpeed, 50, 0.5, false);
+    }
+  }
+
+
 
   /**
    * Sets the swerve ModuleStates.

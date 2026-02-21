@@ -106,6 +106,8 @@ public final class Constants {
   public static final class ShooterConstants {
   }
 
+
+
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
   }
@@ -114,7 +116,7 @@ public final class Constants {
       public static final double MountingAngleDegrees = 25.0;
       public static final double limelightHeightInches = 20.0;
       public static final double goalHeightInches = 60.0; 
-
+      public static final double limelight_heading_output = 0.25; //Correct value
       
   }
 }

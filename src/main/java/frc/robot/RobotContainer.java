@@ -4,9 +4,11 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
@@ -25,8 +27,11 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
-import java.lang.reflect.Field;
+import frc.robot.Constants.OIConstants;
+
 import java.util.List;
+
+import com.fasterxml.jackson.core.io.IOContext;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -35,97 +40,101 @@ import java.util.List;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems
-  public final DriveSubsystem drivetrain;
-  public final SuperStructure superStructure;
-
-  // The driver's controller
-    public final CommandXboxController controller0 = new CommandXboxController(0);
-    public final CommandXboxController controller1 = new CommandXboxController(1);
-
-  /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
-  public RobotContainer() {
-    drivetrain = new DriveSubsystem();
-    superStructure = new SuperStructure();
-
-    // Configure the button bindings
-    configureButtonBindings();    
-  }
+  private static final double target_distance = 45;
+    // The robot's subsystems
+    public final DriveSubsystem drivetrain;
+    public final SuperStructure superStructure;
 
 
-  /**
-   * Use this method to define your button->command mappings. Buttons can be
-   * created by
-   * instantiating a {@link edu.wpi.first.wpilibj.GenericHID} or one of its
-   * subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then calling
-   * passing it to a
-   * {@link JoystickButton}.
-   */
-  private void configureButtonBindings() {
-
-    drivetrain.setDefaultCommand(
-    Commands.runOnce(
-      () -> drivetrain.driveRobot(
-        controller0.getLeftX(),
-        -controller0.getLeftY(),
-        -controller0.getRightX(),
-        controller0.getRightTriggerAxis() < 0.2
-      ), drivetrain));
-
-    controller0.b().onTrue(
+    // The driver's controller
+      public final CommandXboxController controller0 = new CommandXboxController(0);
+      public final CommandXboxController controller1 = new CommandXboxController(1);
+  
+    /**
+     * The container for the robot. Contains subsystems, OI devices, and commands.
+     */
+    public RobotContainer() {
+      drivetrain = new DriveSubsystem();
+      superStructure = new SuperStructure();
+  
+      // Configure the button bindings
+      configureButtonBindings();    
+    }
+  
+  
+    /**
+     * Use this method to define your button->command mappings. Buttons can be
+     * created by
+     * instantiating a {@link edu.wpi.first.wpilibj.GenericHID} or one of its
+     * subclasses ({@link
+     * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then calling
+     * passing it to a
+     * {@link JoystickButton}.
+     */
+    private void configureButtonBindings() {
+  
+      drivetrain.setDefaultCommand(
       Commands.runOnce(
-          () -> drivetrain.zeroHeading()
-      )
-    );
-    
-    //Run intake and loader inwards
-    controller1.leftTrigger().whileTrue(
-      superStructure.runIntake().alongWith(superStructure.runLoader())
-    );
-    
-    //Spin up the shooter
-    // controller1.y().whileTrue(
-    //   superStructure.primeFlywheel(3200) // diffrerent button will call this with diffrerent rpm
-    // );
-
-    // controller1.b().whileTrue(
-    //   superStructure.primeFlywheel()
-    // );
-
-    // controller1.a().whileTrue(
-    //   superStructure.primeFlywheel()
-    // );
-
-    // controller1.rightTrigger().whileTrue(
-      // superStructure.runIntake().alongWith(superStructure.rejectLoader());
-    // );
-    
-    //Spin up the shooter
-    controller1.rightTrigger().whileTrue(
-      superStructure.primeFlywheel(3200)
-    );
-
-    //run intake inwards and loader outwards, use for firing shooter
-    controller1.a().whileTrue(
-      superStructure.runIntake().alongWith(superStructure.rejectLoader())
-    );
-
-    controller0.leftBumper()
-    .whileTrue(new RunCommand(
-        () -> drivetrain.drive(
+        () -> drivetrain.driveRobot(
           controller0.getLeftY(),
           controller0.getLeftX(),
-          LimelightHelpers.getTX("limelight") * 0.05, //Placeholder
-          false
-        ),
+          controller0.getRightX(),
+          controller0.getRightTriggerAxis() < 0.2
+        ), drivetrain));
+  
+      controller0.b().onTrue(
+        Commands.runOnce(
+            () -> drivetrain.zeroHeading()
+        )
+      );
+      
+      //Run intake and loader inwards
+      controller1.leftTrigger().whileTrue(
+        superStructure.runIntake().alongWith(superStructure.runLoader())
+      );
+      
+      //Spin up the shooter
+      // controller1.y().whileTrue(
+      //   superStructure.primeFlywheel(3200) // diffrerent button will call this with diffrerent rpm
+      // );
+  
+      // controller1.b().whileTrue(
+      //   superStructure.primeFlywheel()
+      // );
+  
+      // controller1.a().whileTrue(
+      //   superStructure.primeFlywheel()
+      // );
+  
+      // controller1.rightTrigger().whileTrue(
+        // superStructure.runIntake().alongWith(superStructure.rejectLoader());
+      // );
+      
+      //Spin up the shooter
+      controller1.rightTrigger().whileTrue(
+        superStructure.primeFlywheel(3200)
+      );
+  
+      //run intake inwards and loader outwards, use for firing shooter
+      controller1.a().whileTrue(
+        superStructure.runIntake().alongWith(superStructure.rejectLoader())
+      );
+  
+      controller0.leftBumper()
+      .whileTrue(new RunCommand(
+          () -> drivetrain.driveRobot(
+            controller0.getLeftY(),
+            controller0.getLeftX(),
+            (LimelightHelpers.getTX("limelight") / 40) * Constants.limelightConstants.limelight_heading_output, //Placeholder
+            false,
+            true
+          ),  
+          drivetrain
+        ));
 
-        drivetrain
-
-      ));
-
+      controller0.rightBumper()
+      .whileTrue(new RunCommand(()-> drivetrain.move_to_position(Robot.current_distance, target_distance), drivetrain));
+      System.out.println(Robot.current_distance);
   }
 
   /**
