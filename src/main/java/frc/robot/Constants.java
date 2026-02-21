@@ -65,6 +65,12 @@ public final class Constants {
     public static final double boostDriveSpeed = 0.5;
     public static final double boostTurnSpeed = 0.25;
   }
+  public static final class SuperStructureConstants{
+    public static final int kRotator = 3;
+    public static final int kIntake2 = 4;
+    public static final double rotatorMin = 3;
+    public static final double rotatorMax = 87;
+  }
 
   public static final class ModuleConstants {
     // The MAXSwerve module can be configured with one of three pinion gears: 12T,
@@ -83,9 +89,9 @@ public final class Constants {
         / kDrivingMotorReduction;
   }
 
-  public static final class OIConstants {
+  public static final class IOConstants {
     public static final int kDriverControllerPort = 0;
-    public static final double kDriveDeadband = 0.05;
+    public static final double kDriveDeadband = 0.05; // 5%
   }
 
   public static final class AutoConstants {

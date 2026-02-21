@@ -20,6 +20,7 @@ import frc.robot.subsystems.SuperStructure;
 import frc.robot.utils.LimelightHelpers;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -83,9 +84,13 @@ public class RobotContainer {
     
     //Run intake and loader inwards
     controller1.leftTrigger().whileTrue(
-      superStructure.runIntake().alongWith(superStructure.runLoader())
+      superStructure.runIntake().alongWith(superStructure.runLoader()).alongWith(superStructure.runIntake2())
     );
-    
+
+    controller1.povLeft().whileTrue(
+      superStructure.runRotator(controller1.getRightY())
+    );
+
     //Spin up the shooter
     // controller1.y().whileTrue(
     //   superStructure.primeFlywheel(3200) // diffrerent button will call this with diffrerent rpm

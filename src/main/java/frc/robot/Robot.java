@@ -67,6 +67,9 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("LY", m_robotContainer.controller0.getLeftY());
     SmartDashboard.putNumber("RX", m_robotContainer.controller0.getRightX());
     SmartDashboard.putBoolean("FieldRelative", m_robotContainer.drivetrain.isFieldRel);
+    SmartDashboard.putNumber("Rotator Position", m_robotContainer.superStructure.getRotatorPos());
+    SmartDashboard.putNumber("Rotator Target", m_robotContainer.superStructure.getRotatorTarget());
+    SmartDashboard.putNumber("RY", m_robotContainer.controller1.getRightY());
 
     double omegaRps = Units.degreesToRotations(m_robotContainer.drivetrain.getTurnRate());
     var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
