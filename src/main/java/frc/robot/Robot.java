@@ -55,7 +55,7 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
     LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
-    if(mt1.tagCount != 0 && mt1 != null){
+    if(mt1.tagCount != 0){
       m_robotContainer.drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.5,0.5,0.5));
       m_robotContainer.drivetrain.m_poseEstimator.addVisionMeasurement(
             mt1.pose,
@@ -77,7 +77,7 @@ public class Robot extends TimedRobot {
     double omegaRps = Units.degreesToRotations(m_robotContainer.drivetrain.getTurnRate());
     var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
 
-    if (llMeasurement != null & llMeasurement.tagCount > 0 && Math.abs(omegaRps) < 0.2) {
+    if (llMeasurement.tagCount > 0 && Math.abs(omegaRps) < 0.2) {
       m_robotContainer.drivetrain.resetOdometry(llMeasurement.pose);
     }
 
