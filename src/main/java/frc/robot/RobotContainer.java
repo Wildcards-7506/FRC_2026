@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.SuperStructure;
 import frc.robot.utils.LimelightHelpers;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -40,10 +41,11 @@ import com.fasterxml.jackson.core.io.IOContext;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  private static final double target_distance = 45;
+  private static final double target_distance = 1.016;
     // The robot's subsystems
     public final DriveSubsystem drivetrain;
     public final SuperStructure superStructure;
+    Limelight limelight = new Limelight();
 
 
     // The driver's controller
@@ -132,9 +134,12 @@ public class RobotContainer {
           drivetrain
         ));
 
+      // controller0.rightBumper()
+      // .whileTrue(new RunCommand(()-> drivetrain.move_to_position(Robot.current_distance, target_distance), drivetrain));
+      // System.out.println(Robot.current_distance);
+
       controller0.rightBumper()
-      .whileTrue(new RunCommand(()-> drivetrain.move_to_position(Robot.current_distance, target_distance), drivetrain));
-      System.out.println(Robot.current_distance);
+      .whileTrue(new RunCommand(()-> drivetrain.move_to_position(Limelight.cameraDistance, target_distance), drivetrain));
   }
 
   /**

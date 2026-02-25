@@ -175,13 +175,13 @@ public class DriveSubsystem extends SubsystemBase {
 
   //LIMELIGHT DIstancing (Testing) 
   public void move_to_position(double current_position, double target_position) {
-    final double forwardSpeed = 0.1;
+    final double forwardSpeed = 0.5;
     if (current_position < target_position) {
       driveRobot(-forwardSpeed, 0.0, 0.0, false);
     }
 
     if (current_position > target_position) {
-      driveRobot(forwardSpeed, 50, 0.5, false);
+      driveRobot(forwardSpeed, 0.0, 0.0, false);
     }
   }
 
