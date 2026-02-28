@@ -41,7 +41,7 @@ import com.fasterxml.jackson.core.io.IOContext;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  private static final double target_distance = 1.016;
+    private static final double target_distance = 1.016;
     // The robot's subsystems
     public final DriveSubsystem drivetrain;
     public final SuperStructure superStructure;
@@ -138,8 +138,9 @@ public class RobotContainer {
       // .whileTrue(new RunCommand(()-> drivetrain.move_to_position(Robot.current_distance, target_distance), drivetrain));
       // System.out.println(Robot.current_distance);
 
-      controller0.rightBumper()
-      .whileTrue(new RunCommand(()-> drivetrain.move_to_position(Limelight.cameraDistance, target_distance), drivetrain));
+      controller0.rightBumper().whileTrue(
+        new RunCommand(()-> drivetrain.move_to_position(Limelight.cameraDistance, target_distance), drivetrain)
+      );
   }
 
   /**

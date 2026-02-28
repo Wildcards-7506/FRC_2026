@@ -20,7 +20,6 @@ public class Limelight extends SubsystemBase{
         NetworkTableEntry ty = table.getEntry("ty");
         double targetOffsetAngle_Vertical = ty.getDouble(0.0);
 
-
         double angleToGoalDegrees = Constants.limelightConstants.MountingAngleDegrees + targetOffsetAngle_Vertical;
         double angleToGoalRadians = Math.toRadians(angleToGoalDegrees);
         double distanceFromLimelightToGoalInches = (Constants.limelightConstants.goalHeightInches - Constants.limelightConstants.limelightHeightInches) / Math.tan(angleToGoalRadians);
