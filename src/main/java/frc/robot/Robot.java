@@ -35,6 +35,9 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     m_field = new Field2d();
     SmartDashboard.putData(m_field);
+    SmartDashboard.putNumber("pidp", 0.002);
+//    SmartDashboard.putNumber("pid2", -1);
+    SmartDashboard.putNumber("pidd", 0.01);
   }
 
   /**
@@ -52,7 +55,7 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
     LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
-    if(mt1.tagCount != 0 && mt1 != null){
+    if(mt1.tagCount != 0){
       m_robotContainer.drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.5,0.5,0.5));
       m_robotContainer.drivetrain.m_poseEstimator.addVisionMeasurement(
             mt1.pose,
@@ -67,11 +70,16 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("LY", m_robotContainer.controller0.getLeftY());
     SmartDashboard.putNumber("RX", m_robotContainer.controller0.getRightX());
     SmartDashboard.putBoolean("FieldRelative", m_robotContainer.drivetrain.isFieldRel);
+    SmartDashboard.putNumber("Rotator Position", m_robotContainer.superStructure.getRotatorPos());
+    SmartDashboard.putNumber("Rotator Target", m_robotContainer.superStructure.getRotatorTarget());
+    SmartDashboard.putNumber("RY", m_robotContainer.controller1.getRightY());
+    SmartDashboard.putNumber("Hood Position", m_robotContainer.superStructure.getHoodPos());
+    SmartDashboard.putNumber("Hood Target", m_robotContainer.superStructure.getHoodTarget());
 
     double omegaRps = Units.degreesToRotations(m_robotContainer.drivetrain.getTurnRate());
     var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
 
-    if (llMeasurement != null & llMeasurement.tagCount > 0 && Math.abs(omegaRps) < 0.2) {
+    if (llMeasurement.tagCount > 0 && Math.abs(omegaRps) < 0.2) {
       m_robotContainer.drivetrain.resetOdometry(llMeasurement.pose);
     }
 

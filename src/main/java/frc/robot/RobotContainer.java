@@ -13,6 +13,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
@@ -20,6 +21,7 @@ import frc.robot.subsystems.SuperStructure;
 import frc.robot.utils.LimelightHelpers;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -65,7 +67,11 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
+    driverController();
+    operatorController();
+  }
 
+  private void driverController() {
     drivetrain.setDefaultCommand(
     Commands.runOnce(
       () -> drivetrain.driveRobot(
@@ -80,38 +86,6 @@ public class RobotContainer {
           () -> drivetrain.zeroHeading()
       )
     );
-    
-    //Run intake and loader inwards
-    controller1.leftTrigger().whileTrue(
-      superStructure.runIntake().alongWith(superStructure.runLoader())
-    );
-    
-    //Spin up the shooter
-    // controller1.y().whileTrue(
-    //   superStructure.primeFlywheel(3200) // diffrerent button will call this with diffrerent rpm
-    // );
-
-    // controller1.b().whileTrue(
-    //   superStructure.primeFlywheel()
-    // );
-
-    // controller1.a().whileTrue(
-    //   superStructure.primeFlywheel()
-    // );
-
-    // controller1.rightTrigger().whileTrue(
-      // superStructure.runIntake().alongWith(superStructure.rejectLoader());
-    // );
-    
-    //Spin up the shooter
-    controller1.rightTrigger().whileTrue(
-      superStructure.primeFlywheel(3200)
-    );
-
-    //run intake inwards and loader outwards, use for firing shooter
-    controller1.a().whileTrue(
-      superStructure.runIntake().alongWith(superStructure.rejectLoader())
-    );
 
     controller0.leftBumper()
     .whileTrue(new RunCommand(
@@ -121,11 +95,43 @@ public class RobotContainer {
           LimelightHelpers.getTX("limelight") * 0.05, //Placeholder
           false
         ),
-
         drivetrain
-
       ));
+  }
 
+  private void operatorController() {
+    // Intake fuel from intake and intake2
+    controller1.leftTrigger().whileTrue(
+      superStructure.runIntake().alongWith(superStructure.runLoader()).alongWith(superStructure.runIntake2())
+    );
+
+    // Reject Intake2, prevents jamming issue previously encountered
+    controller1.leftBumper().whileTrue(
+      superStructure.rejectIntake2()
+    );
+    
+    // Load fuel into shooter
+    controller1.rightTrigger().whileTrue(
+      superStructure.runIntake().alongWith(superStructure.rejectLoader()).alongWith(superStructure.runIntake2())
+    );
+
+    // Long distance
+    controller1.y().whileTrue(
+      superStructure.longDistance()
+    );
+    // Mid distance
+    controller1.b().whileTrue(
+      superStructure.midDistance()
+    );
+    // Short distance
+    controller1.a().whileTrue(
+      superStructure.shortDistance()
+    );
+
+    // Dead man button to bring up rotator while button is pressed
+    // controller1.povUp().whileTrue(
+    //   superStructure.bringUpRotator()
+    // );
   }
 
   /**

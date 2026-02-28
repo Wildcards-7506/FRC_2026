@@ -21,7 +21,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.OIConstants;
+import frc.robot.Constants.IOConstants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -153,9 +153,9 @@ public class DriveSubsystem extends SubsystemBase {
     strafingSpeed = xLimiter.calculate(strafingSpeed);
     
     drive(
-      -MathUtil.applyDeadband(forwardspeed, OIConstants.kDriveDeadband),
-      -MathUtil.applyDeadband(strafingSpeed, OIConstants.kDriveDeadband),
-      -MathUtil.applyDeadband(rotationSpeed, OIConstants.kDriveDeadband),
+      -MathUtil.applyDeadband(forwardspeed, IOConstants.kDriveDeadband),
+      -MathUtil.applyDeadband(strafingSpeed, IOConstants.kDriveDeadband),
+      -MathUtil.applyDeadband(rotationSpeed, IOConstants.kDriveDeadband),
       isFieldRel);
   }
 
