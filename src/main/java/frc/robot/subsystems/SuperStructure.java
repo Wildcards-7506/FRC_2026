@@ -22,26 +22,31 @@ import frc.robot.Constants.SuperStructureConstants;
 import frc.robot.RobotContainer;
 
 public class SuperStructure extends SubsystemBase {
-    private final SparkMax loader = new SparkMax(2, MotorType.kBrushless);
-    private final SparkFlex flywheel = new SparkFlex(3, MotorType.kBrushless);
-    private final SparkMax intake = new SparkMax(1, MotorType.kBrushless);
+    private final SparkMax intake = new SparkMax(SuperStructureConstants.kIntake1, MotorType.kBrushless);
+    private final SparkMax loader = new SparkMax(SuperStructureConstants.kLoader, MotorType.kBrushless);
+    private final SparkFlex flywheel = new SparkFlex(SuperStructureConstants.kFlywheel, MotorType.kBrushless);
     private final SparkMax intake2 = new SparkMax(SuperStructureConstants.kIntake2, MotorType.kBrushless);
     private final SparkMax rotator = new SparkMax(SuperStructureConstants.kRotator, MotorType.kBrushless);
+    private final SparkMax hood = new SparkMax(SuperStructureConstants.kHood, MotorType.kBrushless);
 
     private final SparkMaxConfig loaderConfig = new SparkMaxConfig(); // Neo
     private final SparkFlexConfig flywheelConfig = new SparkFlexConfig(); // Vortex
     private final SparkMaxConfig intakeConfig = new SparkMaxConfig(); // Neo
     private final SparkMaxConfig intake2Config = new SparkMaxConfig();
     private final SparkMaxConfig rotatorConfig = new SparkMaxConfig();
+    private final SparkMaxConfig hoodConfig = new SparkMaxConfig();    
 
     private final SparkClosedLoopController flywheelPID;
     private final SparkClosedLoopController rotatorPID;
+    private final SparkClosedLoopController hoodPID;
 
     private double rotatorSetpoint = 0;
+    private double hoodSetpoint = 0;
 
     public SuperStructure() {
         flywheelPID = flywheel.getClosedLoopController();
         rotatorPID = rotator.getClosedLoopController();
+        hoodPID = hood.getClosedLoopController();
 
         loaderConfig
             .smartCurrentLimit(40)
@@ -63,10 +68,7 @@ public class SuperStructure extends SubsystemBase {
             .velocityConversionFactor(1); // 1 is for RPM
         flywheelConfig.closedLoop
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-            // .pid(0.005,0,0)
-            .p(0.002)
-            .i(0.0)
-            .d(0.0)
+            .pid(0.002, 0, 0) 
             .outputRange(0, 1);
             
         intakeConfig
@@ -97,10 +99,22 @@ public class SuperStructure extends SubsystemBase {
             .velocityConversionFactor(360.0 * 1/9 * 1/9);
         rotatorConfig.closedLoop
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-            // .pid(0.005,0,0)
-            .p(0.005)
-            .i(0.0)
-            .d(0.0)
+            .pid(0.005, 0, 0)
+            .outputRange(-1, 1);
+        
+        hoodConfig
+            .smartCurrentLimit(30)
+            .inverted(true)
+            .idleMode(IdleMode.kBrake)
+        .softLimit
+            .forwardSoftLimitEnabled(false)
+            .reverseSoftLimitEnabled(false);
+        hoodConfig.encoder
+            .positionConversionFactor(360.0 * 1/5 * 1/5 * 1/5 * 2/3)
+            .velocityConversionFactor(360.0 * 1/5 * 1/5 * 1/5 * 2/3);
+        hoodConfig.closedLoop
+            .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+            .pid(0.1,0,0.05)
             .outputRange(-1, 1);
 
         loader.configure(loaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -108,6 +122,7 @@ public class SuperStructure extends SubsystemBase {
         intake.configure(intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         intake2.configure(intake2Config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         rotator.configure(rotatorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        hood.configure(hoodConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     //Flywheel Commands
@@ -151,6 +166,36 @@ public class SuperStructure extends SubsystemBase {
         );
     }
 
+    public Command longDistance(){
+        return Commands.runEnd(
+            () -> {
+                setHoodPos(SuperStructureConstants.hoodLongDistance);
+                // setFlywheelRPM(SuperStructureConstants.rpmLongDistance);
+            },
+            () -> setFlywheelRPM(0)
+        );
+    }
+
+    public Command midDistance(){
+        return Commands.runEnd(
+            () -> {
+                setHoodPos(SuperStructureConstants.hoodMidDistance);
+                // setFlywheelRPM(SuperStructureConstants.rpmMidDistance);
+            },
+            () -> setFlywheelRPM(0)
+        );
+    }
+
+    public Command shortDistance(){
+        return Commands.runEnd(
+            () -> {
+                setHoodPos(SuperStructureConstants.hoodShortDistance);
+                // setFlywheelRPM(SuperStructureConstants.rpmShortDistance);
+            },
+            () -> setFlywheelRPM(0)
+        );
+    }
+
     //Rotator Control Commands
     public Command runRotator(RobotContainer container) {
         return Commands.runOnce(
@@ -161,6 +206,13 @@ public class SuperStructure extends SubsystemBase {
                 System.out.println("DBC: " + deadBandControl + " ROT: " + rotatorSetpoint + " FC: " + fineControl);
                 setRotatorPos(rotatorSetpoint);
             }
+        );
+    }
+
+    public Command bringUpRotator() {
+        return Commands.runEnd(
+            () -> setRotatorPos(SuperStructureConstants.rotatorMin),
+            () -> setRotatorPos(SuperStructureConstants.rotatorMax)
         );
     }
 
@@ -208,6 +260,11 @@ public class SuperStructure extends SubsystemBase {
         loader.setVoltage(voltage);
     }
 
+    private void setHoodPos(double target) {
+        hoodSetpoint = filterValue(target, SuperStructureConstants.hoodMin, SuperStructureConstants.hoodMax);
+        hoodPID.setSetpoint(hoodSetpoint, ControlType.kPosition);
+    }
+
     public double getRPM() {
         return flywheel.getEncoder().getVelocity();
     }
@@ -218,6 +275,14 @@ public class SuperStructure extends SubsystemBase {
 
     public double getRotatorTarget() {
         return rotatorSetpoint;
+    }
+
+    public double getHoodPos() {
+        return hood.getEncoder().getPosition();
+    }
+
+    public double getHoodTarget() {
+        return hoodSetpoint;
     }
 
     /* Increases RPM by 20% */

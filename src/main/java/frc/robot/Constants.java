@@ -66,10 +66,26 @@ public final class Constants {
     public static final double boostTurnSpeed = 0.25;
   }
   public static final class SuperStructureConstants{
+    public static final int kIntake1 = 1;
+    public static final int kLoader = 2;
+    public static final int kFlywheel = 3;
     public static final int kRotator = 4;
     public static final int kIntake2 = 5;
+    public static final int kHood = 6;
+    
     public static final double rotatorMin = 3;
     public static final double rotatorMax = 82;
+
+    public static final double hoodMin = 0;
+    public static final double hoodMax = 14; // measured was 15.68 degrees
+    
+    public static final double rpmShortDistance = 3200;
+    public static final double rpmMidDistance = 3200;
+    public static final double rpmLongDistance = 3200;
+
+    public static final double hoodShortDistance = hoodMin;
+    public static final double hoodMidDistance = 15;
+    public static final double hoodLongDistance = 20;
   }
 
   public static final class ModuleConstants {
