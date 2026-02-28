@@ -4,7 +4,11 @@
 
 package frc.robot;
 
+import com.fasterxml.jackson.databind.deser.std.DateDeserializers.SqlDateDeserializer;
+
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -23,6 +27,9 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
   private Field2d m_field;
+
+  public static double yaw = 0.0;
+  public static double tagDistance = 0.0;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -53,15 +60,49 @@ public class Robot extends TimedRobot {
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
+
+    // LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
+    // if(mt1.tagCount != 0 && mt1 != null){
+    //   m_robotContainer.drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.5,0.5,0.5));
+    //   m_robotContainer.drivetrain.m_poseEstimator.addVisionMeasurement(
+    //         mt1.pose,
+    //         mt1.timestampSeconds);
+    // }
+
     CommandScheduler.getInstance().run();
-    LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
-    if(mt1.tagCount != 0){
-      m_robotContainer.drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.5,0.5,0.5));
-      m_robotContainer.drivetrain.m_poseEstimator.addVisionMeasurement(
-            mt1.pose,
-            mt1.timestampSeconds);
+
+    LimelightHelpers.SetRobotOrientation("limelight", m_robotContainer.drivetrain.m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+    LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+
+    boolean doRejectUpdate = false;
+    if (Math.abs(m_robotContainer.drivetrain.m_gyro.getRate()) > 360)
+    {
+      doRejectUpdate = true;
     }
+    if(mt2.tagCount == 0)
+    {
+      doRejectUpdate = true;
+    }
+    if(!doRejectUpdate)
+    {
+      // 0.5,0.5,0.5 original
+      m_robotContainer.drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
+      m_robotContainer.drivetrain.m_poseEstimator.addVisionMeasurement(
+              mt2.pose,
+              mt2.timestampSeconds);
+    }
+
     m_field.setRobotPose(m_robotContainer.drivetrain.getPose());
+
+    Pose3d pose = LimelightHelpers.getTargetPose3d_RobotSpace("limelight");
+
+    double x_inches = pose.getX()*39.37008;
+    double y_inches = pose.getY()*39.37008;
+    double z_inches = pose.getZ()*39.37008;
+
+    // double yaw = pose.getRotation().getZ();
+    yaw = Math.toDegrees(pose.getRotation().getY());
+    tagDistance = Math.sqrt(Math.pow(x_inches, 2) + Math.pow(z_inches, 2));
 
     SmartDashboard.putNumber("Flywheel RPM", m_robotContainer.superStructure.getRPM());
     SmartDashboard.putNumber("GyroHeading", m_robotContainer.drivetrain.getHeading());
@@ -70,18 +111,20 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("LY", m_robotContainer.controller0.getLeftY());
     SmartDashboard.putNumber("RX", m_robotContainer.controller0.getRightX());
     SmartDashboard.putBoolean("FieldRelative", m_robotContainer.drivetrain.isFieldRel);
-    SmartDashboard.putNumber("Rotator Position", m_robotContainer.superStructure.getRotatorPos());
-    SmartDashboard.putNumber("Rotator Target", m_robotContainer.superStructure.getRotatorTarget());
-    SmartDashboard.putNumber("RY", m_robotContainer.controller1.getRightY());
-    SmartDashboard.putNumber("Hood Position", m_robotContainer.superStructure.getHoodPos());
-    SmartDashboard.putNumber("Hood Target", m_robotContainer.superStructure.getHoodTarget());
+    SmartDashboard.putNumber("Robot Pose X", x_inches);
+    SmartDashboard.putNumber("Robot Pose Y", y_inches);
+    SmartDashboard.putNumber("Robot Pose Z", z_inches);
+    SmartDashboard.putNumber("Robot Yaw", yaw);
+    SmartDashboard.putNumber("Flat Plane Tag Distance", tagDistance);
+    SmartDashboard.putNumber("TX", LimelightHelpers.getTX(""));
+    SmartDashboard.putNumber("Yaw PID", (yaw / 11.5) * Constants.limelightConstants.yawOutputMultiplier);
 
-    double omegaRps = Units.degreesToRotations(m_robotContainer.drivetrain.getTurnRate());
-    var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
-
-    if (llMeasurement.tagCount > 0 && Math.abs(omegaRps) < 0.2) {
-      m_robotContainer.drivetrain.resetOdometry(llMeasurement.pose);
-    }
+//    double omegaRps = Units.degreesToRotations(m_robotContainer.drivetrain.getTurnRate());
+//    var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
+//
+//    if (llMeasurement.tagCount > 0 && Math.abs(omegaRps) < 0.2) {
+//      m_robotContainer.drivetrain.resetOdometry(llMeasurement.pose);
+//    }
 
   }
 

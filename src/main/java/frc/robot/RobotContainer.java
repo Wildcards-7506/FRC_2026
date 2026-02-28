@@ -90,9 +90,11 @@ public class RobotContainer {
     controller0.leftBumper()
     .whileTrue(new RunCommand(
         () -> drivetrain.drive(
-          controller0.getLeftY(),
-          controller0.getLeftX(),
-          LimelightHelpers.getTX("limelight") * 0.05, //Placeholder
+          // controller0.getLeftY(),
+          0,
+          0,
+          // controller0.getLeftX(),
+          (-Robot.yaw / 11.5) * Constants.limelightConstants.yawOutputMultiplier, //Placeholder
           false
         ),
         drivetrain
