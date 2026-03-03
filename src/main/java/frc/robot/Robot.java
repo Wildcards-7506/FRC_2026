@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.SuperStructure;
 import frc.robot.utils.LimelightHelpers;
 
 /**
@@ -113,11 +114,13 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("FieldRelative", m_robotContainer.drivetrain.isFieldRel);
     SmartDashboard.putNumber("Robot Pose X", x_inches);
     SmartDashboard.putNumber("Robot Pose Y", y_inches);
-    SmartDashboard.putNumber("Robot Pose Z", z_inches);
+    SmartDashboard.putNumber("Robot zPose Z", z_inches);
     SmartDashboard.putNumber("Robot Yaw", yaw);
     SmartDashboard.putNumber("Flat Plane Tag Distance", tagDistance);
     SmartDashboard.putNumber("TX", LimelightHelpers.getTX(""));
     SmartDashboard.putNumber("Yaw PID", (yaw / 11.5) * Constants.limelightConstants.yawOutputMultiplier);
+    SmartDashboard.putNumber("Hood degrees", m_robotContainer.superStructure.getHoodPos());
+    SmartDashboard.putNumber("Hood target", m_robotContainer.superStructure.getHoodTarget());
 
 //    double omegaRps = Units.degreesToRotations(m_robotContainer.drivetrain.getTurnRate());
 //    var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");

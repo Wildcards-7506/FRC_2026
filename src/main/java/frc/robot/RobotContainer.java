@@ -117,11 +117,16 @@ public class RobotContainer {
       superStructure.runIntake().alongWith(superStructure.rejectLoader()).alongWith(superStructure.runIntake2())
     );
 
+    controller1.x().whileTrue(
+      superStructure.primeFlywheel(3025)
+    );
+
     // Long distance
     controller1.y().whileTrue(
       superStructure.longDistance()
     );
-    // Mid distance
+
+    // Mid-distance
     controller1.b().whileTrue(
       superStructure.midDistance()
     );

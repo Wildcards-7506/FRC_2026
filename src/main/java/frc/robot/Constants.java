@@ -77,15 +77,16 @@ public final class Constants {
     public static final double rotatorMax = 82;
 
     public static final double hoodMin = 0;
-    public static final double hoodMax = 14; // measured was 15.68 degrees
+    public static final double hoodMax = 21;
+    // 21.6 range
     
     public static final double rpmShortDistance = 3200;
     public static final double rpmMidDistance = 3200;
     public static final double rpmLongDistance = 3200;
 
     public static final double hoodShortDistance = hoodMin;
-    public static final double hoodMidDistance = 15;
-    public static final double hoodLongDistance = 20;
+    public static final double hoodMidDistance = 10.5;
+    public static final double hoodLongDistance = hoodMax - 1;
   }
 
   public static final class ModuleConstants {

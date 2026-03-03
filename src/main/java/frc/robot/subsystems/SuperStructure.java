@@ -101,17 +101,19 @@ public class SuperStructure extends SubsystemBase {
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
             .pid(0.005, 0, 0)
             .outputRange(-1, 1);
-        
+
         hoodConfig
             .smartCurrentLimit(30)
-            .inverted(true)
+            .inverted(false)
             .idleMode(IdleMode.kBrake)
         .softLimit
             .forwardSoftLimitEnabled(false)
             .reverseSoftLimitEnabled(false);
         hoodConfig.encoder
-            .positionConversionFactor(360.0 * 1/5 * 1/5 * 1/5 * 2/3)
-            .velocityConversionFactor(360.0 * 1/5 * 1/5 * 1/5 * 2/3);
+//            .positionConversionFactor(360.0 * 1/5 * 1/5 * 1/5 * 2/3);
+//            .velocityConversionFactor(360.0 * 1/5 * 1/5 * 1/5 * 2/3);
+            .positionConversionFactor(360.0 * 1/9 * 1/9 * 18/39)
+            .velocityConversionFactor(360.0 * 1/9 * 1/9 * 18/39);
         hoodConfig.closedLoop
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
             .pid(0.1,0,0.05)
@@ -126,6 +128,7 @@ public class SuperStructure extends SubsystemBase {
     }
 
     //Flywheel Commands
+    // shooter gun
     public Command primeFlywheel(double desiredRPM) {
         return Commands.runEnd(
             () -> {
@@ -263,6 +266,8 @@ public class SuperStructure extends SubsystemBase {
     private void setHoodPos(double target) {
         hoodSetpoint = filterValue(target, SuperStructureConstants.hoodMin, SuperStructureConstants.hoodMax);
         hoodPID.setSetpoint(hoodSetpoint, ControlType.kPosition);
+        SmartDashboard.putNumber("Hood degrees", getHoodPos());
+        SmartDashboard.putNumber("Hood target", getHoodTarget());
     }
 
     public double getRPM() {
