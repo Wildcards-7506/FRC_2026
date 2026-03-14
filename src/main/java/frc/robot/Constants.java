@@ -73,6 +73,8 @@ public final class Constants {
     public static final int kRotator = 4;
     public static final int kIntake2 = 5;
     public static final int kHood = 6;
+    public static final int kLeftClimber = 7;
+    public static final int kRightClimber = 8;
     
     public static final double rotatorMin = 3;
     public static final double rotatorMax = 82;
