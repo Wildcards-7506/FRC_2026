@@ -261,7 +261,7 @@ public class SuperStructure extends SubsystemBase {
         intake2.setVoltage(voltage);
     }
 
-    private void setRotatorPos(double position){
+    public void setRotatorPos(double position){
         rotatorSetpoint = filterValue(position, SuperStructureConstants.rotatorMin, SuperStructureConstants.rotatorMax);
         SmartDashboard.putNumber("Rotator Target", rotatorSetpoint);
         rotatorPID.setSetpoint(rotatorSetpoint, ControlType.kPosition);

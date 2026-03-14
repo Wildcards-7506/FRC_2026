@@ -157,10 +157,10 @@ public class RobotContainer {
       superStructure.shortDistance()
     );
 
-//     Dead man button to bring up rotator while button is pressed
-//     controller1.povUp().whileTrue(
-//       superStructure.bringUpRotator()
-//     );
+    // Dead man button to bring up rotator while button is pressed
+    controller1.povUp().whileTrue(
+      superStructure.bringUpRotator()
+    );
   }
 
   /**
