@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -12,10 +15,12 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.commands.autonomous.AutoRoutines;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.SuperStructure;
@@ -41,6 +46,7 @@ public class RobotContainer {
   // The robot's subsystems
   public final DriveSubsystem drivetrain;
   public final SuperStructure superStructure;
+  private AutoRoutines autoMode;
 
   // The driver's controller
     public final CommandXboxController controller0 = new CommandXboxController(0);
@@ -52,6 +58,7 @@ public class RobotContainer {
   public RobotContainer() {
     drivetrain = new DriveSubsystem();
     superStructure = new SuperStructure();
+    autoMode = new AutoRoutines(this);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -104,22 +111,33 @@ public class RobotContainer {
         drivetrain
       ));
 
-    controller0.rightBumper()
-    .whileTrue(new RunCommand(
-        () -> drivetrain.drive(
-          // controller0.getLeftY(),
-//          Robot.testXDistance,
-          Robot.ySpeed,
-                Robot.xSpeed,
-          // Robot.xSpeed,
-          // Robot.ySpeed,
-//          Robot.testYSpeed,
-          // controller0.getLeftX(),
-          0,//(-Robot.yaw / 11.5) * Constants.limelightConstants.yawOutputMultiplier, //Placeholder
-          false
-        ),
-        drivetrain
-      ));
+//    controller0.rightBumper()
+//    .whileTrue(new RunCommand(
+//        () -> drivetrain.drive(
+//          // controller0.getLeftY(),
+////          Robot.testXDistance,
+//          Robot.ySpeed,
+//                Robot.xSpeed,
+//          // Robot.xSpeed,
+//          // Robot.ySpeed,
+////          Robot.testYSpeed,
+//          // controller0.getLeftX(),
+//          0,//(-Robot.yaw / 11.5) * Constants.limelightConstants.yawOutputMultiplier, //Placeholder
+//          false
+//        ),
+//        drivetrain
+//      ));
+
+    PathConstraints pathConstraints = new PathConstraints(
+            1,
+            1.5,
+            Units.degreesToRadians(180),
+            Units.degreesToRadians(360)
+    );
+
+    controller0.rightBumper().whileTrue(
+            AutoBuilder.pathfindToPose(Robot.targetPose, pathConstraints, 0)
+    );
   }
 
   private void operatorController() {
@@ -157,10 +175,10 @@ public class RobotContainer {
       superStructure.shortDistance()
     );
 
-//     Dead man button to bring up rotator while button is pressed
-//     controller1.povUp().whileTrue(
-//       superStructure.bringUpRotator()
-//     );
+    // Dead man button to bring up rotator while button is pressed
+    controller1.povUp().whileTrue(
+      superStructure.bringUpRotator()
+    );
   }
 
   /**
