@@ -9,7 +9,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.utils.LimelightHelpers;
 
@@ -20,9 +19,9 @@ import frc.robot.utils.LimelightHelpers;
  * project.
  */
 public class Robot extends TimedRobot {
-  private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
-  private Field2d m_field;
+  public static Field2d m_field;
+  private AutoRoutines autoMode;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -34,6 +33,7 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     m_field = new Field2d();
+    autoMode = new AutoRoutines(m_robotContainer);
     SmartDashboard.putData(m_field);
     SmartDashboard.putNumber("pidp", 0.002);
 //    SmartDashboard.putNumber("pid2", -1);
@@ -95,12 +95,11 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    CommandScheduler.getInstance().cancelAll();
 
-    // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      CommandScheduler.getInstance().schedule(m_autonomousCommand);
-    }
+    // Set robot state
+    autoMode.resetAutoHeading();
+    autoMode.getAutonomousCommand().schedule();
   }
 
   /** This function is called periodically during autonomous. */
@@ -113,9 +112,7 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
-    }
+    CommandScheduler.getInstance().cancelAll();
   }
 
   /** This function is called periodically during operator control. */

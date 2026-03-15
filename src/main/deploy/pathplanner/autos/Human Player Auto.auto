@@ -1,0 +1,62 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Down"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Trench To HP"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "HP To Score"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Prime Flywheel"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Hood Short"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Fire"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

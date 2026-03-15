@@ -127,8 +127,8 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     // Convert the commanded speeds into the correct units for the drivetrain
-    double xSpeedDelivered = xSpeed * DriveConstants.kMaxSpeedMetersPerSecond;
-    double ySpeedDelivered = ySpeed * DriveConstants.kMaxSpeedMetersPerSecond;
+    double xSpeedDelivered = ySpeed * DriveConstants.kMaxSpeedMetersPerSecond;
+    double ySpeedDelivered = -xSpeed * DriveConstants.kMaxSpeedMetersPerSecond;
     double rotDelivered = rot * DriveConstants.kMaxAngularSpeed;
 
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
@@ -138,10 +138,7 @@ public class DriveSubsystem extends SubsystemBase {
             : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
-    m_frontLeft.setDesiredState(swerveModuleStates[0]);
-    m_frontRight.setDesiredState(swerveModuleStates[1]);
-    m_rearLeft.setDesiredState(swerveModuleStates[2]);
-    m_rearRight.setDesiredState(swerveModuleStates[3]);
+    setStates(swerveModuleStates);
   }
 
   public void driveRobot(double xSpeed, double ySpeed, double rotSpeed, boolean boost){
@@ -152,6 +149,7 @@ public class DriveSubsystem extends SubsystemBase {
     forwardspeed = yLimiter.calculate(forwardspeed);
     strafingSpeed = xLimiter.calculate(strafingSpeed);
     
+    //CHECK THAT THESE INVERSIONS ARE CORRECT
     drive(
       -MathUtil.applyDeadband(forwardspeed, IOConstants.kDriveDeadband),
       -MathUtil.applyDeadband(strafingSpeed, IOConstants.kDriveDeadband),
@@ -167,6 +165,31 @@ public class DriveSubsystem extends SubsystemBase {
     m_frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
     m_rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
     m_rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
+  }
+
+  //These methods are only used in Autonomous to control the swerve modules directly
+  public void setStates(SwerveModuleState[] targetStates) {
+    SwerveDriveKinematics.desaturateWheelSpeeds(targetStates, DriveConstants.kMaxSpeedMetersPerSecond);
+    m_frontLeft.setDesiredState(targetStates[0]);
+    m_frontRight.setDesiredState(targetStates[1]);
+    m_rearLeft.setDesiredState(targetStates[2]);
+    m_rearRight.setDesiredState(targetStates[3]);
+  }
+
+  public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
+    ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
+    SwerveModuleState[] targetStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(targetSpeeds);
+    setStates(targetStates);
+  }
+
+    //@Logged(name = "Chassis Speed")
+  public ChassisSpeeds getRobotRelativeSpeeds() {
+    return DriveConstants.kDriveKinematics.toChassisSpeeds
+      (m_frontLeft.getState(),
+      m_frontRight.getState(),
+      m_rearLeft.getState(),
+      m_rearRight.getState()
+    );
   }
 
   /**
