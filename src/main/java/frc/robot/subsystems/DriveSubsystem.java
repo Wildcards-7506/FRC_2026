@@ -20,6 +20,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -142,8 +144,12 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void driveRobot(double xSpeed, double ySpeed, double rotSpeed, boolean boost){
-    double forwardspeed = xSpeed * (boost ? DriveConstants.boostDriveSpeed : DriveConstants.fullDriveSpeed);
-    double strafingSpeed = ySpeed * (boost ? DriveConstants.boostDriveSpeed : DriveConstants.fullDriveSpeed);
+    boolean isFlipped =
+      DriverStation.getAlliance().isPresent()
+      && DriverStation.getAlliance().get() == Alliance.Red;
+    double inversion = isFlipped ? -1.0:1.0;
+    double forwardspeed = inversion * xSpeed * (boost ? DriveConstants.boostDriveSpeed : DriveConstants.fullDriveSpeed);
+    double strafingSpeed = inversion * ySpeed * (boost ? DriveConstants.boostDriveSpeed : DriveConstants.fullDriveSpeed);
     double rotationSpeed = rotSpeed * (boost ? DriveConstants.boostTurnSpeed : DriveConstants.fullTurnSpeed);
     
     forwardspeed = yLimiter.calculate(forwardspeed);
