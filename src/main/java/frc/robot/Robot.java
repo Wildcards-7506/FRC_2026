@@ -247,12 +247,17 @@ public class Robot extends TimedRobot {
 
     if (loadingFuel && flywheelHitTarget) {
       // Start recording flywheel RPMs once we start loading fuel and have hit target speed at least once
+      
       if (currentRPM > flywheelHighestRPM) {
         flywheelHighestRPM = currentRPM;
       }
-      if (currentRPM < flywheelLowestRPM) {
+
+      if (flywheelLowestRPM == 0) {
         flywheelLowestRPM = currentRPM;
+      }else if (currentRPM < flywheelLowestRPM) {
+        flywheelHighestRPM = currentRPM;
       }
+
     }
   }
 
