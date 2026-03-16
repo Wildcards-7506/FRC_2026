@@ -17,7 +17,6 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.autonomous.AutoRoutines;
@@ -27,13 +26,11 @@ import frc.robot.subsystems.SuperStructure;
 import frc.robot.utils.LimelightHelpers;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 /*
@@ -150,7 +147,9 @@ public class RobotContainer {
 
     // Intake fuel from intake and intake2
     controller1.leftTrigger().whileTrue(
-      superStructure.runIntake().alongWith(superStructure.runLoader()).alongWith(superStructure.runIntake2())
+      superStructure.runIntake()
+      .alongWith(superStructure.runLoader())
+      .alongWith(superStructure.runIntake2())
     );
 
     // Reject Intake2, prevents jamming issue previously encountered
@@ -160,7 +159,9 @@ public class RobotContainer {
 
     // Load fuel into shooer
     controller1.rightTrigger().whileTrue(
-      superStructure.runIntake().alongWith(superStructure.rejectLoader()).alongWith(superStructure.runIntake2())
+      superStructure.runIntake()
+      .alongWith(superStructure.rejectLoader())
+      .alongWith(superStructure.runIntake2())
     );
     controller1.rightTrigger().onTrue(
       Commands.runOnce(
