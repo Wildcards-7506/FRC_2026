@@ -58,10 +58,10 @@ public final class Constants {
 
     public static final boolean kGyroReversed = false;
 
-    public static final double fullTurnSpeed = 0.15;
-    public static final double fullDriveSpeed = 0.10;
-    public static final double fineTurnSpeed = 0.2; // current default state
-    public static final double fineDriveSpeed = 0.1; // current default state
+    public static final double fullTurnSpeed = 0.2; // current default state
+    public static final double fullDriveSpeed = 0.10; // current default state
+    public static final double fineTurnSpeed = 0.2; // Not usesd - 3/16/26 
+    public static final double fineDriveSpeed = 0.1; // Not usesd - 3/16/26
     public static final double boostDriveSpeed = 0.5;
     public static final double boostTurnSpeed = 0.25;
   }
@@ -79,18 +79,19 @@ public final class Constants {
     public static final double rotatorMin = 3;
     public static final double rotatorMax = 82;
 
-    public static final double hoodMin = 0;
-    public static final double hoodMax = 23;
+    public static final double hoodStart = 0;
+    public static final double hoodMin = hoodStart - 7.5; // negative because we start at mid position (easier setup at init)
+    public static final double hoodMax = hoodStart + 7.5;
 
     // 21.6 range
     public static final double hoodShortDistance = hoodMin;
-    public static final double hoodMidDistance = 15;
+    public static final double hoodMidDistance = hoodStart;
     public static final double hoodLongDistance = hoodMax;
 
-    public static final double baseFlywheelRpm = 3800;
-    public static final double rpmShortDistance = 3200;
-    public static final double rpmMidDistance = 3200;
-    public static final double rpmLongDistance = 3200;
+    public static double baseFlywheelRpm = 4000;
+    public static double rpmShortDistance = baseFlywheelRpm;
+    public static double rpmMidDistance = baseFlywheelRpm;
+    public static double rpmLongDistance = baseFlywheelRpm;
 
   }
 

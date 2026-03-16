@@ -100,18 +100,22 @@ public class RobotContainer {
       )
     );
 
-    controller0.leftBumper()
-    .whileTrue(new RunCommand(
-        () -> drivetrain.drive(
-          // controller0.getLeftY(),
-          0,
-          0,
-          // controller0.getLeftX(),
-          (-Robot.yaw / 11.5) * Constants.limelightConstants.yawOutputMultiplier, //Placeholder
-          false
-        ),
-        drivetrain
-      ));
+    controller0.rightBumper().whileTrue(
+            superStructure.bringUpRotator()
+    );
+
+//    controller0.leftBumper()
+//    .whileTrue(new RunCommand(
+//        () -> drivetrain.drive(
+//          // controller0.getLeftY(),
+//          0,
+//          0,
+//          // controller0.getLeftX(),
+//          (-Robot.yaw / 11.5) * Constants.limelightConstants.yawOutputMultiplier, //Placeholder
+//          false
+//        ),
+//        drivetrain
+//      ));
 
 //    controller0.rightBumper()
 //    .whileTrue(new RunCommand(
@@ -137,12 +141,13 @@ public class RobotContainer {
             Units.degreesToRadians(360)
     );
 
-    controller0.rightBumper().whileTrue(
-            AutoBuilder.pathfindToPose(Robot.targetPose, pathConstraints, 0)
-    );
+//    controller0.rightBumper().whileTrue(
+//            AutoBuilder.pathfindToPose(Robot.targetPose, pathConstraints, 0)
+//    );
   }
 
   private void operatorController() {
+
     // Intake fuel from intake and intake2
     controller1.leftTrigger().whileTrue(
       superStructure.runIntake().alongWith(superStructure.runLoader()).alongWith(superStructure.runIntake2())

@@ -41,7 +41,7 @@ public class SuperStructure extends SubsystemBase {
     private final SparkClosedLoopController hoodPID;
 
     private double rotatorSetpoint = 0;
-    private double hoodSetpoint = 0;
+    private double hoodSetpoint = SuperStructureConstants.hoodStart;
 
     public SuperStructure() {
         flywheelPID = flywheel.getClosedLoopController();
@@ -256,7 +256,7 @@ public class SuperStructure extends SubsystemBase {
         intake.setVoltage(voltage);
     }
 
-    private void setIntake2Voltage(double voltage) {
+    public void setIntake2Voltage(double voltage) {
         SmartDashboard.putNumber("Intake2 Setting", voltage);
         intake2.setVoltage(voltage);
     }

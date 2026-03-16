@@ -3,13 +3,12 @@
 
 	],
 
-
 	"------------------------": "-------------------------",
 
 	"BELOW IS AN EXAMPLE": "Lots of these values will not be recorded each time, but this is an example of what the data will look like when it is recorded",
 	"3/16/26-1:05": [
 		{
-			"rpm": {
+			"flywheelrpm": {
 				"speed": 0,
 				"target": 0,
 				"highest": 0,
@@ -24,7 +23,7 @@
 			},
 			"targets": {
 				"made": 0,
-				"missed": 0,
+				"total": 0,
 				"overallAccuracy": "0/10 - Value is based on what the programmer thinks"
 			}
 		}
