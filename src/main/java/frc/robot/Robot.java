@@ -252,7 +252,7 @@ public class Robot extends TimedRobot {
         flywheelHighestRPM = currentRPM;
       }
 
-      if (flywheelLowestRPM == 0) {
+      if (flywheelHitTarget == false || flywheelLowestRPM == 0) {
         flywheelLowestRPM = currentRPM;
       }else if (currentRPM < flywheelLowestRPM) {
         flywheelHighestRPM = currentRPM;

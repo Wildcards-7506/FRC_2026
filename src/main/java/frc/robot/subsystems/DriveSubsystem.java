@@ -144,7 +144,17 @@ public class DriveSubsystem extends SubsystemBase {
     m_rearRight.setDesiredState(swerveModuleStates[3]);
   }
 
+  /**
+   * Method to drive the robot
+   *
+   * @param xSpeed        Speed of the robot in the x direction (forward).
+   * @param ySpeed        Speed of the robot in the y direction (sideways).
+   * @param rotSpeed           Angular rate of the robot.
+   * @param boost -1, 0, 1 | -1 is slow (negative boost), 0 is no-boost, 1 is boost (as normal) 
+   */ 
   public void driveRobot(double xSpeed, double ySpeed, double rotSpeed, boolean boost){
+    double lowspeedturn = DriveConstants.fineDriveSpeed;
+    double lowspeeddrive = DriveConstants.fineTurnSpeed;
     double forwardspeed = xSpeed * (boost ? DriveConstants.boostDriveSpeed : DriveConstants.fullDriveSpeed);
     double strafingSpeed = ySpeed * (boost ? DriveConstants.boostDriveSpeed : DriveConstants.fullDriveSpeed);
     double rotationSpeed = rotSpeed * (boost ? DriveConstants.boostTurnSpeed : DriveConstants.fullTurnSpeed);
