@@ -41,7 +41,7 @@ public class SuperStructure extends SubsystemBase {
     private final SparkClosedLoopController hoodPID;
 
     private double rotatorSetpoint = 0;
-    private double hoodSetpoint = 0;
+    private double hoodSetpoint = SuperStructureConstants.hoodStart;
 
     public SuperStructure() {
         flywheelPID = flywheel.getClosedLoopController();
@@ -55,7 +55,7 @@ public class SuperStructure extends SubsystemBase {
         .softLimit
             .forwardSoftLimitEnabled(false)
             .reverseSoftLimitEnabled(false);
-            
+
         flywheelConfig
             .smartCurrentLimit(80)
             .inverted(false)
@@ -63,14 +63,21 @@ public class SuperStructure extends SubsystemBase {
         .softLimit
             .forwardSoftLimitEnabled(false)
             .reverseSoftLimitEnabled(false);
+
         flywheelConfig.encoder
             .positionConversionFactor(1)
             .velocityConversionFactor(1); // 1 is for RPM
         flywheelConfig.closedLoop
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-            .pid(0.002, 0, 0) 
+            .pid(0.0013 ,0, 0.016)
+                // 0.002 0 0.00
+                // 0.002 0 0.0012
+                // 0.0013 ,0, 0.003
+                // 0.0013 ,0, 0.009
+                // 0.0013 ,0, 0.015 SWEET SPOT - 3/7/26
+                // 0.0013 ,0, 0.016 TOO HIGH ?
             .outputRange(0, 1);
-            
+
         intakeConfig
             .smartCurrentLimit(40)
             .inverted(true)
@@ -94,6 +101,7 @@ public class SuperStructure extends SubsystemBase {
         .softLimit
             .forwardSoftLimitEnabled(false)
             .reverseSoftLimitEnabled(false);
+
         rotatorConfig.encoder
             .positionConversionFactor(360.0 * 1/9 * 1/9)
             .velocityConversionFactor(360.0 * 1/9 * 1/9);
@@ -101,17 +109,20 @@ public class SuperStructure extends SubsystemBase {
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
             .pid(0.005, 0, 0)
             .outputRange(-1, 1);
-        
+
         hoodConfig
             .smartCurrentLimit(30)
-            .inverted(true)
+            .inverted(false)
             .idleMode(IdleMode.kBrake)
         .softLimit
             .forwardSoftLimitEnabled(false)
             .reverseSoftLimitEnabled(false);
+
         hoodConfig.encoder
-            .positionConversionFactor(360.0 * 1/5 * 1/5 * 1/5 * 2/3)
-            .velocityConversionFactor(360.0 * 1/5 * 1/5 * 1/5 * 2/3);
+//            .positionConversionFactor(360.0 * 1/5 * 1/5 * 1/5 * 2/3);
+//            .velocityConversionFactor(360.0 * 1/5 * 1/5 * 1/5 * 2/3);
+            .positionConversionFactor(360.0 * 1/9 * 1/9 * 18/39)
+            .velocityConversionFactor(360.0 * 1/9 * 1/9 * 18/39);
         hoodConfig.closedLoop
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
             .pid(0.1,0,0.05)
@@ -126,6 +137,7 @@ public class SuperStructure extends SubsystemBase {
     }
 
     //Flywheel Commands
+    // shooter gun
     public Command primeFlywheel(double desiredRPM) {
         return Commands.runEnd(
             () -> {
@@ -234,8 +246,8 @@ public class SuperStructure extends SubsystemBase {
     //Control methods for all superstructure subsystems
     //Use these in the commands above to apply setpoints and voltages
     private void setFlywheelRPM(double rpm) {
-        SmartDashboard.putNumber("Flywheel Setting", rpm);
         rpm = fixRPM(rpm); // basically pid with simple approximate feedforward
+        SmartDashboard.putNumber("Flywheel target", rpm);
         flywheelPID.setSetpoint(rpm, ControlType.kVelocity);
     }
 
@@ -244,12 +256,12 @@ public class SuperStructure extends SubsystemBase {
         intake.setVoltage(voltage);
     }
 
-    private void setIntake2Voltage(double voltage) {
+    public void setIntake2Voltage(double voltage) {
         SmartDashboard.putNumber("Intake2 Setting", voltage);
         intake2.setVoltage(voltage);
     }
 
-    private void setRotatorPos(double position){
+    public void setRotatorPos(double position){
         rotatorSetpoint = filterValue(position, SuperStructureConstants.rotatorMin, SuperStructureConstants.rotatorMax);
         SmartDashboard.putNumber("Rotator Target", rotatorSetpoint);
         rotatorPID.setSetpoint(rotatorSetpoint, ControlType.kPosition);
@@ -263,6 +275,7 @@ public class SuperStructure extends SubsystemBase {
     private void setHoodPos(double target) {
         hoodSetpoint = filterValue(target, SuperStructureConstants.hoodMin, SuperStructureConstants.hoodMax);
         hoodPID.setSetpoint(hoodSetpoint, ControlType.kPosition);
+        SmartDashboard.putNumber("Hood target", getHoodTarget());
     }
 
     public double getRPM() {
@@ -290,7 +303,6 @@ public class SuperStructure extends SubsystemBase {
         return rpm / 0.8;
     }
 
-
     /**
      * Returns the max if the setpoint is above it, or the hard deck if the setpoint is below it.
      * Otherwise, returns the setpoint.
@@ -298,7 +310,7 @@ public class SuperStructure extends SubsystemBase {
      * @param value The desired state of the crane.
      * @param min The hard deck of the crane.
      */
-    private double filterValue(double value, double min, double max) {
+    public double filterValue(double value, double min, double max) {
         if(value < min)
             value = min;
         if(value > max)

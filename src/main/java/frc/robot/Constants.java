@@ -29,9 +29,9 @@ public final class Constants {
     public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
 
     // Chassis configuration
-    public static final double kTrackWidth = Units.inchesToMeters(26.5);
+    public static final double kTrackWidth = Units.inchesToMeters(23.75);
     // Distance between centers of right and left wheels on robot
-    public static final double kWheelBase = Units.inchesToMeters(26.5);
+    public static final double kWheelBase = Units.inchesToMeters(24);
     // Distance between front and back wheels on robot
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
         new Translation2d(kWheelBase / 2, kTrackWidth / 2),
@@ -60,13 +60,14 @@ public final class Constants {
 
     public static final boolean kGyroReversed = false;
 
-    public static final double fullTurnSpeed = 0.30;
-    public static final double fullDriveSpeed = 0.20;
-    public static final double fineTurnSpeed = 0.2; // current default state
-    public static final double fineDriveSpeed = 0.1; // current default state
+    public static final double fullTurnSpeed = 0.2; // current default state
+    public static final double fullDriveSpeed = 0.10; // current default state
+    public static final double fineTurnSpeed = 0.2; // Not usesd - 3/16/26 
+    public static final double fineDriveSpeed = 0.1; // Not usesd - 3/16/26
     public static final double boostDriveSpeed = 0.5;
     public static final double boostTurnSpeed = 0.25;
   }
+
   public static final class SuperStructureConstants{
     public static final int kIntake1 = 1;
     public static final int kLoader = 2;
@@ -74,27 +75,34 @@ public final class Constants {
     public static final int kRotator = 4;
     public static final int kIntake2 = 5;
     public static final int kHood = 6;
+    public static final int kLeftClimber = 7;
+    public static final int kRightClimber = 8;
     
     public static final double rotatorMin = 3;
     public static final double rotatorMax = 82;
 
-    public static final double hoodMin = 0;
-    public static final double hoodMax = 14; // measured was 15.68 degrees
-    
-    public static final double rpmShortDistance = 3200;
-    public static final double rpmMidDistance = 3200;
-    public static final double rpmLongDistance = 3200;
+    public static final double hoodStart = 0;
+    public static final double hoodMin = hoodStart - 7.5; // negative because we start at mid position (easier setup at init)
+    public static final double hoodMax = hoodStart + 7.5;
 
+    // 21.6 range
     public static final double hoodShortDistance = hoodMin;
-    public static final double hoodMidDistance = 15;
-    public static final double hoodLongDistance = 20;
+    public static final double hoodMidDistance = hoodStart;
+    public static final double hoodLongDistance = hoodMax;
+
+    public static double baseFlywheelRpm = 4000;
+    public static double rpmShortDistance = baseFlywheelRpm;
+    public static double rpmMidDistance = baseFlywheelRpm;
+    public static double rpmLongDistance = baseFlywheelRpm;
+
   }
 
   public static final class ModuleConstants {
     // The MAXSwerve module can be configured with one of three pinion gears: 12T,
     // 13T, or 14T. This changes the drive speed of the module (a pinion gear with
     // more teeth will result in a robot that drives faster).
-    public static final int kDrivingMotorPinionTeeth = 14;
+    // public static final int kDrivingMotorPinionTeeth = 14;
+    public static final int kDrivingMotorPinionTeeth = 12;
 
     // Calculations required for driving motor conversion factors and feed forward
     public static final double kDrivingMotorFreeSpeedRps = NeoMotorConstants.kFreeSpeedRpm / 60;
@@ -123,9 +131,9 @@ public final class Constants {
     public static final double kPThetaController = 1;
 
     // Constraint for the motion profiled robot angle controller
-    public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
-        kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
-  }
+      public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
+              kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+    }
 
   public static final class ShooterConstants {
   }
@@ -134,11 +142,14 @@ public final class Constants {
     public static final double kFreeSpeedRpm = 5676;
   }
 
-    public final class limelightConstants { //The wrong values, meant to be placeholders!
-      public static final double MountingAngleDegrees = 25.0;
-      public static final double limelightHeightInches = 20.0;
-      public static final double goalHeightInches = 60.0; 
+  public final class limelightConstants { //The wrong values, meant to be placeholders!
+    public static final double MountingAngleDegrees = 25.0;
+    public static final double limelightHeightInches = 20.0;
+    public static final double goalHeightInches = 60.0;
 
-      
+    public static final double yawOutputMultiplier = 0.01;
+
+    // will be dynamic value based on hood (LATER)
+    public static final double targetDistance = 115.0; // 115.0
   }
 }
