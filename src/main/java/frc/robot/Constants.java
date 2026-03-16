@@ -79,12 +79,13 @@ public final class Constants {
     public static final double rotatorMin = 3;
     public static final double rotatorMax = 82;
 
-    public static final double hoodMin = 0;
-    public static final double hoodMax = 15;
+    public static final double hoodStart = 0;
+    public static final double hoodMin = hoodStart - 7.5; // negative because we start at mid position (easier setup at init)
+    public static final double hoodMax = hoodStart + 7.5;
 
     // 21.6 range
     public static final double hoodShortDistance = hoodMin;
-    public static final double hoodMidDistance = 7.5;
+    public static final double hoodMidDistance = hoodStart;
     public static final double hoodLongDistance = hoodMax;
 
     public static final double baseFlywheelRpm = 3800;

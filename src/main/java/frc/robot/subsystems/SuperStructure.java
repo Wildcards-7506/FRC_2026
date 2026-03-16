@@ -41,7 +41,7 @@ public class SuperStructure extends SubsystemBase {
     private final SparkClosedLoopController hoodPID;
 
     private double rotatorSetpoint = 0;
-    private double hoodSetpoint = 0;
+    private double hoodSetpoint = SuperStructureConstants.hoodStart;
 
     public SuperStructure() {
         flywheelPID = flywheel.getClosedLoopController();
