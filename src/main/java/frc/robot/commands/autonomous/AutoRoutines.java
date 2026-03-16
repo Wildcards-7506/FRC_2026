@@ -18,113 +18,94 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
+import frc.robot.Constants.SuperStructureConstants;
 
 @SuppressWarnings("unused")
 public final class AutoRoutines {
 
-    private HashMap<String, Command> eventMap;
-    private final AutoBuilder autoBuilder = new AutoBuilder();
+  private HashMap<String, Command> eventMap;
+  private final AutoBuilder autoBuilder = new AutoBuilder();
+  private RobotContainer robotContainer;
 
-    // Autonomous selector on dashboard
-    private final SendableChooser<Command> autoChooser;
+  // Autonomous selector on dashboard
+  private final SendableChooser<Command> autoChooser;
+    
+  // Load the RobotConfig from the GUI settings.
+  RobotConfig config;
+  
+  public AutoRoutines(RobotContainer robotContainer) {
+    this.robotContainer = robotContainer;
+    setMarkers();
 
-    // Load the RobotConfig from the GUI settings.
-    RobotConfig config;
-
-    public AutoRoutines(RobotContainer container) {
-//        setMarkers();
-
-        try{
-            config = RobotConfig.fromGUISettings();
-        } catch (Exception e) {
-            // Handle exception as needed
-            e.printStackTrace();
-        }
-
-//        if not config exit the program with no auto config error
-        if (config == null) {
-            System.exit(1);
-        }
-
-        AutoBuilder.configure(
-                container.drivetrain::getPose, // Robot pose supplier
-                container.drivetrain::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
-                container.drivetrain::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-                (speeds, feedforwards) -> container.drivetrain.driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-                new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                        new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-                        new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
-                ),
-                config, // The robot configuration
-                () -> {
-                    // Boolean supplier that controls when the path will be mirrored for the red alliance
-                    // This will flip the path being followed to the red side of the field.
-                    // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-//                    var alliance = DriverStation.getAlliance();
-//                    if (alliance.isPresent())
-//                        return alliance.get() == DriverStation.Alliance.Red;
-                    return false;
-                },
-                container.drivetrain // Reference to this subsystem to set requirements
-        );
-
-        autoChooser = AutoBuilder.buildAutoChooser();
-        SmartDashboard.putData("Auto Chooser",autoChooser);
-
-        // Set up custom logging to add the current path to a field 2d widget
-        PathPlannerLogging.setLogActivePathCallback((poses)
-                -> Robot.m_field.getObject("path").setPoses(poses));
+    try{
+      config = RobotConfig.fromGUISettings();
+    } catch (Exception e) {
+      // Handle exception as needed
+      e.printStackTrace();
     }
 
-//    private void setMarkers() {
-//        //Registers commands to run in autonomous. The Pathplanner application can take these
-//        //pre-defined commands and place them at specific points while moving.
-//        NamedCommands.registerCommand("AutoCraneStation", new ReefStationCommand(
-//                CraneConstants.kElbowStation,
-//                CraneConstants.kExtenderStation,
-//                CraneConstants.kWristStation,
-//                160));
-//        NamedCommands.registerCommand("AutoCraneShelf", new ReefStationCommand(
-//                CraneConstants.kElbowShelf,
-//                CraneConstants.kExtenderShelf,
-//                CraneConstants.kWristShelf,
-//                0));
-//        NamedCommands.registerCommand("AutoCraneLow", new ReefStationCommand(
-//                CraneConstants.kElbowLow,
-//                CraneConstants.kExtenderLow,
-//                CraneConstants.kWristLow,
-//                45));
-//        NamedCommands.registerCommand("AutoCraneMid", new ReefStationCommand(
-//                CraneConstants.kElbowMid,
-//                CraneConstants.kExtenderMid,
-//                CraneConstants.kWristMid,
-//                90));
-//        NamedCommands.registerCommand("AutoCraneHigh", new ReefStationCommand(
-//                CraneConstants.kElbowHigh,
-//                CraneConstants.kExtenderHigh,
-//                CraneConstants.kWristHigh,
-//                135));
-//        NamedCommands.registerCommand("AutoCraneStow", new StowCommand());
-//        NamedCommands.registerCommand("AutoSuckerSuck", new IntakeCommand(2, CraneConstants.kSuckerIntake));
-//        NamedCommands.registerCommand("AutoSuckerEject", new IntakeCommand(0.5, CraneConstants.kSuckerEject));
-//        NamedCommands.registerCommand("AutoSnap", new AutoSnapToZero());
-//    }
+    AutoBuilder.configure(
+      this.robotContainer.drivetrain::getPose, // Robot pose supplier
+      this.robotContainer.drivetrain::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+      this.robotContainer.drivetrain::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+      (speeds, feedforwards) -> this.robotContainer.drivetrain.driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+      new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
+        new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+        new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+      ),
+      config, // The robot configuration
+      () -> {
+        // Boolean supplier that controls when the path will be mirrored for the red alliance
+        // This will flip the path being followed to the red side of the field.
+        // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-    /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
-     * @return the command to run in autonomous
-     */
-//    public Command getAutonomousCommand() {
-//        return Commands.sequence(
-//                autoChooser.getSelected(),
-//                new DrivetrainXCommand());
-//    }
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent())
+          return alliance.get() == DriverStation.Alliance.Red;
+        return false;
+      },
+      this.robotContainer.drivetrain // Reference to this subsystem to set requirements
+    );
+    
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser",autoChooser);
 
-//    public void resetAutoHeading() {
-//        Robot.drivetrain.zeroHeading();
-//    }
+    // Set up custom logging to add the current path to a field 2d widget
+    PathPlannerLogging.setLogActivePathCallback((poses) 
+    -> Robot.m_field.getObject("path").setPoses(poses));
+  }
+
+  private void setMarkers() {
+    //Registers commands to run in autonomous. The Pathplanner application can take these
+    //pre-defined commands and place them at specific points while moving.
+    NamedCommands.registerCommand("Hood Short", this.robotContainer.superStructure.shortDistance());
+    NamedCommands.registerCommand("Hood Mid", this.robotContainer.superStructure.midDistance());
+    NamedCommands.registerCommand("Hood Long", this.robotContainer.superStructure.longDistance());
+    NamedCommands.registerCommand("Intake", 
+        this.robotContainer.superStructure.runIntake()
+        .alongWith(this.robotContainer.superStructure.runLoader())
+        .alongWith(this.robotContainer.superStructure.runIntake2()));
+    NamedCommands.registerCommand("Fire", 
+        this.robotContainer.superStructure.runIntake()
+        .alongWith(this.robotContainer.superStructure.rejectLoader())
+        .alongWith(this.robotContainer.superStructure.runIntake2()));
+    NamedCommands.registerCommand("Prime Flywheel", 
+        this.robotContainer.superStructure.primeFlywheel(Constants.SuperStructureConstants.hoodMidDistance));
+  }
+
+  /**
+   * Use this to pass the autonomous command to the main {@link Robot} class.
+   *
+   * @return the command to run in autonomous
+   */
+  public Command getAutonomousCommand() {
+    return autoChooser.getSelected();  
+}
+
+  public void resetAutoHeading() {
+    this.robotContainer.drivetrain.zeroHeading();
+  }
 }

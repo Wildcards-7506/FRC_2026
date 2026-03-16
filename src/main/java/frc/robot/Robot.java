@@ -18,9 +18,9 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.autonomous.AutoRoutines;
 import frc.robot.subsystems.Limelight;
 import frc.robot.utils.LimelightHelpers;
-import frc.robot.AutoRoutines;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -49,6 +49,8 @@ public class Robot extends TimedRobot {
   public static double flywheelHighestRPM = 0.0;
   public static double flywheelLowestRPM = 0.0;
   public static boolean flywheelHitTarget = false; // Checks if flywheel has hit target speed at-least once within init
+  public static double distanceToHub = 0.0;
+  public static Rotation2d angleToHub = new Rotation2d();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -60,7 +62,7 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     m_field = new Field2d();
-    autoMode = new AutoRoutines(m_robotContainer);
+    autoMode = m_robotContainer.getAutoRoutines();
     fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
     SmartDashboard.putData(m_field);
     SmartDashboard.putNumber("pidp", 0.002);
@@ -85,26 +87,9 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
 
     CommandScheduler.getInstance().run();
+    limelightUpdateOdom();
 
-    LimelightHelpers.SetRobotOrientation("limelight", m_robotContainer.drivetrain.m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-    LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-
-    boolean doRejectUpdate = false;
-    if (Math.abs(m_robotContainer.drivetrain.m_gyro.getRate()) > 360) {
-      doRejectUpdate = true;
-    }
-    if (mt2 == null || mt2.tagCount == 0) {
-        doRejectUpdate = true;
-    }
-    if (!doRejectUpdate) {
-      // 0.5,0.5,0.5 original
-      m_robotContainer.drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
-      m_robotContainer.drivetrain.m_poseEstimator.addVisionMeasurement(
-              mt2.pose,
-              mt2.timestampSeconds);
-    }
-
-    m_field.setRobotPose(m_robotContainer.drivetrain.getPose());
+    updateHeadingToHub();
 
     Pose2d tagPose = fieldLayout.getTagPose(26).get().toPose2d();
     double offsetMeters = Units.inchesToMeters(Constants.limelightConstants.targetDistance);
@@ -125,6 +110,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("LY", m_robotContainer.controller0.getLeftY());
     SmartDashboard.putNumber("RX", m_robotContainer.controller0.getRightX());
     SmartDashboard.putBoolean("FieldRelative", m_robotContainer.drivetrain.isFieldRel);
+
     SmartDashboard.putNumber("Robot Yaw", yaw);
     SmartDashboard.putNumber("Flat Plane Tag Distance", tagDistance);
     SmartDashboard.putNumber("TX", LimelightHelpers.getTX("limelight"));
@@ -135,6 +121,44 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Target Pose Y", targetPose.getY());
     SmartDashboard.putNumber("Robot Pose X", m_robotContainer.drivetrain.getPose().getX());
     SmartDashboard.putNumber("Robot Pose Y", m_robotContainer.drivetrain.getPose().getY());
+
+    SmartDashboard.putNumber("DistanceToHub", distanceToHub);
+    SmartDashboard.putNumber("AngleToHub", angleToHub.getDegrees());
+  }
+
+  private void updateHeadingToHub() {    
+    Pose2d hubPose = new Pose2d(Units.inchesToMeters(157.79), Units.inchesToMeters(158.32), new Rotation2d());
+
+    Pose2d botPose = m_robotContainer.drivetrain.getPose();
+
+    double dX = hubPose.getX() - botPose.getX(); // delta x
+    double dY = hubPose.getY() - botPose.getY(); // delta y
+
+    distanceToHub = Math.sqrt(Math.pow(dX, 2) + Math.pow(dY, 2));
+
+    angleToHub = new Rotation2d(distanceToHub == 0 ? 0 : Math.acos(dX / distanceToHub));
+  }
+
+  private void limelightUpdateOdom() {
+    LimelightHelpers.SetRobotOrientation("limelight", m_robotContainer.drivetrain.m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+    LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+
+    boolean doRejectUpdate = false;
+    if (Math.abs(m_robotContainer.drivetrain.m_gyro.getRate()) > 360) {
+      doRejectUpdate = true;
+    }
+    if (mt2.tagCount == 0) {
+      doRejectUpdate = true;
+    }
+    if (!doRejectUpdate) {
+      // 0.5,0.5,0.5 original
+      m_robotContainer.drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
+      m_robotContainer.drivetrain.m_poseEstimator.addVisionMeasurement(
+              mt2.pose,
+              mt2.timestampSeconds);
+    }
+
+    m_field.setRobotPose(m_robotContainer.drivetrain.getPose());
   }
 
   private void updateFlywheelLogs() {
@@ -201,7 +225,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    m_robotContainer.superStructure.setIntake2Voltage(12);
+    // m_robotContainer.superStructure.setIntake2Voltage(12);
   }
 
   @Override

@@ -163,11 +163,10 @@ public class DriveSubsystem extends SubsystemBase {
     forwardspeed = yLimiter.calculate(forwardspeed);
     strafingSpeed = xLimiter.calculate(strafingSpeed);
     
-    //CHECK THAT THESE INVERSIONS ARE CORRECT
     drive(
-      MathUtil.applyDeadband(forwardspeed, IOConstants.kDriveDeadband),
       MathUtil.applyDeadband(strafingSpeed, IOConstants.kDriveDeadband),
-      MathUtil.applyDeadband(rotationSpeed, IOConstants.kDriveDeadband),
+      -MathUtil.applyDeadband(forwardspeed, IOConstants.kDriveDeadband),
+      -MathUtil.applyDeadband(rotationSpeed, IOConstants.kDriveDeadband),
       isFieldRel);
   }
 

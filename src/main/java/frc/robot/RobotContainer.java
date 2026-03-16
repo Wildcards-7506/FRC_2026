@@ -47,8 +47,10 @@ public class RobotContainer {
   public static boolean loadingFuel = false;
 
   // The driver's controller
-    public final CommandXboxController controller0 = new CommandXboxController(0);
-    public final CommandXboxController controller1 = new CommandXboxController(1);
+  public final CommandXboxController controller0 = new CommandXboxController(0);
+  public final CommandXboxController controller1 = new CommandXboxController(1);
+
+  private static AutoRoutines autoMode;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -56,6 +58,7 @@ public class RobotContainer {
   public RobotContainer() {
     drivetrain = new DriveSubsystem();
     superStructure = new SuperStructure();
+    autoMode = new AutoRoutines(this);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -80,12 +83,9 @@ public class RobotContainer {
     drivetrain.setDefaultCommand(
     Commands.runOnce(
       () -> drivetrain.driveRobot(
-//        controller0.getLeftX(),
-//        -controller0.getLeftY(),
-//        -controller0.getRightX(),
-              -controller0.getLeftY(),
-              -controller0.getLeftX(),
-              controller0.getRightX(),
+        controller0.getLeftY(),
+        controller0.getLeftX(),
+        controller0.getRightX(),
         controller0.getRightTriggerAxis() < 0.2
       ), drivetrain));
 
@@ -241,5 +241,9 @@ public class RobotContainer {
 
     // Run path following command, then stop at the end.
     return swerveControllerCommand.andThen(() -> drivetrain.drive(0, 0, 0, false));
+  }
+
+  public AutoRoutines getAutoRoutines() {
+    return autoMode;
   }
 }
