@@ -43,7 +43,6 @@ public class RobotContainer {
   // The robot's subsystems
   public final DriveSubsystem drivetrain;
   public final SuperStructure superStructure;
-  private AutoRoutines autoMode;
   
   public static boolean loadingFuel = false;
 
@@ -57,7 +56,6 @@ public class RobotContainer {
   public RobotContainer() {
     drivetrain = new DriveSubsystem();
     superStructure = new SuperStructure();
-    autoMode = new AutoRoutines(this);
 
     // Configure the button bindings
     configureButtonBindings();
