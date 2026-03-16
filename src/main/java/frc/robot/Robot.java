@@ -263,7 +263,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    m_robotContainer.superStructure.setIntake2Voltage(0);
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -299,7 +301,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    m_robotContainer.superStructure.setIntake2Voltage(12);
+  }
 
   @Override
   public void testInit() {

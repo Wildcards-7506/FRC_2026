@@ -256,7 +256,7 @@ public class SuperStructure extends SubsystemBase {
         intake.setVoltage(voltage);
     }
 
-    private void setIntake2Voltage(double voltage) {
+    public void setIntake2Voltage(double voltage) {
         SmartDashboard.putNumber("Intake2 Setting", voltage);
         intake2.setVoltage(voltage);
     }
