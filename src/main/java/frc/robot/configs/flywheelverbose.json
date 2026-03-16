@@ -24,7 +24,7 @@
 			},
 			"targets": {
 				"made": 0,
-				"missed": 0,
+				"total": 0,
 				"overallAccuracy": "0/10 - Value is based on what the programmer thinks"
 			}
 		}

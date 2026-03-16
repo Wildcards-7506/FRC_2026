@@ -164,11 +164,6 @@ public class Robot extends TimedRobot {
       ySpeed = 0.0;
     }
 
-    double currentRPM = m_robotContainer.superStructure.getRPM();
-    if (currentRPM > Constants.SuperStructureConstants.baseFlywheelRpm) {
-      flywheelHitTarget = true;
-    }
-
     updateFlywheelLogs();
 
 //    Distance Code: Untested:
@@ -203,9 +198,11 @@ public class Robot extends TimedRobot {
 //      thetaSpeed = 0.0;
 //    }
 
-
-
+    SmartDashboard.putBoolean("Flywheel target hit", flywheelHitTarget);
+    SmartDashboard.putNumber("Flywheel Lowest", flywheelLowestRPM);
+    SmartDashboard.putNumber("Flywheel Highest", flywheelHighestRPM);
     SmartDashboard.putNumber("Flywheel RPM", m_robotContainer.superStructure.getRPM());
+
     SmartDashboard.putNumber("GyroHeading", m_robotContainer.drivetrain.getHeading());
     SmartDashboard.putNumber("GyroAngleZ", m_robotContainer.drivetrain.m_gyro.getAngle());
     SmartDashboard.putNumber("LX", m_robotContainer.controller0.getLeftX());
@@ -241,6 +238,13 @@ public class Robot extends TimedRobot {
 
   private void updateFlywheelLogs() {
     double currentRPM = m_robotContainer.superStructure.getRPM();
+
+    if (currentRPM > (Constants.SuperStructureConstants.baseFlywheelRpm - 100)) {
+      flywheelHitTarget = true;
+    }else if (currentRPM < (Constants.SuperStructureConstants.baseFlywheelRpm - 1500)) {
+      flywheelHitTarget = false;
+    }
+
     if (loadingFuel && flywheelHitTarget) {
       // Start recording flywheel RPMs once we start loading fuel and have hit target speed at least once
       if (currentRPM > flywheelHighestRPM) {

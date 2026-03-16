@@ -88,7 +88,7 @@ public final class Constants {
     public static final double hoodMidDistance = hoodStart;
     public static final double hoodLongDistance = hoodMax;
 
-    public static final double baseFlywheelRpm = 3800;
+    public static final double baseFlywheelRpm = 4000;
     public static final double rpmShortDistance = 3200;
     public static final double rpmMidDistance = 3200;
     public static final double rpmLongDistance = 3200;

@@ -175,7 +175,7 @@ public class RobotContainer {
 
     controller1.x().whileTrue(
 //       superStructure.primeFlywheel(3025) // rpms lag/drop down to about 2750
-      superStructure.primeFlywheel(4000)
+      superStructure.primeFlywheel(Constants.SuperStructureConstants.baseFlywheelRpm)
     );
 
     // Long distance
