@@ -141,9 +141,9 @@ public class RobotContainer {
             Units.degreesToRadians(360)
     );
 
-//    controller0.rightBumper().whileTrue(
-//            AutoBuilder.pathfindToPose(Robot.targetPose, pathConstraints, 0)
-//    );
+   controller0.rightBumper().whileTrue(
+           AutoBuilder.pathfindToPose(Robot.targetPose, pathConstraints, 0)
+   );
   }
 
   private void operatorController() {

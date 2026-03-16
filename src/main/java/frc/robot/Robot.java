@@ -48,14 +48,7 @@ public class Robot extends TimedRobot {
   public static double yaw = 0.0;
   public static double tagDistance = 0.0;
 
-
-  public static double xSpeed = 0.0;
-  public static double ySpeed = 0.0;
-  public static double thetaSpeed = 0.0;
-
-  public static double speed = 0.0;
-  public static double testZDistance = 0.0;
-  public static double testXDistance = 0.0;
+  public static Pose2d targetPose = new Pose2d(0, 0, new Rotation2d());
 
   double currentHeading = 0.0;
   double targetHeading = 0.0;
@@ -98,16 +91,7 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
 
-    // LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
-    // if(mt1.tagCount != 0 && mt1 != null){
-    //   m_robotContainer.drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.5,0.5,0.5));
-    //   m_robotContainer.drivetrain.m_poseEstimator.addVisionMeasurement(
-    //         mt1.pose,
-    //         mt1.timestampSeconds);
-    // }
-
     CommandScheduler.getInstance().run();
-
 
     LimelightHelpers.SetRobotOrientation("limelight", m_robotContainer.drivetrain.m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
     LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
@@ -129,74 +113,13 @@ public class Robot extends TimedRobot {
 
     m_field.setRobotPose(m_robotContainer.drivetrain.getPose());
 
-    Pose3d pose = LimelightHelpers.getTargetPose3d_RobotSpace("limelight");
-
-    double x_inches = pose.getX() * 39.37008;
-    double y_inches = pose.getY() * 39.37008;
-    double z_inches = pose.getZ() * 39.37008;
-
-//    double z_inch_target = z_inches - Constants.limelightConstants.targetDistance;
-
-    // double yaw = pose.getRotation().getZ();
-    yaw = Math.toDegrees(pose.getRotation().getY());
-    tagDistance = Math.sqrt(Math.pow(x_inches, 2) + Math.pow(z_inches, 2));
-
-//    speed = ((tagDistance - Constants.limelightConstants.targetDistance) / 39.37);
-//    double constSpeed = MathUtil.clamp(speed, -0.05, 0.05);
-    double constSpeed = 0.01;
-
-    testZDistance = z_inches - Constants.limelightConstants.targetDistance;
-    testXDistance = x_inches;
-
-    if (testXDistance > 3) {
-      xSpeed = constSpeed;
-    }else if (testXDistance < -3) {
-      xSpeed = -constSpeed;
-    }else {
-      xSpeed = 0.0;
-    }
-
-    if (testZDistance > 3) {
-      ySpeed = -constSpeed;
-    }else if (testZDistance < -3) {
-      ySpeed = constSpeed;
-    }else {
-      ySpeed = 0.0;
-    }
+    Pose2d tagPose = fieldLayout.getTagPose(26).get().toPose2d();
+    double offsetMeters = Units.inchesToMeters(Constants.limelightConstants.targetDistance);
+    targetPose = tagPose.transformBy(
+            new Transform2d(offsetMeters, 0, new Rotation2d())
+    );
 
     updateFlywheelLogs();
-
-//    Distance Code: Untested:
-
-//    int tagID = (int) NetworkTableInstance.getDefault()
-//                      .getTable("limelight")
-//                      .getEntry("tid")
-//                      .getInteger(-1);
-//
-//    var currentTag = fieldLayout.getTagPose(tagID);
-//
-//    if (currentTag.isPresent() && tagID != -1) {
-//      Pose2d tagPose = currentTag.get().toPose2d();
-//      Transform2d offset = new Transform2d(new Translation2d(1.0, 0.0), Rotation2d.fromDegrees(180));
-//      Pose2d scoringPose = tagPose.transformBy(offset);
-//
-//      Pose2d currentRobotPose = m_robotContainer.drivetrain.getPose();
-//
-//      double currentHeading = currentRobotPose.getRotation().getDegrees();
-//      double targetHeading = scoringPose.getRotation().getDegrees();
-//
-//      xSpeed = limelight.xController.calculate(currentRobotPose.getX(), scoringPose.getX());
-//      ySpeed = limelight.yController.calculate(currentRobotPose.getY(), scoringPose.getY());
-//      thetaSpeed = limelight.thetaController.calculate(currentHeading, targetHeading);
-//      xSpeed = MathUtil.clamp(xSpeed, -1.0, 1.0);
-//      ySpeed = MathUtil.clamp(ySpeed, -1.0, 1.0);
-//      thetaSpeed = MathUtil.clamp(thetaSpeed, -1.0, 1.0);
-//
-//    } else {
-//      xSpeed = 0.0;
-//      ySpeed = 0.0;
-//      thetaSpeed = 0.0;
-//    }
 
     SmartDashboard.putBoolean("Flywheel target hit", flywheelHitTarget);
     SmartDashboard.putNumber("Flywheel Lowest", flywheelLowestRPM);
@@ -209,31 +132,16 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("LY", m_robotContainer.controller0.getLeftY());
     SmartDashboard.putNumber("RX", m_robotContainer.controller0.getRightX());
     SmartDashboard.putBoolean("FieldRelative", m_robotContainer.drivetrain.isFieldRel);
-    SmartDashboard.putNumber("Robot Pose X", x_inches);
-    SmartDashboard.putNumber("Robot Pose Y", y_inches);
-    SmartDashboard.putNumber("Robot Pose Z", z_inches);
-
-    SmartDashboard.putNumber("Robot Test X", testXDistance);
-    SmartDashboard.putNumber("Robot Test Z", testZDistance);
-
     SmartDashboard.putNumber("Robot Yaw", yaw);
     SmartDashboard.putNumber("Flat Plane Tag Distance", tagDistance);
     SmartDashboard.putNumber("TX", LimelightHelpers.getTX("limelight"));
     SmartDashboard.putNumber("Yaw PID", (yaw / 11.5) * Constants.limelightConstants.yawOutputMultiplier);
-    //SmartDashboard.putNumber("TagId", tagID);
     SmartDashboard.putNumber("Hood degrees", m_robotContainer.superStructure.getHoodPos());
-    //SmartDashboard.putNumber("xSpeed", xSpeed);
-   // SmartDashboard.putNumber("ySpeed", ySpeed);
-    SmartDashboard.putNumber("theta Speed", thetaSpeed); // Not being used
-//    SmartDashboard.putNumber("Hood degrees", m_robotContainer.superStructure.getHoodPos());
-//    SmartDashboard.putNumber("Hood target", m_robotContainer.superStructure.getHoodTarget());
-//    double omegaRps = Units.degreesToRotations(m_robotContainer.drivetrain.getTurnRate());
-//    var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
-//
-//    if (llMeasurement.tagCount > 0 && Math.abs(omegaRps) < 0.2) {
-//      m_robotContainer.drivetrain.resetOdometry(llMeasurement.pose);
-//    }
 
+    SmartDashboard.putNumber("Target Pose X", targetPose.getX());
+    SmartDashboard.putNumber("Target Pose Y", targetPose.getY());
+    SmartDashboard.putNumber("Robot Pose X", m_robotContainer.drivetrain.getPose().getX());
+    SmartDashboard.putNumber("Robot Pose Y", m_robotContainer.drivetrain.getPose().getY());
   }
 
   private void updateFlywheelLogs() {
