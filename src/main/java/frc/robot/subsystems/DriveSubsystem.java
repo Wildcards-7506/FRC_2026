@@ -157,9 +157,9 @@ public class DriveSubsystem extends SubsystemBase {
     
     //CHECK THAT THESE INVERSIONS ARE CORRECT
     drive(
-      -MathUtil.applyDeadband(forwardspeed, IOConstants.kDriveDeadband),
-      -MathUtil.applyDeadband(strafingSpeed, IOConstants.kDriveDeadband),
-      -MathUtil.applyDeadband(rotationSpeed, IOConstants.kDriveDeadband),
+      MathUtil.applyDeadband(forwardspeed, IOConstants.kDriveDeadband),
+      MathUtil.applyDeadband(strafingSpeed, IOConstants.kDriveDeadband),
+      MathUtil.applyDeadband(rotationSpeed, IOConstants.kDriveDeadband),
       isFieldRel);
   }
 
