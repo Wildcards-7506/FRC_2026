@@ -122,7 +122,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Robot Pose X", m_robotContainer.drivetrain.getPose().getX());
     SmartDashboard.putNumber("Robot Pose Y", m_robotContainer.drivetrain.getPose().getY());
 
-    SmartDashboard.putNumber("DistanceToHub", distanceToHub);
+    SmartDashboard.putNumber("DistanceToHub", Units.metersToInches(distanceToHub));
     SmartDashboard.putNumber("AngleToHub", angleToHub.getDegrees());
   }
 
