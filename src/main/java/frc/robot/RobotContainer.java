@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -12,11 +15,14 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.commands.autonomous.AutoRoutines;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.SuperStructure;
 import frc.robot.utils.LimelightHelpers;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -40,6 +46,9 @@ public class RobotContainer {
   // The robot's subsystems
   public final DriveSubsystem drivetrain;
   public final SuperStructure superStructure;
+  private AutoRoutines autoMode;
+  
+  public static boolean loadingFuel = false;
 
   // The driver's controller
     public final CommandXboxController controller0 = new CommandXboxController(0);
@@ -51,9 +60,10 @@ public class RobotContainer {
   public RobotContainer() {
     drivetrain = new DriveSubsystem();
     superStructure = new SuperStructure();
+    autoMode = new AutoRoutines(this);
 
     // Configure the button bindings
-    configureButtonBindings();    
+    configureButtonBindings();
   }
 
 
@@ -75,31 +85,69 @@ public class RobotContainer {
     drivetrain.setDefaultCommand(
     Commands.runOnce(
       () -> drivetrain.driveRobot(
-        controller0.getLeftX(),
-        -controller0.getLeftY(),
-        -controller0.getRightX(),
+//        controller0.getLeftX(),
+//        -controller0.getLeftY(),
+//        -controller0.getRightX(),
+              -controller0.getLeftY(),
+              -controller0.getLeftX(),
+              controller0.getRightX(),
         controller0.getRightTriggerAxis() < 0.2
       ), drivetrain));
 
     controller0.b().onTrue(
       Commands.runOnce(
-          () -> drivetrain.zeroHeading()
+              drivetrain::zeroHeading
       )
     );
 
-    controller0.leftBumper()
-    .whileTrue(new RunCommand(
-        () -> drivetrain.drive(
-          controller0.getLeftY(),
-          controller0.getLeftX(),
-          LimelightHelpers.getTX("limelight") * 0.05, //Placeholder
-          false
-        ),
-        drivetrain
-      ));
+    controller0.rightBumper().whileTrue(
+            superStructure.bringUpRotator()
+    );
+
+//    controller0.leftBumper()
+//    .whileTrue(new RunCommand(
+//        () -> drivetrain.drive(
+//          // controller0.getLeftY(),
+//          0,
+//          0,
+//          // controller0.getLeftX(),
+//          (-Robot.yaw / 11.5) * Constants.limelightConstants.yawOutputMultiplier, //Placeholder
+//          false
+//        ),
+//        drivetrain
+//      ));
+
+//    controller0.rightBumper()
+//    .whileTrue(new RunCommand(
+//        () -> drivetrain.drive(
+//          // controller0.getLeftY(),
+////          Robot.testXDistance,
+//          Robot.ySpeed,
+//                Robot.xSpeed,
+//          // Robot.xSpeed,
+//          // Robot.ySpeed,
+////          Robot.testYSpeed,
+//          // controller0.getLeftX(),
+//          0,//(-Robot.yaw / 11.5) * Constants.limelightConstants.yawOutputMultiplier, //Placeholder
+//          false
+//        ),
+//        drivetrain
+//      ));
+
+    PathConstraints pathConstraints = new PathConstraints(
+            1,
+            1.5,
+            Units.degreesToRadians(180),
+            Units.degreesToRadians(360)
+    );
+
+   controller0.rightBumper().whileTrue(
+           AutoBuilder.pathfindToPose(Robot.targetPose, pathConstraints, 0)
+   );
   }
 
   private void operatorController() {
+
     // Intake fuel from intake and intake2
     controller1.leftTrigger().whileTrue(
       superStructure.runIntake().alongWith(superStructure.runLoader()).alongWith(superStructure.runIntake2())
@@ -109,17 +157,33 @@ public class RobotContainer {
     controller1.leftBumper().whileTrue(
       superStructure.rejectIntake2()
     );
-    
-    // Load fuel into shooter
+
+    // Load fuel into shooer
     controller1.rightTrigger().whileTrue(
       superStructure.runIntake().alongWith(superStructure.rejectLoader()).alongWith(superStructure.runIntake2())
+    );
+    controller1.rightTrigger().onTrue(
+      Commands.runOnce(
+        () -> loadingFuel = true
+      )
+    );
+    controller1.rightTrigger().onFalse(
+      Commands.runOnce(
+        () -> loadingFuel = false
+      )
+    );
+
+    controller1.x().whileTrue(
+//       superStructure.primeFlywheel(3025) // rpms lag/drop down to about 2750
+      superStructure.primeFlywheel(Constants.SuperStructureConstants.baseFlywheelRpm)
     );
 
     // Long distance
     controller1.y().whileTrue(
       superStructure.longDistance()
     );
-    // Mid distance
+
+    // Mid-distance
     controller1.b().whileTrue(
       superStructure.midDistance()
     );
@@ -129,9 +193,9 @@ public class RobotContainer {
     );
 
     // Dead man button to bring up rotator while button is pressed
-    // controller1.povUp().whileTrue(
-    //   superStructure.bringUpRotator()
-    // );
+    controller1.povUp().whileTrue(
+      superStructure.bringUpRotator()
+    );
   }
 
   /**

@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -8,7 +9,20 @@ import frc.robot.Constants;
 
 public class Limelight extends SubsystemBase{
 
-    public Limelight() {}
+    //PID for distance
+    public final PIDController xController = new PIDController(1.5, 0.0, 0.01);
+    public final PIDController yController = new PIDController(1.5, 0.0, 0.01);
+    public final PIDController thetaController = new PIDController(1.5, 0.0, 0.01);
+
+    public Limelight() {
+    //Distance code: Untested
+    xController.setTolerance(0.02);
+    yController.setTolerance(0.02);
+    
+
+    thetaController.enableContinuousInput(-180, 180);
+    thetaController.setTolerance(2.0); // 2 degree tolerance
+    }
 
     public double get_trig_distance() {
         NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");

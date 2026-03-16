@@ -4,13 +4,21 @@
 
 package frc.robot;
 
+import static frc.robot.RobotContainer.loadingFuel;
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.Limelight;
 import frc.robot.utils.LimelightHelpers;
 
 /**
@@ -21,8 +29,24 @@ import frc.robot.utils.LimelightHelpers;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-  private RobotContainer m_robotContainer;
-  private Field2d m_field;
+  public static RobotContainer m_robotContainer;
+  public static Field2d m_field;
+  private AprilTagFieldLayout fieldLayout;
+
+  public static Limelight limelight = new Limelight();
+
+  public static double yaw = 0.0;
+  public static double tagDistance = 0.0;
+
+  public static Pose2d targetPose = new Pose2d(0, 0, new Rotation2d());
+
+  double currentHeading = 0.0;
+  double targetHeading = 0.0;
+
+  // Used for logging purposes, can be used for functionality but not intended
+  public static double flywheelHighestRPM = 0.0;
+  public static double flywheelLowestRPM = 0.0;
+  public static boolean flywheelHitTarget = false; // Checks if flywheel has hit target speed at-least once within init
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -34,11 +58,14 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     m_field = new Field2d();
+    fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
     SmartDashboard.putData(m_field);
     SmartDashboard.putNumber("pidp", 0.002);
 //    SmartDashboard.putNumber("pid2", -1);
     SmartDashboard.putNumber("pidd", 0.01);
+    m_robotContainer.drivetrain.resetOdometry(m_robotContainer.drivetrain.getPose());
   }
+
 
   /**
    * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
@@ -53,41 +80,85 @@ public class Robot extends TimedRobot {
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
+
     CommandScheduler.getInstance().run();
-    LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
-    if(mt1.tagCount != 0){
-      m_robotContainer.drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.5,0.5,0.5));
-      m_robotContainer.drivetrain.m_poseEstimator.addVisionMeasurement(
-            mt1.pose,
-            mt1.timestampSeconds);
+
+    LimelightHelpers.SetRobotOrientation("limelight", m_robotContainer.drivetrain.m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+    LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+
+    boolean doRejectUpdate = false;
+    if (Math.abs(m_robotContainer.drivetrain.m_gyro.getRate()) > 360) {
+      doRejectUpdate = true;
     }
+    if (mt2 == null || mt2.tagCount == 0) {
+        doRejectUpdate = true;
+    }
+    if (!doRejectUpdate) {
+      // 0.5,0.5,0.5 original
+      m_robotContainer.drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
+      m_robotContainer.drivetrain.m_poseEstimator.addVisionMeasurement(
+              mt2.pose,
+              mt2.timestampSeconds);
+    }
+
     m_field.setRobotPose(m_robotContainer.drivetrain.getPose());
 
+    Pose2d tagPose = fieldLayout.getTagPose(26).get().toPose2d();
+    double offsetMeters = Units.inchesToMeters(Constants.limelightConstants.targetDistance);
+    targetPose = tagPose.transformBy(
+            new Transform2d(offsetMeters, 0, new Rotation2d())
+    );
+
+    updateFlywheelLogs();
+
+    SmartDashboard.putBoolean("Flywheel target hit", flywheelHitTarget);
+    SmartDashboard.putNumber("Flywheel Lowest", flywheelLowestRPM);
+    SmartDashboard.putNumber("Flywheel Highest", flywheelHighestRPM);
     SmartDashboard.putNumber("Flywheel RPM", m_robotContainer.superStructure.getRPM());
+
     SmartDashboard.putNumber("GyroHeading", m_robotContainer.drivetrain.getHeading());
     SmartDashboard.putNumber("GyroAngleZ", m_robotContainer.drivetrain.m_gyro.getAngle());
     SmartDashboard.putNumber("LX", m_robotContainer.controller0.getLeftX());
     SmartDashboard.putNumber("LY", m_robotContainer.controller0.getLeftY());
     SmartDashboard.putNumber("RX", m_robotContainer.controller0.getRightX());
     SmartDashboard.putBoolean("FieldRelative", m_robotContainer.drivetrain.isFieldRel);
-    SmartDashboard.putNumber("Rotator Position", m_robotContainer.superStructure.getRotatorPos());
-    SmartDashboard.putNumber("Rotator Target", m_robotContainer.superStructure.getRotatorTarget());
-    SmartDashboard.putNumber("RY", m_robotContainer.controller1.getRightY());
-    SmartDashboard.putNumber("Hood Position", m_robotContainer.superStructure.getHoodPos());
-    SmartDashboard.putNumber("Hood Target", m_robotContainer.superStructure.getHoodTarget());
+    SmartDashboard.putNumber("Robot Yaw", yaw);
+    SmartDashboard.putNumber("Flat Plane Tag Distance", tagDistance);
+    SmartDashboard.putNumber("TX", LimelightHelpers.getTX("limelight"));
+    SmartDashboard.putNumber("Yaw PID", (yaw / 11.5) * Constants.limelightConstants.yawOutputMultiplier);
+    SmartDashboard.putNumber("Hood degrees", m_robotContainer.superStructure.getHoodPos());
 
-    double omegaRps = Units.degreesToRotations(m_robotContainer.drivetrain.getTurnRate());
-    var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
+    SmartDashboard.putNumber("Target Pose X", targetPose.getX());
+    SmartDashboard.putNumber("Target Pose Y", targetPose.getY());
+    SmartDashboard.putNumber("Robot Pose X", m_robotContainer.drivetrain.getPose().getX());
+    SmartDashboard.putNumber("Robot Pose Y", m_robotContainer.drivetrain.getPose().getY());
+  }
 
-    if (llMeasurement.tagCount > 0 && Math.abs(omegaRps) < 0.2) {
-      m_robotContainer.drivetrain.resetOdometry(llMeasurement.pose);
-    }
+  private void updateFlywheelLogs() {
+      double currentRPM = m_robotContainer.superStructure.getRPM();
 
+      if (currentRPM > (Constants.SuperStructureConstants.baseFlywheelRpm - 100)) {
+          flywheelHitTarget = true;
+      } else if (currentRPM < (Constants.SuperStructureConstants.baseFlywheelRpm - 1500)) {
+          flywheelHitTarget = false;
+      }
+
+      if (loadingFuel && flywheelHitTarget) {
+          if (currentRPM > flywheelHighestRPM) {
+              flywheelHighestRPM = currentRPM;
+          }
+
+          if (flywheelLowestRPM == 0 || currentRPM < flywheelLowestRPM) {
+              flywheelLowestRPM = currentRPM;
+          }
+      }
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    m_robotContainer.superStructure.setIntake2Voltage(0);
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -116,11 +187,19 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    flywheelHitTarget = false;
+    flywheelHighestRPM = 0.0;
+    flywheelLowestRPM = 0.0;
+
+    m_robotContainer.superStructure.setRotatorPos(Constants.SuperStructureConstants.rotatorMax);
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    m_robotContainer.superStructure.setIntake2Voltage(12);
+  }
 
   @Override
   public void testInit() {
