@@ -20,7 +20,7 @@ import frc.robot.AutoRoutines;
  * project.
  */
 public class Robot extends TimedRobot {
-  private RobotContainer m_robotContainer;
+  public static RobotContainer m_robotContainer;
   public static Field2d m_field;
   private AutoRoutines autoMode;
 
