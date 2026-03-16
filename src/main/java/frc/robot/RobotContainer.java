@@ -47,6 +47,8 @@ public class RobotContainer {
   public final DriveSubsystem drivetrain;
   public final SuperStructure superStructure;
   private AutoRoutines autoMode;
+  
+  public static boolean loadingFuel = false;
 
   // The driver's controller
     public final CommandXboxController controller0 = new CommandXboxController(0);
@@ -98,18 +100,22 @@ public class RobotContainer {
       )
     );
 
-    controller0.leftBumper()
-    .whileTrue(new RunCommand(
-        () -> drivetrain.drive(
-          // controller0.getLeftY(),
-          0,
-          0,
-          // controller0.getLeftX(),
-          (-Robot.yaw / 11.5) * Constants.limelightConstants.yawOutputMultiplier, //Placeholder
-          false
-        ),
-        drivetrain
-      ));
+    controller0.rightBumper().whileTrue(
+            superStructure.bringUpRotator()
+    );
+
+//    controller0.leftBumper()
+//    .whileTrue(new RunCommand(
+//        () -> drivetrain.drive(
+//          // controller0.getLeftY(),
+//          0,
+//          0,
+//          // controller0.getLeftX(),
+//          (-Robot.yaw / 11.5) * Constants.limelightConstants.yawOutputMultiplier, //Placeholder
+//          false
+//        ),
+//        drivetrain
+//      ));
 
 //    controller0.rightBumper()
 //    .whileTrue(new RunCommand(
@@ -135,12 +141,13 @@ public class RobotContainer {
             Units.degreesToRadians(360)
     );
 
-    controller0.rightBumper().whileTrue(
-            AutoBuilder.pathfindToPose(Robot.targetPose, pathConstraints, 0)
-    );
+//    controller0.rightBumper().whileTrue(
+//            AutoBuilder.pathfindToPose(Robot.targetPose, pathConstraints, 0)
+//    );
   }
 
   private void operatorController() {
+
     // Intake fuel from intake and intake2
     controller1.leftTrigger().whileTrue(
       superStructure.runIntake().alongWith(superStructure.runLoader()).alongWith(superStructure.runIntake2())
@@ -155,10 +162,20 @@ public class RobotContainer {
     controller1.rightTrigger().whileTrue(
       superStructure.runIntake().alongWith(superStructure.rejectLoader()).alongWith(superStructure.runIntake2())
     );
+    controller1.rightTrigger().onTrue(
+      Commands.runOnce(
+        () -> loadingFuel = true
+      )
+    );
+    controller1.rightTrigger().onFalse(
+      Commands.runOnce(
+        () -> loadingFuel = false
+      )
+    );
 
     controller1.x().whileTrue(
 //       superStructure.primeFlywheel(3025) // rpms lag/drop down to about 2750
-      superStructure.primeFlywheel(3800)
+      superStructure.primeFlywheel(4000)
     );
 
     // Long distance

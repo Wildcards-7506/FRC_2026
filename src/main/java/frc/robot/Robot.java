@@ -29,6 +29,8 @@ import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.SuperStructure;
 import frc.robot.utils.LimelightHelpers;
 
+import static frc.robot.RobotContainer.loadingFuel;
+
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -37,8 +39,8 @@ import frc.robot.utils.LimelightHelpers;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-  private RobotContainer m_robotContainer;
-  private Field2d m_field;
+  public static RobotContainer m_robotContainer;
+  public static Field2d m_field;
   private AprilTagFieldLayout fieldLayout;
 
   public static Limelight limelight = new Limelight();
@@ -57,6 +59,11 @@ public class Robot extends TimedRobot {
 
   double currentHeading = 0.0;
   double targetHeading = 0.0;
+
+  // Used for logging purposes, can be used for functionality but not intended
+  public static double flywheelHighestRPM = 0.0;
+  public static double flywheelLowestRPM = 0.0;
+  public static boolean flywheelHitTarget = false; // Checks if flywheel has hit target speed at-least once within init
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -157,6 +164,13 @@ public class Robot extends TimedRobot {
       ySpeed = 0.0;
     }
 
+    double currentRPM = m_robotContainer.superStructure.getRPM();
+    if (currentRPM > Constants.SuperStructureConstants.baseFlywheelRpm) {
+      flywheelHitTarget = true;
+    }
+
+    updateFlywheelLogs();
+
 //    Distance Code: Untested:
 
 //    int tagID = (int) NetworkTableInstance.getDefault()
@@ -225,6 +239,19 @@ public class Robot extends TimedRobot {
 
   }
 
+  private void updateFlywheelLogs() {
+    double currentRPM = m_robotContainer.superStructure.getRPM();
+    if (loadingFuel && flywheelHitTarget) {
+      // Start recording flywheel RPMs once we start loading fuel and have hit target speed at least once
+      if (currentRPM > flywheelHighestRPM) {
+        flywheelHighestRPM = currentRPM;
+      }
+      if (currentRPM < flywheelLowestRPM) {
+        flywheelLowestRPM = currentRPM;
+      }
+    }
+  }
+
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {}
@@ -257,6 +284,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
+    flywheelHitTarget = false;
     m_robotContainer.superStructure.setRotatorPos(Constants.SuperStructureConstants.rotatorMax);
   }
 
