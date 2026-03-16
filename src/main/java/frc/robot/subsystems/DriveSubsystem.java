@@ -140,7 +140,7 @@ public class DriveSubsystem extends SubsystemBase {
             : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
-    setStates(swerveModuleStates);
+    setModuleStates(swerveModuleStates);
   }
 
   /**
@@ -181,19 +181,10 @@ public class DriveSubsystem extends SubsystemBase {
     m_rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
   }
 
-  //These methods are only used in Autonomous to control the swerve modules directly
-  public void setStates(SwerveModuleState[] targetStates) {
-    SwerveDriveKinematics.desaturateWheelSpeeds(targetStates, DriveConstants.kMaxSpeedMetersPerSecond);
-    m_frontLeft.setDesiredState(targetStates[0]);
-    m_frontRight.setDesiredState(targetStates[1]);
-    m_rearLeft.setDesiredState(targetStates[2]);
-    m_rearRight.setDesiredState(targetStates[3]);
-  }
-
   public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
     ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
     SwerveModuleState[] targetStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(targetSpeeds);
-    setStates(targetStates);
+    setModuleStates(targetStates);
   }
 
     //@Logged(name = "Chassis Speed")
@@ -249,19 +240,5 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public double getTurnRate() {
     return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
-  }
-
-  public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
-    ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
-    SwerveModuleState[] targetStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(targetSpeeds);
-    setModuleStates(targetStates);
-  }
-
-  //@Logged(name = "Chassis Speed")
-  public ChassisSpeeds getRobotRelativeSpeeds() {
-    return DriveConstants.kDriveKinematics.toChassisSpeeds(m_frontLeft.getState(),
-            m_frontRight.getState(),
-            m_rearLeft.getState(),
-            m_rearRight.getState());
   }
 }
