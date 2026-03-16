@@ -4,32 +4,22 @@
 
 package frc.robot;
 
-import com.fasterxml.jackson.databind.deser.std.DateDeserializers.SqlDateDeserializer;
+import static frc.robot.RobotContainer.loadingFuel;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Limelight;
-import frc.robot.subsystems.SuperStructure;
 import frc.robot.utils.LimelightHelpers;
-
-import static frc.robot.RobotContainer.loadingFuel;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -100,8 +90,8 @@ public class Robot extends TimedRobot {
     if (Math.abs(m_robotContainer.drivetrain.m_gyro.getRate()) > 360) {
       doRejectUpdate = true;
     }
-    if (mt2.tagCount == 0) {
-      doRejectUpdate = true;
+    if (mt2 == null || mt2.tagCount == 0) {
+        doRejectUpdate = true;
     }
     if (!doRejectUpdate) {
       // 0.5,0.5,0.5 original
@@ -145,28 +135,23 @@ public class Robot extends TimedRobot {
   }
 
   private void updateFlywheelLogs() {
-    double currentRPM = m_robotContainer.superStructure.getRPM();
+      double currentRPM = m_robotContainer.superStructure.getRPM();
 
-    if (currentRPM > (Constants.SuperStructureConstants.baseFlywheelRpm - 100)) {
-      flywheelHitTarget = true;
-    }else if (currentRPM < (Constants.SuperStructureConstants.baseFlywheelRpm - 1500)) {
-      flywheelHitTarget = false;
-    }
-
-    if (loadingFuel && flywheelHitTarget) {
-      // Start recording flywheel RPMs once we start loading fuel and have hit target speed at least once
-      
-      if (currentRPM > flywheelHighestRPM) {
-        flywheelHighestRPM = currentRPM;
+      if (currentRPM > (Constants.SuperStructureConstants.baseFlywheelRpm - 100)) {
+          flywheelHitTarget = true;
+      } else if (currentRPM < (Constants.SuperStructureConstants.baseFlywheelRpm - 1500)) {
+          flywheelHitTarget = false;
       }
 
-      if (flywheelHitTarget == false || flywheelLowestRPM == 0) {
-        flywheelLowestRPM = currentRPM;
-      }else if (currentRPM < flywheelLowestRPM) {
-        flywheelHighestRPM = currentRPM;
-      }
+      if (loadingFuel && flywheelHitTarget) {
+          if (currentRPM > flywheelHighestRPM) {
+              flywheelHighestRPM = currentRPM;
+          }
 
-    }
+          if (flywheelLowestRPM == 0 || currentRPM < flywheelLowestRPM) {
+              flywheelLowestRPM = currentRPM;
+          }
+      }
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -204,6 +189,9 @@ public class Robot extends TimedRobot {
     }
 
     flywheelHitTarget = false;
+    flywheelHighestRPM = 0.0;
+    flywheelLowestRPM = 0.0;
+
     m_robotContainer.superStructure.setRotatorPos(Constants.SuperStructureConstants.rotatorMax);
   }
 
