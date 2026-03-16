@@ -47,6 +47,8 @@ public class RobotContainer {
   public final DriveSubsystem drivetrain;
   public final SuperStructure superStructure;
   private AutoRoutines autoMode;
+  
+  public static boolean loadingFuel = false;
 
   // The driver's controller
     public final CommandXboxController controller0 = new CommandXboxController(0);
@@ -155,10 +157,20 @@ public class RobotContainer {
     controller1.rightTrigger().whileTrue(
       superStructure.runIntake().alongWith(superStructure.rejectLoader()).alongWith(superStructure.runIntake2())
     );
+    controller1.rightTrigger().onTrue(
+      Commands.runOnce(
+        () -> loadingFuel = true
+      )
+    );
+    controller1.rightTrigger().onFalse(
+      Commands.runOnce(
+        () -> loadingFuel = false
+      )
+    );
 
     controller1.x().whileTrue(
 //       superStructure.primeFlywheel(3025) // rpms lag/drop down to about 2750
-      superStructure.primeFlywheel(3800)
+      superStructure.primeFlywheel(Constants.SuperStructureConstants.baseFlywheelRpm)
     );
 
     // Long distance
