@@ -16,7 +16,9 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.autonomous.AutoRoutines;
@@ -156,11 +158,30 @@ public class RobotContainer {
     );
 
     // Load fuel into shooer
+//    controller1.rightTrigger().whileTrue(
+//            superStructure.runIntake()
+//                    .alongWith(superStructure.rejectLoader())
+//                    .alongWith(superStructure.runIntake2())
+//    );
+//    controller1.rightTrigger().whileTrue(
+//            Robot.checkAndRunGun(superStructure)
+//    );
+
     controller1.rightTrigger().whileTrue(
-      superStructure.runIntake()
-      .alongWith(superStructure.rejectLoader())
-      .alongWith(superStructure.runIntake2())
+            Robot.checkAndRunGun(superStructure)
     );
+
+    controller1.rightTrigger().onTrue(Commands.runOnce(() -> {
+      double now = Timer.getFPGATimestamp();
+      if (now - Robot.lastTriggerPressTime < Robot.DOUBLE_PRESS_WINDOW) {
+        Robot.crippleMode = !Robot.crippleMode;
+        Robot.triggerPressCount = 0;
+      } else {
+        Robot.triggerPressCount = 1;
+      }
+      Robot.lastTriggerPressTime = now;
+    }));
+
     controller1.rightTrigger().onTrue(
       Commands.runOnce(
         () -> loadingFuel = true

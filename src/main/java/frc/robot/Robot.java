@@ -14,12 +14,16 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.autonomous.AutoRoutines;
 import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.SuperStructure;
 import frc.robot.utils.LimelightHelpers;
 
 /**
@@ -51,6 +55,11 @@ public class Robot extends TimedRobot {
   public static boolean flywheelHitTarget = false; // Checks if flywheel has hit target speed at-least once within init
   public static double distanceToHub = 0.0;
   public static Rotation2d angleToHub = new Rotation2d();
+
+  public static boolean crippleMode = false;
+  public static int triggerPressCount = 0;
+  public static double lastTriggerPressTime = -1;
+  public static final double DOUBLE_PRESS_WINDOW = 0.25; // seconds
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -124,6 +133,8 @@ public class Robot extends TimedRobot {
 
     SmartDashboard.putNumber("DistanceToHub", Units.metersToInches(distanceToHub));
     SmartDashboard.putNumber("AngleToHub", angleToHub.getDegrees());
+
+    SmartDashboard.putBoolean("Crippled?", crippleMode);
   }
 
   private void updateHeadingToHub() {    
@@ -164,9 +175,9 @@ public class Robot extends TimedRobot {
   private void updateFlywheelLogs() {
       double currentRPM = m_robotContainer.superStructure.getRPM();
 
-      if (currentRPM > (Constants.SuperStructureConstants.baseFlywheelRpm - 100)) {
+      if (currentRPM > Constants.SuperStructureConstants.baseFlywheelRpm) {
           flywheelHitTarget = true;
-      } else if (currentRPM < (Constants.SuperStructureConstants.baseFlywheelRpm - 1500)) {
+      } else if (currentRPM < (Constants.SuperStructureConstants.baseFlywheelRpm - 2000)) {
           flywheelHitTarget = false;
       }
 
@@ -179,6 +190,33 @@ public class Robot extends TimedRobot {
               flywheelLowestRPM = currentRPM;
           }
       }
+  }
+
+//  public static Command checkAndRunGun(SuperStructure superStructure) {
+//    return Commands.either(
+//            superStructure.runIntake()
+//                    .alongWith(superStructure.rejectLoader())
+//                    .alongWith(superStructure.runIntake2()),
+//            Commands.idle(),
+//            () -> flywheelHitTarget
+//    );
+//  }
+
+  public static Command checkAndRunGun(SuperStructure superStructure) {
+    return Commands.either(
+            superStructure.runIntake()
+                    .alongWith(superStructure.rejectLoader())
+                    .alongWith(superStructure.runIntake2()),
+
+            Commands.waitUntil(() -> Robot.flywheelHitTarget)
+                    .andThen(
+                            superStructure.runIntake()
+                                    .alongWith(superStructure.rejectLoader())
+                                    .alongWith(superStructure.runIntake2())
+                    ),
+
+            () -> crippleMode
+    );
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -197,7 +235,7 @@ public class Robot extends TimedRobot {
 
     // Set robot state
     autoMode.resetAutoHeading();
-    autoMode.getAutonomousCommand().schedule();
+//    autoMode.getAutonomousCommand().schedule();
   }
 
   /** This function is called periodically during autonomous. */
