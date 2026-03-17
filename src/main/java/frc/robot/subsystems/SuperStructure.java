@@ -247,7 +247,7 @@ public class SuperStructure extends SubsystemBase {
     //Use these in the commands above to apply setpoints and voltages
     private void setFlywheelRPM(double rpm) {
         rpm = fixRPM(rpm); // basically pid with simple approximate feedforward
-        SmartDashboard.putNumber("Flywheel target", rpm);
+        SmartDashboard.putNumber("Flywheel SET target", rpm);
         flywheelPID.setSetpoint(rpm, ControlType.kVelocity);
     }
 
@@ -272,10 +272,9 @@ public class SuperStructure extends SubsystemBase {
         loader.setVoltage(voltage);
     }
 
-    private void setHoodPos(double target) {
+    public void setHoodPos(double target) {
         hoodSetpoint = filterValue(target, SuperStructureConstants.hoodMin, SuperStructureConstants.hoodMax);
         hoodPID.setSetpoint(hoodSetpoint, ControlType.kPosition);
-        SmartDashboard.putNumber("Hood target", getHoodTarget());
     }
 
     public double getRPM() {

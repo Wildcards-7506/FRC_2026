@@ -11,6 +11,7 @@ import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -22,9 +23,14 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
+
+import java.util.function.Supplier;
 
 public class DriveSubsystem extends SubsystemBase {
   public boolean isFieldRel = true;
@@ -180,6 +186,36 @@ public class DriveSubsystem extends SubsystemBase {
     m_rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
   }
 
+  public Command alignToTarget(Supplier<Pose2d> targetSupplier) {
+    double rotSpeed = 0.5;
+
+    return new RunCommand(() -> {
+      Pose2d botPose = getPose();
+      Pose2d target = targetSupplier.get();
+
+      double dX = target.getX() - botPose.getX();
+      double dY = target.getY() - botPose.getY();
+      double targetDeg = Math.toDegrees(Math.atan2(dY, dX));
+
+      double err = MathUtil.inputModulus(targetDeg - getHeading(), -180, 180);
+      double dir = Math.signum(err);
+
+      drive(0, 0, dir * rotSpeed, true);
+    }, this)
+            .until(() -> {
+              Pose2d botPose = getPose();
+              Pose2d target = targetSupplier.get();
+
+              double dX = target.getX() - botPose.getX();
+              double dY = target.getY() - botPose.getY();
+              double targetDeg = Math.toDegrees(Math.atan2(dY, dX));
+
+              double err = MathUtil.inputModulus(targetDeg - getHeading(), -180, 180);
+              return Math.abs(err) < 6.0;
+            })
+            .finallyDo(() -> drive(0, 0, 0, true));
+  }
+  
   public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
     ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
     SwerveModuleState[] targetStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(targetSpeeds);

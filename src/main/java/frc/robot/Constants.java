@@ -89,12 +89,6 @@ public final class Constants {
     public static final double hoodShortDistance = hoodMin;
     public static final double hoodMidDistance = hoodStart;
     public static final double hoodLongDistance = hoodMax;
-
-    public static double baseFlywheelRpm = 4000;
-    public static double rpmShortDistance = baseFlywheelRpm;
-    public static double rpmMidDistance = baseFlywheelRpm;
-    public static double rpmLongDistance = baseFlywheelRpm;
-
   }
 
   public static final class ModuleConstants {
