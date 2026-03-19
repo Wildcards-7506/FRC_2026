@@ -11,7 +11,6 @@ import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -23,14 +22,11 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
-
-import java.util.function.Supplier;
 
 public class DriveSubsystem extends SubsystemBase {
   public boolean isFieldRel = true;
@@ -186,35 +182,45 @@ public class DriveSubsystem extends SubsystemBase {
     m_rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
   }
 
-  public Command alignToTarget(Supplier<Pose2d> targetSupplier) {
-    double rotSpeed = 0.5;
+  // public Command alignToTarget(Supplier<Pose2d> targetSupplier) {
+  public void alignToTarget(Pose2d targetSupplier) {
+    double rotSpeed = 0.4;
 
-    return new RunCommand(() -> {
-      Pose2d botPose = getPose();
-      Pose2d target = targetSupplier.get();
+    Pose2d botPose = getPose();
+    // Pose2d target = targetSupplier.get();
+    Pose2d target = targetSupplier;
 
-      double dX = target.getX() - botPose.getX();
-      double dY = target.getY() - botPose.getY();
-      double targetDeg = Math.toDegrees(Math.atan2(dY, dX));
+    double dX = target.getX() - botPose.getX();
+    double dY = target.getY() - botPose.getY();
+    double targetDeg = Math.toDegrees(Math.atan2(dY, dX));
 
-      double err = MathUtil.inputModulus(targetDeg - getHeading(), -180, 180);
-      double dir = Math.signum(err);
+    SmartDashboard.putNumber("BotHeading", getHeading());
+    SmartDashboard.putNumber("HeadingToTarget", targetDeg);
+    SmartDashboard.putNumber("HeadingToTarget2", Robot.angleToHub.getDegrees());
 
-      drive(0, 0, dir * rotSpeed, true);
-    }, this)
-            .until(() -> {
-              Pose2d botPose = getPose();
-              Pose2d target = targetSupplier.get();
+    double err = MathUtil.inputModulus(targetDeg - getHeading(), -180, 180);
 
-              double dX = target.getX() - botPose.getX();
-              double dY = target.getY() - botPose.getY();
-              double targetDeg = Math.toDegrees(Math.atan2(dY, dX));
+    err = err / 50;
 
-              double err = MathUtil.inputModulus(targetDeg - getHeading(), -180, 180);
-              return Math.abs(err) < 6.0;
-            })
-            .finallyDo(() -> drive(0, 0, 0, true));
+    double speed = filterValue(err, -rotSpeed, rotSpeed);
+
+    drive(0, 0, speed, true);
   }
+
+    /**
+     * Returns the max if the setpoint is above it, or the hard deck if the setpoint is below it.
+     * Otherwise, returns the setpoint.
+     * 
+     * @param value The desired state of the crane.
+     * @param min The hard deck of the crane.
+     */
+    public double filterValue(double value, double min, double max) {
+        if(value < min)
+            value = min;
+        if(value > max)
+            value = max;
+        return value;
+    }
   
   public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
     ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);

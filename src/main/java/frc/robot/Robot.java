@@ -6,14 +6,9 @@ package frc.robot;
 
 import static frc.robot.RobotContainer.loadingFuel;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathConstraints;
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -26,7 +21,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.autonomous.AutoRoutines;
-import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.SuperStructure;
 import frc.robot.utils.LimelightHelpers;
@@ -117,15 +111,22 @@ public class Robot extends TimedRobot {
 
     fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
 
+    limelightUpdateOdom();
+
     tag26Pose = fieldLayout == null
             ? new Pose2d(0, 0, new Rotation2d())
             : fieldLayout.getTagPose(26).get().toPose2d();
 
     double offsetToHubCenter = Units.inchesToMeters(-23.5); // eyeballed at 2 feet from tag 26 to hub center, x direction wpi
+    SmartDashboard.putNumber("TagPose X", tag26Pose.getX());
+    SmartDashboard.putNumber("TagPose Y", tag26Pose.getY());
+    SmartDashboard.putNumber("TagPose Yaw", tag26Pose.getRotation().getDegrees());
     hubPose = tag26Pose.transformBy(new Transform2d(offsetToHubCenter, 0, new Rotation2d()));
+    SmartDashboard.putNumber("HubPose X", hubPose.getX());
+    SmartDashboard.putNumber("HubPose Y", hubPose.getY());
+    SmartDashboard.putNumber("HubPose Yaw", hubPose.getRotation().getDegrees());
 
     CommandScheduler.getInstance().run();
-    limelightUpdateOdom();
 
     // blue, field coordinates
 
@@ -166,6 +167,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Target Pose Y", targetPose.getY());
     SmartDashboard.putNumber("Robot Pose X", m_robotContainer.drivetrain.getPose().getX());
     SmartDashboard.putNumber("Robot Pose Y", m_robotContainer.drivetrain.getPose().getY());
+    SmartDashboard.putNumber("Field Robot Pose X", m_field.getRobotPose().getX());
+    SmartDashboard.putNumber("Field Robot Pose Y", m_field.getRobotPose().getY());
 
     SmartDashboard.putNumber("DistanceToHub", Units.metersToInches(distanceToHub));
     SmartDashboard.putNumber("AngleToHub", angleToHub.getDegrees());
@@ -387,8 +390,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testInit() {
+    // SmartDashboard.putBoolean("Test INIT", true);
     // Cancels all running commands at the start of test mode.
-    CommandScheduler.getInstance().cancelAll();
+    // CommandScheduler.getInstance().cancelAll();
   }
 
   /** This function is called periodically during test mode. */

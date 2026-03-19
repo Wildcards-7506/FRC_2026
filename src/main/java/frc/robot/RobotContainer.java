@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import java.text.CollationElementIterator;
+import java.util.List;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -14,19 +17,18 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.DriveConstants;
-import frc.robot.commands.autonomous.AutoRoutines;
-import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.SuperStructure;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-
-import java.util.List;
+import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.commands.autonomous.AutoRoutines;
+import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.SuperStructure;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -86,18 +88,39 @@ public class RobotContainer {
 
         controller0.b().onTrue(
                 Commands.runOnce(
-                        drivetrain::zeroHeading
+                        () -> {
+                                drivetrain.zeroHeading();
+                                Pose2d newBotPose = new Pose2d(drivetrain.getPose().getTranslation(), new Rotation2d(0));
+                                drivetrain.resetOdometry(newBotPose);
+                                Robot.m_field.setRobotPose(newBotPose);
+                        }
                 )
         );
+
+        controller0.povLeft().onTrue(
+                Commands.runOnce(() -> {
+                        Robot.m_field = new Field2d();
+                        SmartDashboard.putData(Robot.m_field);
+                }));
 
         controller0.rightBumper().whileTrue(
                 superStructure.bringUpRotator()
         );
 
-//        controller0.povUp().whileTrue(Robot.alignToTarget(drivetrain.getPose()));
-        controller0.povUp().onTrue(drivetrain.alignToTarget(
-                () -> Robot.hubPose
-        ));
+       controller0.povUp().whileTrue(
+            Commands.runEnd(
+                () -> {
+                    drivetrain.alignToTarget(Robot.hubPose);
+                }, 
+                () -> {
+                    drivetrain.drive(0, 0, 0, true);
+                }, drivetrain)
+       
+        );
+        // controller0.povUp().whileTrue(drivetrain.alignToTarget(
+        // controller0.povUp().onTrue(drivetrain.alignToTarget(
+        //         () -> Robot.hubPose
+        // ));
 //    controller0.leftBumper()
 //    .whileTrue(new RunCommand(
 //        () -> drivetrain.drive(
