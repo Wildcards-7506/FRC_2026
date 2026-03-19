@@ -5,6 +5,7 @@
 package frc.robot.commands.autonomous;
 
 import java.util.HashMap;
+import java.util.concurrent.TransferQueue;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -21,6 +22,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
+import frc.robot.commands.autonomous.commands.IntakeCommand;
+import frc.robot.commands.autonomous.commands.RotatorDownCommand;
 import frc.robot.Constants.SuperStructureConstants;
 
 @SuppressWarnings("unused")
@@ -81,19 +84,17 @@ public final class AutoRoutines {
   private void setMarkers() {
     //Registers commands to run in autonomous. The Pathplanner application can take these
     //pre-defined commands and place them at specific points while moving.
-    NamedCommands.registerCommand("Hood Short", this.robotContainer.superStructure.shortDistance());
-    NamedCommands.registerCommand("Hood Mid", this.robotContainer.superStructure.midDistance());
-    NamedCommands.registerCommand("Hood Long", this.robotContainer.superStructure.longDistance());
-    NamedCommands.registerCommand("Intake", 
-        this.robotContainer.superStructure.runIntake()
-        .alongWith(this.robotContainer.superStructure.runLoader())
-        .alongWith(this.robotContainer.superStructure.runIntake2()));
-    NamedCommands.registerCommand("Fire", 
-        this.robotContainer.superStructure.runIntake()
-        .alongWith(this.robotContainer.superStructure.rejectLoader())
-        .alongWith(this.robotContainer.superStructure.runIntake2()));
-    NamedCommands.registerCommand("Prime Flywheel", 
-        this.robotContainer.superStructure.primeFlywheel(Constants.SuperStructureConstants.hoodMidDistance));
+    // NamedCommands.registerCommand("Hood Short", this.robotContainer.superStructure.shortDistance());
+    // NamedCommands.registerCommand("Hood Mid", this.robotContainer.superStructure.midDistance());
+    // NamedCommands.registerCommand("Hood Long", this.robotContainer.superStructure.longDistance());
+    NamedCommands.registerCommand("Intake Down", new RotatorDownCommand(this.robotContainer));
+    // NamedCommands.registerCommand("Intake", Commands.runOnce(() -> 
+    //     this.robotContainer.superStructure.runIntake()
+    //     .alongWith(this.robotContainer.superStructure.runLoader())
+    //     .alongWith(this.robotContainer.superStructure.runIntake2())));
+    NamedCommands.registerCommand("Intake", new IntakeCommand(2)); // Use this as a guide, also add more intake
+    // NamedCommands.registerCommand("Fire", ); // implement this
+    // NamedCommands.registerCommand("Prime Flywheel", ); // implement this
   }
 
   /**

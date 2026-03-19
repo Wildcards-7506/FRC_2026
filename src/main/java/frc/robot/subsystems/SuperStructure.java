@@ -228,6 +228,10 @@ public class SuperStructure extends SubsystemBase {
         );
     }
 
+    public Command setRotator(double pos) {
+        return Commands.runOnce(() -> setRotatorPos(pos));
+    }
+
     //Loader Control Commands
     public Command runLoader() {
         return Commands.runEnd(
@@ -245,13 +249,13 @@ public class SuperStructure extends SubsystemBase {
 
     //Control methods for all superstructure subsystems
     //Use these in the commands above to apply setpoints and voltages
-    private void setFlywheelRPM(double rpm) {
+    public void setFlywheelRPM(double rpm) {
         rpm = fixRPM(rpm); // basically pid with simple approximate feedforward
         SmartDashboard.putNumber("Flywheel SET target", rpm);
         flywheelPID.setSetpoint(rpm, ControlType.kVelocity);
     }
 
-    private void setIntakeVoltage(double voltage) {
+    public void setIntakeVoltage(double voltage) {
         SmartDashboard.putNumber("Intake Setting", voltage);
         intake.setVoltage(voltage);
     }
@@ -267,7 +271,7 @@ public class SuperStructure extends SubsystemBase {
         rotatorPID.setSetpoint(rotatorSetpoint, ControlType.kPosition);
     }
     
-    private void setLoaderVoltage(double voltage) {
+    public void setLoaderVoltage(double voltage) {
         SmartDashboard.putNumber("Loader Setting", voltage);
         loader.setVoltage(voltage);
     }

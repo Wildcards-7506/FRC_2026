@@ -40,7 +40,7 @@ import frc.robot.utils.LimelightHelpers;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-  public static RobotContainer m_robotContainer;
+  public static RobotContainer m_robotContainer = new RobotContainer();
   public static Field2d m_field;
   private static AprilTagFieldLayout fieldLayout;
   public static AutoRoutines autoMode;
@@ -85,7 +85,6 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
     // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
     m_field = new Field2d();
     autoMode = m_robotContainer.getAutoRoutines();
     SmartDashboard.putData(m_field);
@@ -248,16 +247,6 @@ public class Robot extends TimedRobot {
     }
   }
 
-  // public static Command checkAndRunGun(SuperStructure superStructure) {
-  // return Commands.either(
-  // superStructure.runIntake()
-  // .alongWith(superStructure.rejectLoader())
-  // .alongWith(superStructure.runIntake2()),
-  // Commands.idle(),
-  // () -> flywheelHitTarget
-  // );
-  // }
-
   public static Command checkAndRunGun(SuperStructure superStructure) {
     return Commands.either(
         superStructure.runIntake()
@@ -305,12 +294,13 @@ public class Robot extends TimedRobot {
 
     // Set robot state
     autoMode.resetAutoHeading();
-    // autoMode.getAutonomousCommand().schedule();
+    autoMode.getAutonomousCommand().schedule();
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
+    // CommandScheduler.getInstance().run();
   }
 
   @Override
