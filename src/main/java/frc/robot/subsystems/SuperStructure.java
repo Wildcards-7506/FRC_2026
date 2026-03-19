@@ -247,6 +247,8 @@ public class SuperStructure extends SubsystemBase {
         );
     }
 
+    // public Command rejectLoaderAuto() {}
+
     //Control methods for all superstructure subsystems
     //Use these in the commands above to apply setpoints and voltages
     public void setFlywheelRPM(double rpm) {
