@@ -145,5 +145,8 @@ public final class Constants {
 
     // will be dynamic value based on hood (LATER)
     public static final double targetDistance = 115.0; // 115.0
+
+    public static final int blueAlianceCeterTagNum = 26;
+    public static final int redAlianceCeterTagNum = 10;
   }
 }

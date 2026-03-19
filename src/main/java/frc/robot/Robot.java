@@ -6,6 +6,8 @@ package frc.robot;
 
 import static frc.robot.RobotContainer.loadingFuel;
 
+import java.util.Optional;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.VecBuilder;
@@ -14,6 +16,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -57,7 +61,7 @@ public class Robot extends TimedRobot {
   public static boolean flywheelHitTarget = false; // Checks if flywheel has hit target speed at-least once within init
   public static double distanceToHub = 0.0;
   public static Rotation2d angleToHub = new Rotation2d();
-  public static Pose2d tag26Pose = new Pose2d(0, 0, new Rotation2d());
+  public static Pose2d centerTagPose = new Pose2d(0, 0, new Rotation2d());
   public static Pose2d hubPose = new Pose2d(0, 0, new Rotation2d());
 //  public static PIDController rotPID = new PIDController(0.02, 0, 0.01);
 
@@ -68,6 +72,8 @@ public class Robot extends TimedRobot {
 
   public static double targetFlywheelRPM = 4000;
   public static boolean useAutoHood = true;
+
+
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -113,18 +119,18 @@ public class Robot extends TimedRobot {
 
     limelightUpdateOdom();
 
-    tag26Pose = fieldLayout == null
-            ? new Pose2d(0, 0, new Rotation2d())
-            : fieldLayout.getTagPose(26).get().toPose2d();
+    Optional<Alliance> alliances = DriverStation.getAlliance();
+    boolean onBlueAlliance = alliances.isPresent() ? alliances.get() == DriverStation.Alliance.Blue : true;
+
+    if (fieldLayout != null) {
+        centerTagPose = fieldLayout.getTagPose(onBlueAlliance 
+            ? Constants.limelightConstants.blueAlianceCeterTagNum 
+            : Constants.limelightConstants.redAlianceCeterTagNum)
+        .get().toPose2d();
+    }
 
     double offsetToHubCenter = Units.inchesToMeters(-23.5); // eyeballed at 2 feet from tag 26 to hub center, x direction wpi
-    SmartDashboard.putNumber("TagPose X", tag26Pose.getX());
-    SmartDashboard.putNumber("TagPose Y", tag26Pose.getY());
-    SmartDashboard.putNumber("TagPose Yaw", tag26Pose.getRotation().getDegrees());
-    hubPose = tag26Pose.transformBy(new Transform2d(offsetToHubCenter, 0, new Rotation2d()));
-    SmartDashboard.putNumber("HubPose X", hubPose.getX());
-    SmartDashboard.putNumber("HubPose Y", hubPose.getY());
-    SmartDashboard.putNumber("HubPose Yaw", hubPose.getRotation().getDegrees());
+    hubPose = centerTagPose.transformBy(new Transform2d(offsetToHubCenter, 0, new Rotation2d()));
 
     CommandScheduler.getInstance().run();
 
@@ -138,6 +144,13 @@ public class Robot extends TimedRobot {
       Robot.setRPMForCurrentDistance();
       Robot.setHoodForCurrentDistance();
     }
+
+    SmartDashboard.putNumber("TagPose X", centerTagPose.getX());
+    SmartDashboard.putNumber("TagPose Y", centerTagPose.getY());
+    SmartDashboard.putNumber("TagPose Yaw", centerTagPose.getRotation().getDegrees());
+    SmartDashboard.putNumber("HubPose X", hubPose.getX());
+    SmartDashboard.putNumber("HubPose Y", hubPose.getY());
+    SmartDashboard.putNumber("HubPose Yaw", hubPose.getRotation().getDegrees());
 
     SmartDashboard.putBoolean("Use auto hood", useAutoHood);
     SmartDashboard.putBoolean("Field layout here?", fieldLayout != null);
@@ -315,15 +328,15 @@ public class Robot extends TimedRobot {
 //  public static Command alignToTarget() {
 //    fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
 //
-//    tag26Pose = fieldLayout == null
+//    centerTagPose = fieldLayout == null
 //    ? new Pose2d(0, 0, new Rotation2d())
 //    : fieldLayout.getTagPose(26).get().toPose2d(); // gets tag 26 pose
 //
 //    double offsetMeters = Units.feetToMeters(-5); // This offset is for robot to be in front of tag
-//    targetPose = tag26Pose.transformBy( // this pose is when robot is in front of tag
+//    targetPose = centerTagPose.transformBy( // this pose is when robot is in front of tag
 //        new Transform2d(offsetMeters, 0, new Rotation2d(90)));
 //
-//    targetPose = tag26Pose;
+//    targetPose = centerTagPose;
 //    SmartDashboard.getBoolean("Field layout here?", fieldLayout != null);
 //    SmartDashboard.putNumber("Given Target X", targetPose.getX());
 //    SmartDashboard.putNumber("Given Target Y", targetPose.getY());
