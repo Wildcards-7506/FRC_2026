@@ -46,15 +46,15 @@ public class Robot extends TimedRobot {
   public static AutoRoutines autoMode;
 
   public static Limelight limelight = new Limelight();
-
+  
   public static double yaw = 0.0;
   public static double tagDistance = 0.0;
-
+  
   public static Pose2d targetPose = new Pose2d(0, 0, new Rotation2d());
-
+  
   double currentHeading = 0.0;
   double targetHeading = 0.0;
-
+  
   // Used for logging purposes, can be used for functionality but not intended
   public static double flywheelHighestRPM = 0.0;
   public static double flywheelLowestRPM = 0.0;
@@ -63,18 +63,18 @@ public class Robot extends TimedRobot {
   public static Rotation2d angleToHub = new Rotation2d();
   public static Pose2d centerTagPose = new Pose2d(0, 0, new Rotation2d());
   public static Pose2d hubPose = new Pose2d(0, 0, new Rotation2d());
-//  public static PIDController rotPID = new PIDController(0.02, 0, 0.01);
-
+  //  public static PIDController rotPID = new PIDController(0.02, 0, 0.01);
+  
   public static boolean crippleMode = false;
   public static int triggerPressCount = 0;
   public static double lastTriggerPressTime = -1;
   public static final double DOUBLE_PRESS_WINDOW = 0.25; // seconds
-
+  
   public static double targetFlywheelRPM = 4000;
   public static boolean useAutoHood = true;
-
-
-
+  
+  public static InterpolatingDoubleTreeMap hoodTable = new InterpolatingDoubleTreeMap();
+  
   /**
    * This function is run when the robot is first started up and should be used
    * for any
@@ -115,7 +115,9 @@ public class Robot extends TimedRobot {
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
 
-    fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
+    if (fieldLayout == null) 
+      fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
+    
 
     limelightUpdateOdom();
 
@@ -201,9 +203,6 @@ public class Robot extends TimedRobot {
 
     distanceToHub = Math.sqrt(Math.pow(dX, 2) + Math.pow(dY, 2));
     angleToHub = new Rotation2d(distanceToHub == 0 ? 0 : Math.acos(dX / distanceToHub));
-
-//    distanceToHub = Math.sqrt(Math.pow(dX, 2) + Math.pow(dY, 2));
-//    angleToHub = new Rotation2d(Math.atan2(dY, dX));
   }
 
   private void limelightUpdateOdom() {
@@ -272,32 +271,8 @@ public class Robot extends TimedRobot {
         () -> crippleMode);
   }
 
-//  public static void alignToTarget(DriveSubsystem driveTrain) {
-//    Pose2d botPose = driveTrain.getPose();
-//
-//    Pose2d angleRotatePose = new Pose2d(botPose.getX(), botPose.getY(), angleToHub);
-//
-//    PathConstraints pathConstraints = new PathConstraints(
-//            0.5,
-//            1.0,
-//            Units.degreesToRadians(45),
-//            Units.degreesToRadians(90));
-//
-//    double currentAngle = driveTrain.getHeading();
-//    headingPID.enableContinuousInput(-180, 180);
-//    double rot = headingPID.calculate(currentAngle, angleToHub.getDegrees());
-//
-//    SmartDashboard.putNumber("current deg heading", currentAngle);
-//    SmartDashboard.putNumber("current deg Angle", angleToHub.getDegrees());
-//
-//    rot = MathUtil.clamp(rot, -0.5, 0.5);
-//    driveTrain.drive(0, 0, rot, false);
-//  }
-
   public static void setHoodForCurrentDistance() {
     // Taken from flywheel verbose
-    InterpolatingDoubleTreeMap hoodTable = new InterpolatingDoubleTreeMap();
-
     hoodTable.put(1.651, -7.61);
     hoodTable.put(1.9558, -5.9);
     hoodTable.put(2.2606, -4.835);
@@ -312,7 +287,7 @@ public class Robot extends TimedRobot {
 
   public static void setRPMForCurrentDistance() {
     // Taken from flywheel verbose
-//    InterpolatingDoubleTreeMap rpmTable = new InterpolatingDoubleTreeMap();
+//    public static InterpolatingDoubleTreeMap rpmTable = new InterpolatingDoubleTreeMap();
 //    rpmTable.put(1.651, 4350.0);
 //    rpmTable.put(1.9558, 4300.0);
 //    rpmTable.put(2.2606, 4400.0);
@@ -324,30 +299,6 @@ public class Robot extends TimedRobot {
 //
 //    targetFlywheelRPM = rpmTable.get(distanceToHub);
   }
-
-//  public static Command alignToTarget() {
-//    fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
-//
-//    centerTagPose = fieldLayout == null
-//    ? new Pose2d(0, 0, new Rotation2d())
-//    : fieldLayout.getTagPose(26).get().toPose2d(); // gets tag 26 pose
-//
-//    double offsetMeters = Units.feetToMeters(-5); // This offset is for robot to be in front of tag
-//    targetPose = centerTagPose.transformBy( // this pose is when robot is in front of tag
-//        new Transform2d(offsetMeters, 0, new Rotation2d(90)));
-//
-//    targetPose = centerTagPose;
-//    SmartDashboard.getBoolean("Field layout here?", fieldLayout != null);
-//    SmartDashboard.putNumber("Given Target X", targetPose.getX());
-//    SmartDashboard.putNumber("Given Target Y", targetPose.getY());
-//
-//    PathConstraints pathConstraints = new PathConstraints(
-//        0.5,
-//        1.0,
-//        Units.degreesToRadians(45),
-//        Units.degreesToRadians(90));
-//    return AutoBuilder.pathfindToPose(targetPose, pathConstraints, 0);
-//  }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
@@ -403,9 +354,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testInit() {
-    // SmartDashboard.putBoolean("Test INIT", true);
     // Cancels all running commands at the start of test mode.
-    // CommandScheduler.getInstance().cancelAll();
+    CommandScheduler.getInstance().cancelAll();
   }
 
   /** This function is called periodically during test mode. */

@@ -116,39 +116,6 @@ public class RobotContainer {
                 }, drivetrain)
        
         );
-        // controller0.povUp().whileTrue(drivetrain.alignToTarget(
-        // controller0.povUp().onTrue(drivetrain.alignToTarget(
-        //         () -> Robot.hubPose
-        // ));
-//    controller0.leftBumper()
-//    .whileTrue(new RunCommand(
-//        () -> drivetrain.drive(
-//          // controller0.getLeftY(),
-//          0,
-//          0,
-//          // controller0.getLeftX(),
-//          (-Robot.yaw / 11.5) * Constants.limelightConstants.yawOutputMultiplier, //Placeholder
-//          false
-//        ),
-//        drivetrain
-//      ));
-
-//    controller0.rightBumper()
-//    .whileTrue(new RunCommand(
-//        () -> drivetrain.drive(
-//          // controller0.getLeftY(),
-////          Robot.testXDistance,
-//          Robot.ySpeed,
-//                Robot.xSpeed,
-//          // Robot.xSpeed,
-//          // Robot.ySpeed,
-////          Robot.testYSpeed,
-//          // controller0.getLeftX(),
-//          0,//(-Robot.yaw / 11.5) * Constants.limelightConstants.yawOutputMultiplier, //Placeholder
-//          false
-//        ),
-//        drivetrain
-//      ));
     }
 
     private void operatorController() {
@@ -165,19 +132,18 @@ public class RobotContainer {
                 superStructure.rejectIntake2()
         );
 
-        // Load fuel into shooer
-//    controller1.rightTrigger().whileTrue(
-//            superStructure.runIntake()
-//                    .alongWith(superStructure.rejectLoader())
-//                    .alongWith(superStructure.runIntake2())
-//    );
-//    controller1.rightTrigger().whileTrue(
-//            Robot.checkAndRunGun(superStructure)
-//    );
-
         controller1.rightTrigger().whileTrue(
                 Robot.checkAndRunGun(superStructure)
         );
+        controller1.rightTrigger().onTrue(Commands.runOnce(() -> {
+                loadingFuel = true;
+                double now = Timer.getFPGATimestamp();
+                if (now - Robot.lastTriggerPressTime < Robot.DOUBLE_PRESS_WINDOW) {
+                        Robot.crippleMode = !Robot.crippleMode;
+                }
+                Robot.lastTriggerPressTime = now;
+        }));
+        controller1.rightTrigger().onFalse(Commands.runOnce(() -> loadingFuel = false));
 
         controller1.povDown().whileTrue(
                 Commands.runOnce(
@@ -187,27 +153,6 @@ public class RobotContainer {
                 )
         );
 
-        controller1.rightTrigger().onTrue(Commands.runOnce(() -> {
-            double now = Timer.getFPGATimestamp();
-            if (now - Robot.lastTriggerPressTime < Robot.DOUBLE_PRESS_WINDOW) {
-                Robot.crippleMode = !Robot.crippleMode;
-                Robot.triggerPressCount = 0;
-            } else {
-                Robot.triggerPressCount = 1;
-            }
-            Robot.lastTriggerPressTime = now;
-        }));
-
-        controller1.rightTrigger().onTrue(
-                Commands.runOnce(
-                        () -> loadingFuel = true
-                )
-        );
-        controller1.rightTrigger().onFalse(
-                Commands.runOnce(
-                        () -> loadingFuel = false
-                )
-        );
 
         controller1.x().whileTrue(
 //       superStructure.primeFlywheel(3025) // rpms lag/drop down to about 2750
