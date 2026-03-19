@@ -285,21 +285,6 @@ public class Robot extends TimedRobot {
     m_robotContainer.superStructure.setHoodPos(hoodTable.get(distanceToHub));
   }
 
-  public static void setRPMForCurrentDistance() {
-    // Taken from flywheel verbose
-//    public static InterpolatingDoubleTreeMap rpmTable = new InterpolatingDoubleTreeMap();
-//    rpmTable.put(1.651, 4350.0);
-//    rpmTable.put(1.9558, 4300.0);
-//    rpmTable.put(2.2606, 4400.0);
-//    rpmTable.put(2.5654, 4300.0);
-//    rpmTable.put(2.8702, 4400.0);
-//    rpmTable.put(3.157, 4350.0);
-//    rpmTable.put(3.4789, 4300.0);
-//    rpmTable.put(4.191, 4250.0);
-//
-//    targetFlywheelRPM = rpmTable.get(distanceToHub);
-  }
-
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
