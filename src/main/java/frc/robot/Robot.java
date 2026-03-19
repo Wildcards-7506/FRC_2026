@@ -143,7 +143,7 @@ public class Robot extends TimedRobot {
     updateFlywheelLogs();
 
     if (useAutoHood) {
-      Robot.setRPMForCurrentDistance();
+      // Robot.setRPMForCurrentDistance();
       Robot.setHoodForCurrentDistance();
     }
 
