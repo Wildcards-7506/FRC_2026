@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7582345971614739,
-        "y": 0.6498696682507079
+        "x": 1.8874074074074074,
+        "y": 0.6369800569800577
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.4782464454976303,
-        "y": 1.305402843601895
+        "x": 2.07732415203887,
+        "y": 0.8094283489846001
       },
       "isLocked": false,
       "linkedName": "HP Load"
@@ -20,8 +20,8 @@
         "y": 0.7573341232227484
       },
       "prevControl": {
-        "x": 2.832298578199052,
-        "y": 1.0259952606635057
+        "x": 2.5863077463651636,
+        "y": 0.42340138902046154
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,22 +33,22 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.8,
+    "maxVelocity": 1.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
-    "nominalVoltage": 12.0,
+    "nominalVoltage": 1.0,
     "unlimited": false
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 68.29456325389441
+    "rotation": 67.83270589695047
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -179.57093855834944
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }
