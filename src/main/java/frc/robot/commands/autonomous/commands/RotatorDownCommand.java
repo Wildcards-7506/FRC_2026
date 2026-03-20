@@ -6,7 +6,6 @@ import frc.robot.Constants.SuperStructureConstants;
 
 public class RotatorDownCommand extends SequentialCommandGroup {
     public RotatorDownCommand(RobotContainer container) {
-        System.out.println("Stow preset called");
         // addRequirements(Robot.crane);
         addRequirements(container.superStructure);
         addCommands(

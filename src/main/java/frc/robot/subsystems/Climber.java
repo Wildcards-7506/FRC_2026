@@ -11,13 +11,15 @@ import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Climber extends SubsystemBase {
 
-    private final SparkMax extenderLeft;
-    private final SparkMax extenderRight;
+    public static SparkMax extenderLeft;
+    public static SparkMax extenderRight;
 
     private final RelativeEncoder extenderLeftEncoder;
     private final RelativeEncoder extenderRightEncoder;
@@ -48,13 +50,13 @@ public class Climber extends SubsystemBase {
         leftConfig
                 .inverted(true)
                 .smartCurrentLimit(Constants.ClimberConstants.kExtenderCurrentLimit)
-                .apply(softLimits)
+//                .apply(softLimits)
                 .apply(pidConfig);
 
         rightConfig
                 .inverted(true)
                 .smartCurrentLimit(Constants.ClimberConstants.kExtenderCurrentLimit)
-                .apply(softLimits)
+//                .apply(softLimits)
                 .apply(pidConfig);
 
         extenderLeft.configure(leftConfig,   ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -120,4 +122,16 @@ public class Climber extends SubsystemBase {
         SmartDashboard.putNumber("Extender Left Position",  getLeftPosition());
         SmartDashboard.putNumber("Extender Right Position", getRightPosition());
     }
+
+    public static Command crawlRight() {
+        return Commands.runEnd(
+                () -> {
+                    extenderRight.setVoltage(12);
+                },
+                () -> {
+                    extenderRight.setVoltage(0);
+                }
+        );
+    }
+
 }

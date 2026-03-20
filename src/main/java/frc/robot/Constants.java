@@ -60,12 +60,12 @@ public final class Constants {
 
     public static final boolean kGyroReversed = false;
 
-    public static final double fullTurnSpeed = 0.2; // current default state
-    public static final double fullDriveSpeed = 0.10; // current default state
+    public static final double fullTurnSpeed = 0.35; // current default state
+    public static final double fullDriveSpeed = 0.20; // current default state
     public static final double fineTurnSpeed = 0.2; // Not usesd - 3/16/26 
     public static final double fineDriveSpeed = 0.1; // Not usesd - 3/16/26
-    public static final double boostDriveSpeed = 0.5;
-    public static final double boostTurnSpeed = 0.25;
+    public static final double boostDriveSpeed = 0.7;
+    public static final double boostTurnSpeed = 0.35;
   }
 
   public static final class SuperStructureConstants{

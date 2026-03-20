@@ -54,10 +54,10 @@ public class RobotContainer {
     public RobotContainer() {
         drivetrain = new DriveSubsystem();
         superStructure = new SuperStructure();
-        autoMode = new AutoRoutines(this);
-        climberOLD = new climberOLD();
         climber = new Climber();
-        led = new LED(1, 5);
+        climberOLD = new climberOLD();
+        led = new LED(1, 14);
+        autoMode = new AutoRoutines(this);
 
         // Configure the button bindings
         configureButtonBindings();
@@ -84,7 +84,12 @@ public class RobotContainer {
                                 controller0.getLeftY(),
                                 controller0.getLeftX(),
                                 controller0.getRightX(),
-                                // RightTrigger = boost | LeftTrigger = fast
+                                // RightTrigger = boost |7777777777uuuuuuuuuuuuuuuuuuuuuuuuuuu6uuu7qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+                                //
+                                //
+                                //
+                                //
+                                // LeftTrigger = fast
                                 controller0.getRightTriggerAxis() > 0.2 ?  1 :
                                         controller0.getLeftTriggerAxis()  > 0.2 ? -1 : 0
                         ), drivetrain));
