@@ -11,26 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "step 1a"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake Down"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake 1"
+                  "pathName": "step3a "
                 }
               }
             ]
@@ -39,19 +20,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Gun And Load 5"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "step2a"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "step3a "
+            "name": "Intake Down"
           }
         },
         {
@@ -61,7 +30,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Intake 5"
+                  "name": "Intake 6.5"
                 }
               },
               {
