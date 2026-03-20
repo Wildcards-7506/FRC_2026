@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.autonomous.AutoRoutines;
+import frc.robot.subsystems.LED;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.SuperStructure;
 import frc.robot.utils.LimelightHelpers;
@@ -37,314 +38,341 @@ import frc.robot.utils.LimelightHelpers;
  * project.
  */
 public class Robot extends TimedRobot {
-  private Command m_autonomousCommand;
-  public static RobotContainer m_robotContainer = new RobotContainer();
-  public static Field2d m_field;
-  private static AprilTagFieldLayout fieldLayout;
-  public static AutoRoutines autoMode;
+    private Command m_autonomousCommand;
+    public static RobotContainer m_robotContainer = new RobotContainer();
+    public static Field2d m_field;
+    private static AprilTagFieldLayout fieldLayout;
+    public static AutoRoutines autoMode;
 
-  public static Limelight limelight = new Limelight();
-  
-  public static double yaw = 0.0;
-  public static double tagDistance = 0.0;
-  
-  public static Pose2d targetPose = new Pose2d(0, 0, new Rotation2d());
-  
-  double currentHeading = 0.0;
-  double targetHeading = 0.0;
-  
-  // Used for logging purposes, can be used for functionality but not intended
-  public static double flywheelHighestRPM = 0.0;
-  public static double flywheelLowestRPM = 0.0;
-  public static boolean flywheelHitTarget = false; // Checks if flywheel has hit target speed at-least once within init
-  public static double distanceToHub = 0.0;
-  public static Rotation2d angleToHub = new Rotation2d();
-  public static Pose2d centerTagPose = new Pose2d(0, 0, new Rotation2d());
-  public static Pose2d hubPose = new Pose2d(0, 0, new Rotation2d());
-  //  public static PIDController rotPID = new PIDController(0.02, 0, 0.01);
-  
-  public static boolean crippleMode = false;
-  public static int triggerPressCount = 0;
-  public static double lastTriggerPressTime = -1;
-  public static final double DOUBLE_PRESS_WINDOW = 0.25; // seconds
-  
-  public static double targetFlywheelRPM = 4000;
-  public static boolean useAutoHood = true;
+    public static Limelight limelight = new Limelight();
 
-  public static boolean loadingFuel = false;
-  
-  public static InterpolatingDoubleTreeMap hoodTable = new InterpolatingDoubleTreeMap();
-  
-  /**
-   * This function is run when the robot is first started up and should be used
-   * for any
-   * initialization code.
-   */
-  @Override
-  public void robotInit() {
-    // Instantiate our RobotContainer. This will perform all our button bindings,
-    // and put our
-    // autonomous chooser on the dashboard.
-    m_field = new Field2d();
-    autoMode = m_robotContainer.getAutoRoutines();
-    SmartDashboard.putData(m_field);
-    SmartDashboard.putNumber("pidp", 0.002);
-    // SmartDashboard.putNumber("pid2", -1);
-    SmartDashboard.putNumber("pidd", 0.01);
-    m_robotContainer.drivetrain.resetOdometry(m_robotContainer.drivetrain.getPose());
-  }
+    public static double yaw = 0.0;
+    public static double tagDistance = 0.0;
 
-  /**
-   * This function is called every 20 ms, no matter the mode. Use this for items
-   * like diagnostics
-   * that you want ran during disabled, autonomous, teleoperated and test.
-   *
-   * <p>
-   * This runs after the mode specific periodic functions, but before LiveWindow
-   * and
-   * SmartDashboard integrated updating.
-   */
-  @Override
-  public void robotPeriodic() {
-    // Runs the Scheduler. This is responsible for polling buttons, adding
-    // newly-scheduled
-    // commands, running already-scheduled commands, removing finished or
-    // interrupted commands,
-    // and running subsystem periodic() methods. This must be called from the
-    // robot's periodic
-    // block in order for anything in the Command-based framework to work.
+    public static Pose2d targetPose = new Pose2d(0, 0, new Rotation2d());
 
-    if (fieldLayout == null) 
-      fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
-    
-    limelightUpdateOdom();
+    double currentHeading = 0.0;
+    double targetHeading = 0.0;
 
-    Optional<Alliance> alliances = DriverStation.getAlliance();
-    boolean onBlueAlliance = alliances.isPresent() ? alliances.get() == DriverStation.Alliance.Blue : true;
+    // Used for logging purposes, can be used for functionality but not intended
+    public static double flywheelHighestRPM = 0.0;
+    public static double flywheelLowestRPM = 0.0;
+    public static boolean flywheelHitTarget = false; // Checks if flywheel has hit target speed at-least once within init
+    public static double distanceToHub = 0.0;
+    public static Rotation2d angleToHub = new Rotation2d();
+    public static Pose2d centerTagPose = new Pose2d(0, 0, new Rotation2d());
+    public static Pose2d hubPose = new Pose2d(0, 0, new Rotation2d());
+    //  public static PIDController rotPID = new PIDController(0.02, 0, 0.01);
 
-    if (fieldLayout != null) {
-        centerTagPose = fieldLayout.getTagPose(onBlueAlliance 
-            ? Constants.limelightConstants.blueAlianceCeterTagNum 
-            : Constants.limelightConstants.redAlianceCeterTagNum)
-        .get().toPose2d();
+    public static boolean crippleMode = false;
+    public static int triggerPressCount = 0;
+    public static double lastTriggerPressTime = -1;
+    public static final double DOUBLE_PRESS_WINDOW = 0.25; // seconds
+
+    public static double targetFlywheelRPM = 4000;
+    public static boolean useAutoHood = true;
+
+    public static boolean loadingFuel = false;
+
+    public static InterpolatingDoubleTreeMap hoodTable = new InterpolatingDoubleTreeMap();
+
+    /**
+     * This function is run when the robot is first started up and should be used
+     * for any
+     * initialization code.
+     */
+    @Override
+    public void robotInit() {
+        // Instantiate our RobotContainer. This will perform all our button bindings,
+        // and put our
+        // autonomous chooser on the dashboard.
+        m_field = new Field2d();
+        autoMode = m_robotContainer.getAutoRoutines();
+        SmartDashboard.putData(m_field);
+        SmartDashboard.putNumber("pidp", 0.002);
+        // SmartDashboard.putNumber("pid2", -1);
+        SmartDashboard.putNumber("pidd", 0.01);
+        m_robotContainer.drivetrain.resetOdometry(m_robotContainer.drivetrain.getPose());
     }
 
-    double offsetToHubCenter = Units.inchesToMeters(-23.5); // eyeballed at 2 feet from tag 26 to hub center, x direction wpi
-    hubPose = centerTagPose.transformBy(new Transform2d(offsetToHubCenter, 0, new Rotation2d()));
+    /**
+     * This function is called every 20 ms, no matter the mode. Use this for items
+     * like diagnostics
+     * that you want ran during disabled, autonomous, teleoperated and test.
+     *
+     * <p>
+     * This runs after the mode specific periodic functions, but before LiveWindow
+     * and
+     * SmartDashboard integrated updating.
+     */
+    @Override
+    public void robotPeriodic() {
+        // Runs the Scheduler. This is responsible for polling buttons, adding
+        // newly-scheduled
+        // commands, running already-scheduled commands, removing finished or
+        // interrupted commands,
+        // and running subsystem periodic() methods. This must be called from the
+        // robot's periodic
+        // block in order for anything in the Command-based framework to work.
 
-    CommandScheduler.getInstance().run();
+        if (fieldLayout == null)
+            fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
 
-    // blue, field coordinates
+        limelightUpdateOdom();
 
-    updateHeadingToHub();
+        Optional<Alliance> alliances = DriverStation.getAlliance();
+        boolean onBlueAlliance = alliances.isPresent() ? alliances.get() == DriverStation.Alliance.Blue : true;
 
-    updateFlywheelLogs();
+        if (fieldLayout != null) {
+            centerTagPose = fieldLayout.getTagPose(onBlueAlliance
+                            ? Constants.limelightConstants.blueAlianceCeterTagNum
+                            : Constants.limelightConstants.redAlianceCeterTagNum)
+                    .get().toPose2d();
+        }
 
-    if (useAutoHood) {
-      // Robot.setRPMForCurrentDistance();
-      Robot.setHoodForCurrentDistance();
+        double offsetToHubCenter = Units.inchesToMeters(-23.5); // eyeballed at 2 feet from tag 26 to hub center, x direction wpi
+        hubPose = centerTagPose.transformBy(new Transform2d(offsetToHubCenter, 0, new Rotation2d()));
+
+        CommandScheduler.getInstance().run();
+
+        // blue, field coordinates
+
+        updateHeadingToHub();
+
+        updateFlywheelLogs();
+
+        if (useAutoHood) {
+            // Robot.setRPMForCurrentDistance();
+            Robot.setHoodForCurrentDistance();
+            if (!loadingFuel) {
+                m_robotContainer.led.setColorType(LED.ColorType.SOLID);
+                m_robotContainer.led.setColor(128, 0, 128);
+            };
+        }
+
+        if (crippleMode) {
+            m_robotContainer.led.setColorType(LED.ColorType.FLASH);
+            m_robotContainer.led.setColor(255, 140, 0);
+        }
+
+        if (DriverStation.getMatchNumber() > 0 && !m_robotContainer.isHubActive()) {
+            m_robotContainer.led.setColorType(LED.ColorType.SOLID);
+            m_robotContainer.led.setColor(255, 0, 0);
+        }
+
+        putSmartDashboardValues();
     }
 
-    SmartDashboard.putNumber("TagPose X", centerTagPose.getX());
-    SmartDashboard.putNumber("TagPose Y", centerTagPose.getY());
-    SmartDashboard.putNumber("TagPose Yaw", centerTagPose.getRotation().getDegrees());
-    SmartDashboard.putNumber("HubPose X", hubPose.getX());
-    SmartDashboard.putNumber("HubPose Y", hubPose.getY());
-    SmartDashboard.putNumber("HubPose Yaw", hubPose.getRotation().getDegrees());
+    private void putSmartDashboardValues() {
+        SmartDashboard.putNumber("TagPose X", centerTagPose.getX());
+        SmartDashboard.putNumber("TagPose Y", centerTagPose.getY());
+        SmartDashboard.putNumber("TagPose Yaw", centerTagPose.getRotation().getDegrees());
+        SmartDashboard.putNumber("HubPose X", hubPose.getX());
+        SmartDashboard.putNumber("HubPose Y", hubPose.getY());
+        SmartDashboard.putNumber("HubPose Yaw", hubPose.getRotation().getDegrees());
 
-    SmartDashboard.putBoolean("Use auto hood", useAutoHood);
-    SmartDashboard.putBoolean("Field layout here?", fieldLayout != null);
+        SmartDashboard.putBoolean("Use auto hood", useAutoHood);
+        SmartDashboard.putBoolean("Field layout here?", fieldLayout != null);
 
-    SmartDashboard.putBoolean("Flywheel target hit", flywheelHitTarget);
-    SmartDashboard.putNumber("Flywheel Lowest", flywheelLowestRPM);
-    SmartDashboard.putNumber("Flywheel Highest", flywheelHighestRPM);
-    SmartDashboard.putNumber("Flywheel RPM", m_robotContainer.superStructure.getRPM());
-    SmartDashboard.putNumber("Flywheel Target", targetFlywheelRPM);
+        SmartDashboard.putBoolean("Flywheel target hit", flywheelHitTarget);
+        SmartDashboard.putNumber("Flywheel Lowest", flywheelLowestRPM);
+        SmartDashboard.putNumber("Flywheel Highest", flywheelHighestRPM);
+        SmartDashboard.putNumber("Flywheel RPM", m_robotContainer.superStructure.getRPM());
+        SmartDashboard.putNumber("Flywheel Target", targetFlywheelRPM);
 
-    SmartDashboard.putNumber("Hood target", m_robotContainer.superStructure.getHoodTarget());
+        SmartDashboard.putNumber("Hood target", m_robotContainer.superStructure.getHoodTarget());
 
-    SmartDashboard.putNumber("GyroHeading", m_robotContainer.drivetrain.getHeading());
-    SmartDashboard.putNumber("GyroAngleZ", m_robotContainer.drivetrain.m_gyro.getAngle());
-    SmartDashboard.putNumber("LX", m_robotContainer.controller0.getLeftX());
-    SmartDashboard.putNumber("LY", m_robotContainer.controller0.getLeftY());
-    SmartDashboard.putNumber("RX", m_robotContainer.controller0.getRightX());
-    SmartDashboard.putBoolean("FieldRelative", m_robotContainer.drivetrain.isFieldRel);
+        SmartDashboard.putNumber("GyroHeading", m_robotContainer.drivetrain.getHeading());
+        SmartDashboard.putNumber("GyroAngleZ", m_robotContainer.drivetrain.m_gyro.getAngle());
+        SmartDashboard.putNumber("LX", m_robotContainer.controller0.getLeftX());
+        SmartDashboard.putNumber("LY", m_robotContainer.controller0.getLeftY());
+        SmartDashboard.putNumber("RX", m_robotContainer.controller0.getRightX());
+        SmartDashboard.putBoolean("FieldRelative", m_robotContainer.drivetrain.isFieldRel);
 
-    SmartDashboard.putNumber("Robot Yaw", yaw);
-    SmartDashboard.putNumber("Flat Plane Tag Distance", tagDistance);
-    SmartDashboard.putNumber("TX", LimelightHelpers.getTX("limelight"));
-    SmartDashboard.putNumber("Yaw PID", (yaw / 11.5) * Constants.limelightConstants.yawOutputMultiplier);
-    SmartDashboard.putNumber("Hood degrees", m_robotContainer.superStructure.getHoodPos());
+        SmartDashboard.putNumber("Robot Yaw", yaw);
+        SmartDashboard.putNumber("Flat Plane Tag Distance", tagDistance);
+        SmartDashboard.putNumber("TX", LimelightHelpers.getTX("limelight"));
+        SmartDashboard.putNumber("Yaw PID", (yaw / 11.5) * Constants.limelightConstants.yawOutputMultiplier);
+        SmartDashboard.putNumber("Hood degrees", m_robotContainer.superStructure.getHoodPos());
 
-    SmartDashboard.putNumber("Target Pose X", targetPose.getX());
-    SmartDashboard.putNumber("Target Pose Y", targetPose.getY());
-    SmartDashboard.putNumber("Robot Pose X", m_robotContainer.drivetrain.getPose().getX());
-    SmartDashboard.putNumber("Robot Pose Y", m_robotContainer.drivetrain.getPose().getY());
-    SmartDashboard.putNumber("Field Robot Pose X", m_field.getRobotPose().getX());
-    SmartDashboard.putNumber("Field Robot Pose Y", m_field.getRobotPose().getY());
+        SmartDashboard.putNumber("Target Pose X", targetPose.getX());
+        SmartDashboard.putNumber("Target Pose Y", targetPose.getY());
+        SmartDashboard.putNumber("Robot Pose X", m_robotContainer.drivetrain.getPose().getX());
+        SmartDashboard.putNumber("Robot Pose Y", m_robotContainer.drivetrain.getPose().getY());
+        SmartDashboard.putNumber("Field Robot Pose X", m_field.getRobotPose().getX());
+        SmartDashboard.putNumber("Field Robot Pose Y", m_field.getRobotPose().getY());
 
-    SmartDashboard.putNumber("DistanceToHub", Units.metersToInches(distanceToHub));
-    SmartDashboard.putNumber("AngleToHub", angleToHub.getDegrees());
+        SmartDashboard.putNumber("DistanceToHub", Units.metersToInches(distanceToHub));
+        SmartDashboard.putNumber("AngleToHub", angleToHub.getDegrees());
 
-    SmartDashboard.putBoolean("Crippled?", crippleMode);
+        SmartDashboard.putBoolean("Crippled?", crippleMode);
 
-    SmartDashboard.putNumber("Hub X", hubPose.getX());
-    SmartDashboard.putNumber("Hub Y", hubPose.getY());
-
-//    SmartDashboard.putNumber("")
-
-//    SmartDashboard.putNumber("Climb Left Pos", m_robotContainer.climberOLD.getClimberLeftPosition());
-//    SmartDashboard.putNumber("Climb Right Pos", m_robotContainer.climberOLD.getClimberRightPosition());
-//    SmartDashboard.putNumber("Climb Left Volt", m_robotContainer.climberOLD.getClimbLeftVoltage());
-//    SmartDashboard.putNumber("Climb Right Volt", m_robotContainer.climberOLD.getClimbRightVoltage());
-//    SmartDashboard.putNumber("Climb Left SP", m_robotContainer.climberOLD.getClimbLeftSetPoint());
-//    SmartDashboard.putNumber("Climb Right SP", m_robotContainer.climberOLD.getClimbRightSetPoint());
-
-//    SmartDashboard.putNumber("")
-  }
-
-  private void updateHeadingToHub() {
-
-    Pose2d botPose = m_robotContainer.drivetrain.getPose();
-
-    double dX = hubPose.getX() - botPose.getX(); // delta x
-    double dY = hubPose.getY() - botPose.getY(); // delta y
-
-    distanceToHub = Math.sqrt(Math.pow(dX, 2) + Math.pow(dY, 2));
-    angleToHub = new Rotation2d(distanceToHub == 0 ? 0 : Math.acos(dX / distanceToHub));
-  }
-
-  private void limelightUpdateOdom() {
-    LimelightHelpers.SetRobotOrientation("limelight",
-        m_robotContainer.drivetrain.m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-    LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-
-    boolean doRejectUpdate = false;
-    if (Math.abs(m_robotContainer.drivetrain.m_gyro.getRate()) > 360) {
-      doRejectUpdate = true;
-    }
-    if (mt2.tagCount == 0) {
-      doRejectUpdate = true;
-    }
-    if (!doRejectUpdate) {
-      // 0.5,0.5,0.5 original
-      m_robotContainer.drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
-      m_robotContainer.drivetrain.m_poseEstimator.addVisionMeasurement(
-          mt2.pose,
-          mt2.timestampSeconds);
+        SmartDashboard.putNumber("Hub X", hubPose.getX());
+        SmartDashboard.putNumber("Hub Y", hubPose.getY());
     }
 
-    m_field.setRobotPose(m_robotContainer.drivetrain.getPose());
-  }
+    private void updateHeadingToHub() {
 
-  private void updateFlywheelLogs() {
-    double currentRPM = m_robotContainer.superStructure.getRPM();
+        Pose2d botPose = m_robotContainer.drivetrain.getPose();
 
-    if (currentRPM > targetFlywheelRPM) {
-      flywheelHitTarget = true;
-    } else if (currentRPM < (targetFlywheelRPM - 2000)) {
-      flywheelHitTarget = false;
+        double dX = hubPose.getX() - botPose.getX(); // delta x
+        double dY = hubPose.getY() - botPose.getY(); // delta y
+
+        distanceToHub = Math.sqrt(Math.pow(dX, 2) + Math.pow(dY, 2));
+        angleToHub = new Rotation2d(distanceToHub == 0 ? 0 : Math.acos(dX / distanceToHub));
     }
 
-    if (loadingFuel && flywheelHitTarget) {
-      if (currentRPM > flywheelHighestRPM) {
-        flywheelHighestRPM = currentRPM;
-      }
+    private void limelightUpdateOdom() {
+        LimelightHelpers.SetRobotOrientation("limelight",
+                m_robotContainer.drivetrain.m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
 
-      if (flywheelLowestRPM == 0 || currentRPM < flywheelLowestRPM) {
-        flywheelLowestRPM = currentRPM;
-      }
+        boolean doRejectUpdate = false;
+        if (Math.abs(m_robotContainer.drivetrain.m_gyro.getRate()) > 360) {
+            doRejectUpdate = true;
+        }
+        if (mt2.tagCount == 0) {
+            doRejectUpdate = true;
+        }
+        if (!doRejectUpdate) {
+            // 0.5,0.5,0.5 original
+            m_robotContainer.drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
+            m_robotContainer.drivetrain.m_poseEstimator.addVisionMeasurement(
+                    mt2.pose,
+                    mt2.timestampSeconds);
+        }
+
+        m_field.setRobotPose(m_robotContainer.drivetrain.getPose());
     }
-  }
 
-  public static Command checkAndRunGun(SuperStructure superStructure, Boolean useAuto) {
-    return Commands.either(
-        superStructure.runIntake()
-            .alongWith(useAuto ? superStructure.rejectLoaderAuto() : superStructure.rejectLoader())
-            .alongWith(superStructure.runIntake2()),
-        Commands.waitUntil(() -> Robot.flywheelHitTarget)
-            .andThen(
+    private void updateFlywheelLogs() {
+        double currentRPM = m_robotContainer.superStructure.getRPM();
+
+        if (currentRPM > targetFlywheelRPM) {
+            flywheelHitTarget = true;
+            m_robotContainer.led.setColor(0, 255, 0);
+            m_robotContainer.led.setColorType(LED.ColorType.FLASH);
+        } else if (currentRPM < (targetFlywheelRPM - 2000)) {
+            flywheelHitTarget = false;
+        }
+
+        if (loadingFuel && flywheelHitTarget) {
+            if (currentRPM > flywheelHighestRPM) {
+                flywheelHighestRPM = currentRPM;
+            } else {
+                m_robotContainer.led.setColor(0, 255, 0);
+                m_robotContainer.led.setColorType(LED.ColorType.FLASH);
+            }
+
+            if (flywheelLowestRPM == 0 || currentRPM < flywheelLowestRPM) {
+                flywheelLowestRPM = currentRPM;
+            }
+        }
+    }
+
+    public static Command checkAndRunGun(SuperStructure superStructure, Boolean useAuto) {
+        return Commands.either(
                 superStructure.runIntake()
-                    .alongWith(useAuto ? superStructure.rejectLoaderAuto() : superStructure.rejectLoader())
-                    .alongWith(superStructure.runIntake2())),
-        () -> crippleMode);
-  }
-
-  public static void setHoodForCurrentDistance() {
-    // Taken from flywheel verbose
-    hoodTable.put(1.651, -7.61);
-    hoodTable.put(1.9558, -5.9);
-    hoodTable.put(2.2606, -4.835);
-    hoodTable.put(2.5654, -2.93);
-    hoodTable.put(2.8702, -0.2);
-    hoodTable.put(3.157, 1.02564);
-    hoodTable.put(3.4789, 4.102);
-    hoodTable.put(4.191, 7.32600);
-
-    m_robotContainer.superStructure.setHoodPos(hoodTable.get(distanceToHub));
-  }
-
-  /** This function is called once each time the robot enters Disabled mode. */
-  @Override
-  public void disabledInit() {
-    m_robotContainer.superStructure.setIntake2Voltage(0);
-  }
-
-  @Override
-  public void disabledPeriodic() {
-  }
-
-  /**
-   * This autonomous runs the autonomous command selected by your
-   * {@link RobotContainer} class.
-   */
-  @Override
-  public void autonomousInit() {
-    CommandScheduler.getInstance().cancelAll();
-
-    // Set robot state
-    autoMode.resetAutoHeading();
-//    autoMode.getAutonomousCommand().schedule();
-  }
-
-  /** This function is called periodically during autonomous. */
-  @Override
-  public void autonomousPeriodic() {
-    // CommandScheduler.getInstance().run();
-  }
-
-  @Override
-  public void teleopInit() {
-    // This makes sure that the autonomous stops running when
-    // teleop starts running. If you want the autonomous to
-    // continue until interrupted by another command, remove
-    // this line or comment it out.
-    CommandScheduler.getInstance().cancelAll();
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
+                        .alongWith(useAuto ? superStructure.rejectLoaderAuto() : superStructure.rejectLoader())
+                        .alongWith(superStructure.runIntake2()),
+                Commands.waitUntil(() -> Robot.flywheelHitTarget)
+                        .andThen(
+                                superStructure.runIntake()
+                                        .alongWith(useAuto ? superStructure.rejectLoaderAuto() : superStructure.rejectLoader())
+                                        .alongWith(superStructure.runIntake2())),
+                () -> crippleMode);
     }
 
-    flywheelHitTarget = false;
-    flywheelHighestRPM = 0.0;
-    flywheelLowestRPM = 0.0;
+    public static void setHoodForCurrentDistance() {
+        // Taken from flywheel verbose
+        hoodTable.put(1.651, -7.61);
+        hoodTable.put(1.9558, -5.9);
+        hoodTable.put(2.2606, -4.835);
+        hoodTable.put(2.5654, -2.93);
+        hoodTable.put(2.8702, -0.2);
+        hoodTable.put(3.157, 1.02564);
+        hoodTable.put(3.4789, 4.102);
+        hoodTable.put(4.191, 7.32600);
 
-    m_robotContainer.superStructure.setRotatorPos(Constants.SuperStructureConstants.rotatorMax);
-  }
+        m_robotContainer.superStructure.setHoodPos(hoodTable.get(distanceToHub));
+    }
 
-  /** This function is called periodically during operator control. */
-  @Override
-  public void teleopPeriodic() {
-    // m_robotContainer.superStructure.setIntake2Voltage(12);
-  }
+    /**
+     * This function is called once each time the robot enters Disabled mode.
+     */
+    @Override
+    public void disabledInit() {
+        m_robotContainer.superStructure.setIntake2Voltage(0);
+    }
 
-  @Override
-  public void testInit() {
-    // Cancels all running commands at the start of test mode.
-    CommandScheduler.getInstance().cancelAll();
-  }
+    @Override
+    public void disabledPeriodic() {
+        m_robotContainer.led.setColorType(LED.ColorType.ALLIANCE_FLOW);
+    }
 
-  /** This function is called periodically during test mode. */
-  @Override
-  public void testPeriodic() {
-  }
+    /**
+     * This autonomous runs the autonomous command selected by your
+     * {@link RobotContainer} class.
+     */
+    @Override
+    public void autonomousInit() {
+        CommandScheduler.getInstance().cancelAll();
+
+        // Set robot state
+        autoMode.resetAutoHeading();
+        m_robotContainer.led.setColorType(LED.ColorType.STREAMER);
+//    autoMode.getAutonomousCommand().schedule();
+    }
+
+    /**
+     * This function is called periodically during autonomous.
+     */
+    @Override
+    public void autonomousPeriodic() {
+        if (!loadingFuel) {
+            m_robotContainer.led.setColorType(LED.ColorType.RAINBOW);
+        }
+        updateFlywheelLogs();
+        // CommandScheduler.getInstance().run();
+    }
+
+    @Override
+    public void teleopInit() {
+        // This makes sure that the autonomous stops running when
+        // teleop starts running. If you want the autonomous to
+        // continue until interrupted by another command, remove
+        // this line or comment it out.
+        CommandScheduler.getInstance().cancelAll();
+        if (m_autonomousCommand != null) {
+            m_autonomousCommand.cancel();
+        }
+
+        flywheelHitTarget = false;
+        flywheelHighestRPM = 0.0;
+        flywheelLowestRPM = 0.0;
+
+        m_robotContainer.superStructure.setRotatorPos(Constants.SuperStructureConstants.rotatorMax);
+        m_robotContainer.led.setColorType(LED.ColorType.STREAMER);
+    }
+
+    /**
+     * This function is called periodically during operator control.
+     */
+    @Override
+    public void teleopPeriodic() {
+        // m_robotContainer.superStructure.setIntake2Voltage(12);
+    }
+
+    @Override
+    public void testInit() {
+        // Cancels all running commands at the start of test mode.
+        CommandScheduler.getInstance().cancelAll();
+    }
+
+    /**
+     * This function is called periodically during test mode.
+     */
+    @Override
+    public void testPeriodic() {
+    }
 }
