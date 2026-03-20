@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IOConstants;
 import frc.robot.Constants.SuperStructureConstants;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 
 public class SuperStructure extends SubsystemBase {
@@ -34,7 +35,7 @@ public class SuperStructure extends SubsystemBase {
     private final SparkMaxConfig intakeConfig = new SparkMaxConfig(); // Neo
     private final SparkMaxConfig intake2Config = new SparkMaxConfig();
     private final SparkMaxConfig rotatorConfig = new SparkMaxConfig();
-    private final SparkMaxConfig hoodConfig = new SparkMaxConfig();    
+    private final SparkMaxConfig hoodConfig = new SparkMaxConfig();
 
     private final SparkClosedLoopController flywheelPID;
     private final SparkClosedLoopController rotatorPID;
@@ -49,84 +50,84 @@ public class SuperStructure extends SubsystemBase {
         hoodPID = hood.getClosedLoopController();
 
         loaderConfig
-            .smartCurrentLimit(40)
-            .inverted(true)
-            .idleMode(IdleMode.kBrake)
-        .softLimit
-            .forwardSoftLimitEnabled(false)
-            .reverseSoftLimitEnabled(false);
+                .smartCurrentLimit(40)
+                .inverted(true)
+                .idleMode(IdleMode.kBrake)
+                .softLimit
+                .forwardSoftLimitEnabled(false)
+                .reverseSoftLimitEnabled(false);
 
         flywheelConfig
-            .smartCurrentLimit(80)
-            .inverted(false)
-            .idleMode(IdleMode.kCoast)
-        .softLimit
-            .forwardSoftLimitEnabled(false)
-            .reverseSoftLimitEnabled(false);
+                .smartCurrentLimit(80)
+                .inverted(false)
+                .idleMode(IdleMode.kCoast)
+                .softLimit
+                .forwardSoftLimitEnabled(false)
+                .reverseSoftLimitEnabled(false);
 
         flywheelConfig.encoder
-            .positionConversionFactor(1)
-            .velocityConversionFactor(1); // 1 is for RPM
+                .positionConversionFactor(1)
+                .velocityConversionFactor(1); // 1 is for RPM
         flywheelConfig.closedLoop
-            .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-            .pid(0.0013 ,0, 0.016)
+                .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                .pid(0.0013, 0, 0.016)
                 // 0.002 0 0.00
                 // 0.002 0 0.0012
                 // 0.0013 ,0, 0.003
                 // 0.0013 ,0, 0.009
                 // 0.0013 ,0, 0.015 SWEET SPOT - 3/7/26
                 // 0.0013 ,0, 0.016 TOO HIGH ?
-            .outputRange(0, 1);
+                .outputRange(0, 1);
 
         intakeConfig
-            .smartCurrentLimit(40)
-            .inverted(true)
-            .idleMode(IdleMode.kBrake)
-        .softLimit
-            .forwardSoftLimitEnabled(false)
-            .reverseSoftLimitEnabled(false);
+                .smartCurrentLimit(40)
+                .inverted(true)
+                .idleMode(IdleMode.kBrake)
+                .softLimit
+                .forwardSoftLimitEnabled(false)
+                .reverseSoftLimitEnabled(false);
 
         intake2Config
-            .smartCurrentLimit(40)
-            .inverted(false)
-            .idleMode(IdleMode.kBrake)
-        .softLimit
-            .forwardSoftLimitEnabled(false)
-            .reverseSoftLimitEnabled(false);
+                .smartCurrentLimit(40)
+                .inverted(false)
+                .idleMode(IdleMode.kBrake)
+                .softLimit
+                .forwardSoftLimitEnabled(false)
+                .reverseSoftLimitEnabled(false);
 
         rotatorConfig
-            .smartCurrentLimit(40)
-            .inverted(true)
-            .idleMode(IdleMode.kBrake)
-        .softLimit
-            .forwardSoftLimitEnabled(false)
-            .reverseSoftLimitEnabled(false);
+                .smartCurrentLimit(40)
+                .inverted(true)
+                .idleMode(IdleMode.kBrake)
+                .softLimit
+                .forwardSoftLimitEnabled(false)
+                .reverseSoftLimitEnabled(false);
 
         rotatorConfig.encoder
-            .positionConversionFactor(360.0 * 1/9 * 1/9)
-            .velocityConversionFactor(360.0 * 1/9 * 1/9);
+                .positionConversionFactor(360.0 * 1 / 9 * 1 / 9)
+                .velocityConversionFactor(360.0 * 1 / 9 * 1 / 9);
         rotatorConfig.closedLoop
-            .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-            .pid(0.005, 0, 0)
-            .outputRange(-1, 1);
+                .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                .pid(0.005, 0, 0)
+                .outputRange(-1, 1);
 
         hoodConfig
-            .smartCurrentLimit(30)
-            .inverted(false)
-            .idleMode(IdleMode.kBrake)
-        .softLimit
-            .forwardSoftLimitEnabled(false)
-            .reverseSoftLimitEnabled(false);
+                .smartCurrentLimit(30)
+                .inverted(false)
+                .idleMode(IdleMode.kBrake)
+                .softLimit
+                .forwardSoftLimitEnabled(false)
+                .reverseSoftLimitEnabled(false);
 
         hoodConfig.encoder
 //            .positionConversionFactor(360.0 * 1/5 * 1/5 * 1/5 * 2/3);
 //            .velocityConversionFactor(360.0 * 1/5 * 1/5 * 1/5 * 2/3);
-            .positionConversionFactor(360.0 * 1/9 * 1/9 * 18/39)
-            .velocityConversionFactor(360.0 * 1/9 * 1/9 * 18/39);
+                .positionConversionFactor(360.0 * 1 / 9 * 1 / 9 * 18 / 39)
+                .velocityConversionFactor(360.0 * 1 / 9 * 1 / 9 * 18 / 39);
         hoodConfig.closedLoop
-            .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-            .pid(0.1,0,0.05)
-            .outputRange(-1, 1);
+                .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                .pid(0.1, 0, 0.05)
+                .outputRange(-1, 1);
 
         loader.configure(loaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         flywheel.configure(flywheelConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -140,91 +141,91 @@ public class SuperStructure extends SubsystemBase {
     // shooter gun
     public Command primeFlywheel(double desiredRPM) {
         return Commands.runEnd(
-            () -> {
+                () -> {
 //                flywheelConfig.closedLoop.pid(SmartDashboard.getNumber("pidp", 0), 0, SmartDashboard.getNumber("pidd", 0));
 //                flywheel.configure(flywheelConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-                setFlywheelRPM(desiredRPM);
-            },
-            () -> setFlywheelRPM(0)
+                    setFlywheelRPM(desiredRPM);
+                },
+                () -> setFlywheelRPM(0)
         );
     }
 
     //Intake Control Commands
     public Command runIntake() {
         return Commands.runEnd(
-            () -> setIntakeVoltage(12), 
-            () -> setIntakeVoltage(0)
+                () -> setIntakeVoltage(12),
+                () -> setIntakeVoltage(0)
         );
     }
 
     public Command rejectIntake() {
         return Commands.runEnd(
-            () -> setIntakeVoltage(-12), 
-            () -> setIntakeVoltage(0)
+                () -> setIntakeVoltage(-12),
+                () -> setIntakeVoltage(0)
         );
     }
 
     public Command runIntake2() {
         return Commands.runEnd(
-            () -> setIntake2Voltage(12), 
-            () -> setIntake2Voltage(0)
+                () -> setIntake2Voltage(12),
+                () -> setIntake2Voltage(0)
         );
     }
 
     public Command rejectIntake2() {
         return Commands.runEnd(
-            () -> setIntake2Voltage(-12),
-            () -> setIntake2Voltage(0)
+                () -> setIntake2Voltage(-12),
+                () -> setIntake2Voltage(0)
         );
     }
 
-    public Command longDistance(){
+    public Command longDistance() {
         return Commands.runEnd(
-            () -> {
-                setHoodPos(SuperStructureConstants.hoodLongDistance);
-                // setFlywheelRPM(SuperStructureConstants.rpmLongDistance);
-            },
-            () -> setFlywheelRPM(0)
+                () -> {
+                    setHoodPos(SuperStructureConstants.hoodLongDistance);
+                    // setFlywheelRPM(SuperStructureConstants.rpmLongDistance);
+                },
+                () -> setFlywheelRPM(0)
         );
     }
 
-    public Command midDistance(){
+    public Command midDistance() {
         return Commands.runEnd(
-            () -> {
-                setHoodPos(SuperStructureConstants.hoodMidDistance);
-                // setFlywheelRPM(SuperStructureConstants.rpmMidDistance);
-            },
-            () -> setFlywheelRPM(0)
+                () -> {
+                    setHoodPos(SuperStructureConstants.hoodMidDistance);
+                    // setFlywheelRPM(SuperStructureConstants.rpmMidDistance);
+                },
+                () -> setFlywheelRPM(0)
         );
     }
 
-    public Command shortDistance(){
+    public Command shortDistance() {
         return Commands.runEnd(
-            () -> {
-                setHoodPos(SuperStructureConstants.hoodShortDistance);
-                // setFlywheelRPM(SuperStructureConstants.rpmShortDistance);
-            },
-            () -> setFlywheelRPM(0)
+                () -> {
+                    setHoodPos(SuperStructureConstants.hoodShortDistance);
+                    // setFlywheelRPM(SuperStructureConstants.rpmShortDistance);
+                },
+                () -> setFlywheelRPM(0)
         );
     }
 
     //Rotator Control Commands
     public Command runRotator(RobotContainer container) {
         return Commands.runOnce(
-            () -> {
-                double fineControl = container.controller1.getRightY();
-                double deadBandControl = MathUtil.applyDeadband(fineControl, IOConstants.kDriveDeadband);
-                rotatorSetpoint += (deadBandControl*0.1);
-                System.out.println("DBC: " + deadBandControl + " ROT: " + rotatorSetpoint + " FC: " + fineControl);
-                setRotatorPos(rotatorSetpoint);
-            }
+                () -> {
+                    double fineControl = container.controller1.getRightY();
+                    double deadBandControl = MathUtil.applyDeadband(fineControl, IOConstants.kDriveDeadband);
+                    rotatorSetpoint += (deadBandControl * 0.1);
+                    System.out.println("DBC: " + deadBandControl + " ROT: " + rotatorSetpoint + " FC: " + fineControl);
+                    setRotatorPos(rotatorSetpoint);
+                }
         );
     }
 
     public Command bringUpRotator() {
         return Commands.runEnd(
-            () -> setRotatorPos(SuperStructureConstants.rotatorMin),
-            () -> setRotatorPos(SuperStructureConstants.rotatorMax)
+                () -> setRotatorPos(SuperStructureConstants.rotatorMin),
+                () -> setRotatorPos(SuperStructureConstants.rotatorMax)
         );
     }
 
@@ -235,19 +236,30 @@ public class SuperStructure extends SubsystemBase {
     //Loader Control Commands
     public Command runLoader() {
         return Commands.runEnd(
-            () -> setLoaderVoltage(12), 
-            () -> setLoaderVoltage(0)
+                () -> setLoaderVoltage(12),
+                () -> setLoaderVoltage(0)
         );
     }
 
     public Command rejectLoader() {
         return Commands.runEnd(
-            () -> setLoaderVoltage(-12), 
-            () -> setLoaderVoltage(0)
+                () -> setLoaderVoltage(-12),
+                () -> setLoaderVoltage(0)
         );
     }
 
-    // public Command rejectLoaderAuto() {}
+    public Command rejectLoaderAuto() {
+        return Commands.runEnd(
+                () -> {
+                    Robot.loadingFuel = true;
+                    setLoaderVoltage(-12);
+                },
+                () -> {
+                    Robot.loadingFuel = false;
+                    setLoaderVoltage(0);
+                }
+        );
+    }
 
     //Control methods for all superstructure subsystems
     //Use these in the commands above to apply setpoints and voltages
@@ -267,12 +279,12 @@ public class SuperStructure extends SubsystemBase {
         intake2.setVoltage(voltage);
     }
 
-    public void setRotatorPos(double position){
+    public void setRotatorPos(double position) {
         rotatorSetpoint = filterValue(position, SuperStructureConstants.rotatorMin, SuperStructureConstants.rotatorMax);
         SmartDashboard.putNumber("Rotator Target", rotatorSetpoint);
         rotatorPID.setSetpoint(rotatorSetpoint, ControlType.kPosition);
     }
-    
+
     public void setLoaderVoltage(double voltage) {
         SmartDashboard.putNumber("Loader Setting", voltage);
         loader.setVoltage(voltage);
@@ -311,14 +323,14 @@ public class SuperStructure extends SubsystemBase {
     /**
      * Returns the max if the setpoint is above it, or the hard deck if the setpoint is below it.
      * Otherwise, returns the setpoint.
-     * 
+     *
      * @param value The desired state of the crane.
-     * @param min The hard deck of the crane.
+     * @param min   The hard deck of the crane.
      */
     public double filterValue(double value, double min, double max) {
-        if(value < min)
+        if (value < min)
             value = min;
-        if(value > max)
+        if (value > max)
             value = max;
         return value;
     }

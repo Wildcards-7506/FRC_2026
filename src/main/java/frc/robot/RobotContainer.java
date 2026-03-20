@@ -16,8 +16,6 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -26,6 +24,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.autonomous.AutoRoutines;
+import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.climberOLD;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.SuperStructure;
 
@@ -39,8 +39,8 @@ public class RobotContainer {
     // The robot's subsystems
     public final DriveSubsystem drivetrain;
     public final SuperStructure superStructure;
-
-    public static boolean loadingFuel = false;
+    public final climberOLD climberOLD;
+    public final Climber climber;
 
     // The driver's controller
     public final CommandXboxController controller0 = new CommandXboxController(0);
@@ -55,11 +55,12 @@ public class RobotContainer {
         drivetrain = new DriveSubsystem();
         superStructure = new SuperStructure();
         autoMode = new AutoRoutines(this);
+        climberOLD = new climberOLD();
+        climber = new Climber();
 
         // Configure the button bindings
         configureButtonBindings();
     }
-
 
     /**
      * Use this method to define your button->command mappings. Buttons can be
@@ -96,12 +97,6 @@ public class RobotContainer {
                 )
         );
 
-        controller0.povLeft().onTrue(
-                Commands.runOnce(() -> {
-                        Robot.m_field = new Field2d();
-                        SmartDashboard.putData(Robot.m_field);
-                }));
-
         controller0.rightBumper().whileTrue(
                 superStructure.bringUpRotator()
         );
@@ -119,7 +114,6 @@ public class RobotContainer {
     }
 
     private void operatorController() {
-
         // Intake fuel from intake and intake2
         controller1.leftTrigger().whileTrue(
                 superStructure.runIntake()
@@ -133,17 +127,17 @@ public class RobotContainer {
         );
 
         controller1.rightTrigger().whileTrue(
-                Robot.checkAndRunGun(superStructure)
+                Robot.checkAndRunGun(superStructure, false)
         );
         controller1.rightTrigger().onTrue(Commands.runOnce(() -> {
-                loadingFuel = true;
+               Robot.loadingFuel = true;
                 double now = Timer.getFPGATimestamp();
                 if (now - Robot.lastTriggerPressTime < Robot.DOUBLE_PRESS_WINDOW) {
                         Robot.crippleMode = !Robot.crippleMode;
                 }
                 Robot.lastTriggerPressTime = now;
         }));
-        controller1.rightTrigger().onFalse(Commands.runOnce(() -> loadingFuel = false));
+        controller1.rightTrigger().onFalse(Commands.runOnce(() -> Robot.loadingFuel = false));
 
         controller1.povDown().whileTrue(
                 Commands.runOnce(
@@ -152,7 +146,6 @@ public class RobotContainer {
                         }
                 )
         );
-
 
         controller1.x().whileTrue(
 //       superStructure.primeFlywheel(3025) // rpms lag/drop down to about 2750
@@ -176,6 +169,34 @@ public class RobotContainer {
         // Dead man button to bring up rotator while button is pressed
         controller1.povUp().whileTrue(
                 superStructure.bringUpRotator()
+        );
+
+        controller1.povRight().whileTrue(
+                Commands.startEnd(
+                        () -> {
+                            climber.setSoftLimitsEnabled(false);
+                            climber.crawlUp();
+                        },
+                        () -> {
+                            climber.stopExtender();
+                            climber.setSoftLimitsEnabled(true);
+                        },
+                        climber
+                )
+        );
+
+        controller1.povLeft().whileTrue(
+                Commands.startEnd(
+                        () -> {
+                            climber.setSoftLimitsEnabled(false);
+                            climber.crawlDown();
+                        },
+                        () -> {
+                            climber.stopExtender();
+                            climber.setSoftLimitsEnabled(true);
+                        },
+                        climber
+                )
         );
     }
 

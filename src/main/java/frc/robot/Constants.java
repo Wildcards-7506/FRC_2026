@@ -149,4 +149,22 @@ public final class Constants {
     public static final int blueAlianceCeterTagNum = 26;
     public static final int redAlianceCeterTagNum = 10;
   }
+
+  public static final class ClimberConstants {
+    public static final double kWinchEncoderDistancePerPulse = 360.0 * 1/5 * 1/3 * 1/3 * 1/3; // degrees
+    public static final double kAnchorEncoderDistancePerPulse = 1.0/4.0/8.0; // inches
+
+    // Climber limits
+    public static final int kExtenderCurrentLimit = 40;
+    public static final double kAnchorHardDeck = 0.25;
+    public static final double kAnchorCeiling = 6.25; // inches
+    public static final double kExtenderKP = 0.1;
+
+    // Winch limits
+    public static final double kWinchCeiling = 780; // Bringing the climber out limit in degrees
+    public static final double kWinchHardDeck = 0; // Retraction limit when cage is coming into the robot
+    // Prevent climber from retracting too far with cage acquired
+    public static final double kWinchHoldLimit = 300; // The final retraction limit
+  }
+
 }

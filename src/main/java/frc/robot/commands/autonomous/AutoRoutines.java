@@ -78,16 +78,16 @@ public final class AutoRoutines {
 
     // Set up custom logging to add the current path to a field 2d widget
     PathPlannerLogging.setLogActivePathCallback((poses) 
-    -> Robot.m_field.getObject("path").setPoses(poses));
+      -> Robot.m_field.getObject("path").setPoses(poses));
   }
 
   private void setMarkers() {
     //Registers commands to run in autonomous. The Pathplanner application can take these
     //pre-defined commands and place them at specific points while moving.
     NamedCommands.registerCommand("Intake Down", new RotatorDownCommand(this.robotContainer)); // Use this as a guide for complex sequences
-    NamedCommands.registerCommand("Intake Down", this.robotContainer.superStructure.setRotator(SuperStructureConstants.rotatorMax)); // use this as a guide for simple actions
+    NamedCommands.registerCommand("Gun And Load", Robot.checkAndRunGun(this.robotContainer.superStructure, true)); // implement this
     NamedCommands.registerCommand("Intake", new IntakeCommand(2)); // Use this as a guide
-    // NamedCommands.registerCommand("Fire", ); // implement this
+    NamedCommands.registerCommand("Intake Down", this.robotContainer.superStructure.setRotator(SuperStructureConstants.rotatorMax)); // use this as a guide for simple actions
     // NamedCommands.registerCommand("Prime Flywheel", ); // implement this
   }
 

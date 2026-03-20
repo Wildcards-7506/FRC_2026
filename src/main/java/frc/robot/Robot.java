@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import static frc.robot.RobotContainer.loadingFuel;
-
 import java.util.Optional;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -72,6 +70,8 @@ public class Robot extends TimedRobot {
   
   public static double targetFlywheelRPM = 4000;
   public static boolean useAutoHood = true;
+
+  public static boolean loadingFuel = false;
   
   public static InterpolatingDoubleTreeMap hoodTable = new InterpolatingDoubleTreeMap();
   
@@ -117,7 +117,6 @@ public class Robot extends TimedRobot {
     if (fieldLayout == null) 
       fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
     
-
     limelightUpdateOdom();
 
     Optional<Alliance> alliances = DriverStation.getAlliance();
@@ -191,6 +190,15 @@ public class Robot extends TimedRobot {
 
     SmartDashboard.putNumber("Hub X", hubPose.getX());
     SmartDashboard.putNumber("Hub Y", hubPose.getY());
+
+    SmartDashboard.putNumber("Climb Left Pos", m_robotContainer.climberOLD.getClimberLeftPosition());
+    SmartDashboard.putNumber("Climb Right Pos", m_robotContainer.climberOLD.getClimberRightPosition());
+    SmartDashboard.putNumber("Climb Left Volt", m_robotContainer.climberOLD.getClimbLeftVoltage());
+    SmartDashboard.putNumber("Climb Right Volt", m_robotContainer.climberOLD.getClimbRightVoltage());
+    SmartDashboard.putNumber("Climb Left SP", m_robotContainer.climberOLD.getClimbLeftSetPoint());
+    SmartDashboard.putNumber("Climb Right SP", m_robotContainer.climberOLD.getClimbRightSetPoint());
+
+//    SmartDashboard.putNumber("")
   }
 
   private void updateHeadingToHub() {
@@ -247,15 +255,15 @@ public class Robot extends TimedRobot {
     }
   }
 
-  public static Command checkAndRunGun(SuperStructure superStructure) {
+  public static Command checkAndRunGun(SuperStructure superStructure, Boolean useAuto) {
     return Commands.either(
         superStructure.runIntake()
-            .alongWith(superStructure.rejectLoader())
+            .alongWith(useAuto ? superStructure.rejectLoaderAuto() : superStructure.rejectLoader())
             .alongWith(superStructure.runIntake2()),
         Commands.waitUntil(() -> Robot.flywheelHitTarget)
             .andThen(
                 superStructure.runIntake()
-                    .alongWith(superStructure.rejectLoader())
+                    .alongWith(useAuto ? superStructure.rejectLoaderAuto() : superStructure.rejectLoader())
                     .alongWith(superStructure.runIntake2())),
         () -> crippleMode);
   }
@@ -294,7 +302,7 @@ public class Robot extends TimedRobot {
 
     // Set robot state
     autoMode.resetAutoHeading();
-    autoMode.getAutonomousCommand().schedule();
+//    autoMode.getAutonomousCommand().schedule();
   }
 
   /** This function is called periodically during autonomous. */
