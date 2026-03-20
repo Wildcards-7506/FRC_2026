@@ -5,15 +5,15 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "sequential",
           "data": {
-            "pathName": "step1b"
+            "commands": []
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "Prime Flywheel"
+            "pathName": "step1b"
           }
         },
         {
@@ -23,7 +23,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Intake"
+                  "name": "Intake 1"
                 }
               },
               {
@@ -42,6 +42,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Fire"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "step2b"
@@ -54,9 +60,40 @@
           }
         },
         {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "step4b"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake 5"
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "step4b"
+            "pathName": "step 5b"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "step 6b"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Gun And Load 25"
           }
         }
       ]

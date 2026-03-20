@@ -13,12 +13,6 @@
                 "data": {
                   "pathName": "step 1a"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Prime Flywheel"
-                }
               }
             ]
           }
@@ -36,7 +30,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Intake"
+                  "name": "Intake 1"
                 }
               }
             ]
@@ -67,7 +61,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Intake"
+                  "name": "Intake 5"
                 }
               },
               {
@@ -93,12 +87,6 @@
                 "type": "path",
                 "data": {
                   "pathName": "step6a"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Prime Flywheel"
                 }
               }
             ]

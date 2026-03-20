@@ -36,7 +36,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Intake"
+                  "name": "Intake 1"
                 }
               }
             ]
@@ -45,7 +45,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Gun And Load"
+            "name": "Gun And Load 8"
           }
         },
         {
