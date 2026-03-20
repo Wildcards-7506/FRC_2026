@@ -150,26 +150,35 @@ public class DriveSubsystem extends SubsystemBase {
    *
    * @param xSpeed        Speed of the robot in the x direction (forward).
    * @param ySpeed        Speed of the robot in the y direction (sideways).
-   * @param rotSpeed           Angular rate of the robot.
-   * @param boost -1, 0, 1 | -1 is slow (negative boost), 0 is no-boost, 1 is boost (as normal) 
-   */ 
-  public void driveRobot(double xSpeed, double ySpeed, double rotSpeed, boolean boost){
+   * @param rotSpeed      Angular rate of the robot.
+   * @param boost         -1 = slow, 0 = normal, 1 = boost
+   */
+  public void driveRobot(double xSpeed, double ySpeed, double rotSpeed, int boost) {
     boolean isFlipped =
-      DriverStation.getAlliance().isPresent()
-      && DriverStation.getAlliance().get() == Alliance.Red;
-    double inversion = isFlipped ? -1.0:1.0;
-    double forwardspeed = inversion * xSpeed * (boost ? DriveConstants.boostDriveSpeed : DriveConstants.fullDriveSpeed);
-    double strafingSpeed = inversion * ySpeed * (boost ? DriveConstants.boostDriveSpeed : DriveConstants.fullDriveSpeed);
-    double rotationSpeed = rotSpeed * (boost ? DriveConstants.boostTurnSpeed : DriveConstants.fullTurnSpeed);
-    
-    forwardspeed = yLimiter.calculate(forwardspeed);
+            DriverStation.getAlliance().isPresent()
+                    && DriverStation.getAlliance().get() == Alliance.Red;
+    double inversion = isFlipped ? -1.0 : 1.0;
+
+    double driveScale = boost > 0 ? DriveConstants.boostDriveSpeed
+            : boost < 0 ? DriveConstants.fineDriveSpeed
+            : DriveConstants.fullDriveSpeed;
+
+    double turnScale  = boost > 0 ? DriveConstants.boostTurnSpeed
+            : boost < 0 ? DriveConstants.fineTurnSpeed
+            : DriveConstants.fullTurnSpeed;
+
+    double forwardSpeed  = inversion * xSpeed * driveScale;
+    double strafingSpeed = inversion * ySpeed * driveScale;
+    double rotationSpeed = rotSpeed * turnScale;
+
+    forwardSpeed  = yLimiter.calculate(forwardSpeed);
     strafingSpeed = xLimiter.calculate(strafingSpeed);
-    
+
     drive(
-      MathUtil.applyDeadband(strafingSpeed, IOConstants.kDriveDeadband),
-      -MathUtil.applyDeadband(forwardspeed, IOConstants.kDriveDeadband),
-      -MathUtil.applyDeadband(rotationSpeed, IOConstants.kDriveDeadband),
-      isFieldRel);
+            MathUtil.applyDeadband(strafingSpeed, IOConstants.kDriveDeadband),
+            -MathUtil.applyDeadband(forwardSpeed,  IOConstants.kDriveDeadband),
+            -MathUtil.applyDeadband(rotationSpeed, IOConstants.kDriveDeadband),
+            isFieldRel);
   }
 
   /**

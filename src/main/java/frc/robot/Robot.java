@@ -93,6 +93,9 @@ public class Robot extends TimedRobot {
         // SmartDashboard.putNumber("pid2", -1);
         SmartDashboard.putNumber("pidd", 0.01);
         m_robotContainer.drivetrain.resetOdometry(m_robotContainer.drivetrain.getPose());
+        m_robotContainer.led.periodic();
+        m_robotContainer.led.setColorType(LED.ColorType.FLASH);
+        m_robotContainer.led.setColors(new int[][] { { 161, 33, 38 }, { 255, 255, 255 }, { 0, 0, 0 } });
     }
 
     /**
@@ -321,7 +324,7 @@ public class Robot extends TimedRobot {
         // Set robot state
         autoMode.resetAutoHeading();
         m_robotContainer.led.setColorType(LED.ColorType.STREAMER);
-//    autoMode.getAutonomousCommand().schedule();
+        CommandScheduler.getInstance().schedule(autoMode.getAutonomousCommand());
     }
 
     /**

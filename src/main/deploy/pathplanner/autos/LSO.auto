@@ -5,12 +5,6 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
-          "data": {
-            "commands": []
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "step1b"
@@ -44,7 +38,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Fire"
+            "name": "Gun And Load 8"
           }
         },
         {

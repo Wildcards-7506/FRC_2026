@@ -25,7 +25,6 @@ public class Climber extends SubsystemBase {
     private final SparkClosedLoopController extenderLeftPID;
     private final SparkClosedLoopController extenderRightPID;
 
-    // Stored so we can mutate soft limits at runtime without re-building from scratch
     private final SparkMaxConfig leftConfig  = new SparkMaxConfig();
     private final SparkMaxConfig rightConfig = new SparkMaxConfig();
 
@@ -33,8 +32,8 @@ public class Climber extends SubsystemBase {
     public static final double REVERSE_SOFT_LIMIT = -22;
 
     public Climber() {
-        extenderLeft  = new SparkMax(7, MotorType.kBrushless);
-        extenderRight = new SparkMax(8, MotorType.kBrushless);
+        extenderLeft  = new SparkMax(Constants.SuperStructureConstants.kLeftClimber, MotorType.kBrushless);
+        extenderRight = new SparkMax(Constants.SuperStructureConstants.kRightClimber, MotorType.kBrushless);
 
         ClosedLoopConfig pidConfig = new ClosedLoopConfig()
                 .p(Constants.ClimberConstants.kExtenderKP)
@@ -58,7 +57,6 @@ public class Climber extends SubsystemBase {
                 .apply(softLimits)
                 .apply(pidConfig);
 
-        // Full reset + persist on startup
         extenderLeft.configure(leftConfig,   ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         extenderRight.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -81,7 +79,6 @@ public class Climber extends SubsystemBase {
         extenderRight.configure(rightConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
-    /** Closed-loop position control — only use when soft limits are active. */
     public void setExtender(double setPoint) {
         extenderLeftPID.setSetpoint(setPoint,  ControlType.kPosition);
         extenderRightPID.setSetpoint(setPoint, ControlType.kPosition);

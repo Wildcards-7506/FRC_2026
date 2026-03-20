@@ -57,7 +57,7 @@ public class RobotContainer {
         autoMode = new AutoRoutines(this);
         climberOLD = new climberOLD();
         climber = new Climber();
-        led = new LED(0, 14);
+        led = new LED(1, 5);
 
         // Configure the button bindings
         configureButtonBindings();
@@ -79,14 +79,15 @@ public class RobotContainer {
 
     private void driverController() {
         drivetrain.setDefaultCommand(
-                Commands.runOnce(
+                Commands.run(
                         () -> drivetrain.driveRobot(
                                 controller0.getLeftY(),
                                 controller0.getLeftX(),
                                 controller0.getRightX(),
-                                controller0.getRightTriggerAxis() < 0.2
+                                // RightTrigger = boost | LeftTrigger = fast
+                                controller0.getRightTriggerAxis() > 0.2 ?  1 :
+                                        controller0.getLeftTriggerAxis()  > 0.2 ? -1 : 0
                         ), drivetrain));
-
         controller0.b().onTrue(
                 Commands.runOnce(
                         () -> {
@@ -173,33 +174,33 @@ public class RobotContainer {
                 superStructure.bringUpRotator()
         );
 
-        controller1.povRight().whileTrue(
-                Commands.startEnd(
-                        () -> {
-                            climber.setSoftLimitsEnabled(false);
-                            climber.crawlUp();
-                        },
-                        () -> {
-                            climber.stopExtender();
-                            climber.setSoftLimitsEnabled(true);
-                        },
-                        climber
-                )
-        );
-
-        controller1.povLeft().whileTrue(
-                Commands.startEnd(
-                        () -> {
-                            climber.setSoftLimitsEnabled(false);
-                            climber.crawlDown();
-                        },
-                        () -> {
-                            climber.stopExtender();
-                            climber.setSoftLimitsEnabled(true);
-                        },
-                        climber
-                )
-        );
+//        controller1.povRight().whileTrue(
+//                Commands.startEnd(
+//                        () -> {
+//                            climber.setSosftLimitsEnabled(false);
+//                            climber.crawlUp();
+//                        },
+//                        () -> {
+//                            climber.stopExtender();
+//                            climber.setSoftLimitsEnabled(true);
+//                        },
+//                        climber
+//                )
+//        );
+//
+//        controller1.povLeft().whileTrue(
+//                Commands.startEnd(
+//                        () -> {
+//                            climber.setSoftLimitsEnabled(false);
+//                            climber.crawlDown();
+//                        },
+//                        () -> {
+//                            climber.stopExtender();
+//                            climber.setSoftLimitsEnabled(true);
+//                        },
+//                        climber
+//                )
+//        );
     }
 
     /**

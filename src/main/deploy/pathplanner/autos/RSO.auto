@@ -45,7 +45,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Fire"
+            "name": "Gun And Load 8"
           }
         },
         {
@@ -107,7 +107,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Fire"
+            "name": "Gun And Load 25"
           }
         }
       ]
