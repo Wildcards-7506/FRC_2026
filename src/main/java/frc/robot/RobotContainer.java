@@ -5,6 +5,7 @@
 package frc.robot;
 
 import java.util.List;
+import java.util.Optional;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -14,6 +15,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -24,10 +26,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.autonomous.AutoRoutines;
-import frc.robot.subsystems.Climber;
-import frc.robot.subsystems.climberOLD;
-import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.SuperStructure;
+import frc.robot.subsystems.*;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -41,6 +40,7 @@ public class RobotContainer {
     public final SuperStructure superStructure;
     public final climberOLD climberOLD;
     public final Climber climber;
+    public final LED led;
 
     // The driver's controller
     public final CommandXboxController controller0 = new CommandXboxController(0);
@@ -57,6 +57,7 @@ public class RobotContainer {
         autoMode = new AutoRoutines(this);
         climberOLD = new climberOLD();
         climber = new Climber();
+        led = new LED(0, 14);
 
         // Configure the button bindings
         configureButtonBindings();
@@ -149,7 +150,8 @@ public class RobotContainer {
 
         controller1.x().whileTrue(
 //       superStructure.primeFlywheel(3025) // rpms lag/drop down to about 2750
-                superStructure.primeFlywheel(Robot.targetFlywheelRPM)
+//                superStructure.primeFlywheel(Robot.targetFlywheelRPM)
+                superStructure.primeFlywheel(4000)
         );
 
         // Long distance
@@ -248,5 +250,54 @@ public class RobotContainer {
 
     public AutoRoutines getAutoRoutines() {
         return autoMode;
+    }
+
+    public boolean isHubActive() {
+        Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
+
+        if (alliance.isEmpty()) {
+            return false;
+        }
+
+        if (DriverStation.isAutonomousEnabled()) {
+            return true;
+        }
+
+        if (!DriverStation.isTeleopEnabled()) {
+            return false;
+        }
+
+        double matchTime = DriverStation.getMatchTime();
+        String gameData = DriverStation.getGameSpecificMessage();
+
+        if (gameData.isEmpty()) {
+            return true;
+        }
+
+        boolean redInactiveFirst = false;
+        if (gameData.charAt(0) == 'R') {
+            redInactiveFirst = true;
+        } else {
+            return true;
+        }
+
+        boolean shift1Active = switch (alliance.get()) {
+            case Red -> false;
+            case Blue -> true;
+        };
+
+        if (matchTime > 130) {
+            return true;
+        } else if (matchTime > 105) {
+            return shift1Active;
+        } else if (matchTime > 80) {
+            return !shift1Active;
+        } else if (matchTime > 55) {
+            return shift1Active;
+        } else if (matchTime > 30) {
+            return !shift1Active;
+        } else {
+            return true;
+        }
     }
 }
