@@ -107,11 +107,15 @@ public class Climber extends SubsystemBase {
     }
 
     public void crawlUp() {
-        setExtenderRaw(12);
+//        setExtenderRaw(12);
+        extenderLeft.setVoltage(12);
+        extenderRight.setVoltage(12);
     }
 
     public void crawlDown() {
-        setExtenderRaw(-12);
+//        setExtenderRaw(-12);
+        extenderLeft.setVoltage(-12);
+        extenderRight.setVoltage(-12);
     }
 
     @Override
