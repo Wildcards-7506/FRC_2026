@@ -144,6 +144,8 @@ public class SuperStructure extends SubsystemBase {
                 () -> {
 //                flywheelConfig.closedLoop.pid(SmartDashboard.getNumber("pidp", 0), 0, SmartDashboard.getNumber("pidd", 0));
 //                flywheel.configure(flywheelConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+//                    SmartDashboard.putBoolean("does work", true);
+                    System.out.println("PRIME FLY " + desiredRPM);
                     setFlywheelRPM(desiredRPM);
                 },
                 () -> setFlywheelRPM(0)
@@ -264,9 +266,12 @@ public class SuperStructure extends SubsystemBase {
     //Control methods for all superstructure subsystems
     //Use these in the commands above to apply setpoints and voltages
     public void setFlywheelRPM(double rpm) {
+        System.out.println("SETTING RPMS " + rpm);
         rpm = fixRPM(rpm); // basically pid with simple approximate feedforward
         SmartDashboard.putNumber("Flywheel SET target", rpm);
+        System.out.println("flywheel set target RPM");
         flywheelPID.setSetpoint(rpm, ControlType.kVelocity);
+        System.out.println("flywheel set PID");
     }
 
     public void setIntakeVoltage(double voltage) {
@@ -317,6 +322,7 @@ public class SuperStructure extends SubsystemBase {
 
     /* Increases RPM by 20% */
     public double fixRPM(double rpm) {
+        System.out.println("FIX RPM " + rpm);
         return rpm / 0.8;
     }
 

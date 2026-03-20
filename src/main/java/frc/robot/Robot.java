@@ -191,12 +191,14 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Hub X", hubPose.getX());
     SmartDashboard.putNumber("Hub Y", hubPose.getY());
 
-    SmartDashboard.putNumber("Climb Left Pos", m_robotContainer.climberOLD.getClimberLeftPosition());
-    SmartDashboard.putNumber("Climb Right Pos", m_robotContainer.climberOLD.getClimberRightPosition());
-    SmartDashboard.putNumber("Climb Left Volt", m_robotContainer.climberOLD.getClimbLeftVoltage());
-    SmartDashboard.putNumber("Climb Right Volt", m_robotContainer.climberOLD.getClimbRightVoltage());
-    SmartDashboard.putNumber("Climb Left SP", m_robotContainer.climberOLD.getClimbLeftSetPoint());
-    SmartDashboard.putNumber("Climb Right SP", m_robotContainer.climberOLD.getClimbRightSetPoint());
+//    SmartDashboard.putNumber("")
+
+//    SmartDashboard.putNumber("Climb Left Pos", m_robotContainer.climberOLD.getClimberLeftPosition());
+//    SmartDashboard.putNumber("Climb Right Pos", m_robotContainer.climberOLD.getClimberRightPosition());
+//    SmartDashboard.putNumber("Climb Left Volt", m_robotContainer.climberOLD.getClimbLeftVoltage());
+//    SmartDashboard.putNumber("Climb Right Volt", m_robotContainer.climberOLD.getClimbRightVoltage());
+//    SmartDashboard.putNumber("Climb Left SP", m_robotContainer.climberOLD.getClimbLeftSetPoint());
+//    SmartDashboard.putNumber("Climb Right SP", m_robotContainer.climberOLD.getClimbRightSetPoint());
 
 //    SmartDashboard.putNumber("")
   }
