@@ -3,37 +3,48 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5757289149121165,
-        "y": 0.443515003181866
+        "x": 3.7565952380952394,
+        "y": 7.393059523809524
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.490439654853125,
-        "y": 0.5408519332764966
+        "x": 3.0655476190476194,
+        "y": 7.220297619047619
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.8874074074074074,
-        "y": 0.6369800569800577
+        "x": 2.5580595238095247,
+        "y": 5.6438452380952375
       },
       "prevControl": {
-        "x": 3.024905768950252,
-        "y": 0.5667770998552519
+        "x": 2.795607142857143,
+        "y": 6.777595238095238
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "HP Load"
+      "linkedName": "endstep1b"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "pointTowardsZones": [],
+  "pointTowardsZones": [
+    {
+      "fieldPosition": {
+        "x": 4.6,
+        "y": 4.0
+      },
+      "rotationOffset": 0.0,
+      "minWaypointRelativePos": 0.7291750503018077,
+      "maxWaypointRelativePos": 0.75,
+      "name": "Point Towards Zone"
+    }
+  ],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.0,
+    "maxVelocity": 6.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -42,13 +53,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -33.69006752597976
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

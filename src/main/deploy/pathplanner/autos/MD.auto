@@ -5,21 +5,22 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "Intake Down"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Trench To HP"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.0
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "step1c"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Prime Flywheel"
+                }
+              }
+            ]
           }
         },
         {
@@ -27,15 +28,15 @@
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "named",
                 "data": {
-                  "pathName": "HP To Score"
+                  "name": "Intake Down"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Prime Flywheel"
+                  "name": "Intake"
                 }
               }
             ]

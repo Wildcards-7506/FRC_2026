@@ -5,59 +5,64 @@
     "data": {
       "commands": [
         {
+          "type": "parallel",
+          "data": {
+            "commands": []
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "BRS"
+            "pathName": "step1b"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Intake Down"
+            "name": "Prime Flywheel"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Down"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Fire"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "BRT"
+            "pathName": "step2b"
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "BRMM "
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake"
-                }
-              }
-            ]
+            "pathName": "step3b"
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "New New Path"
-                }
-              }
-            ]
+            "pathName": "step4b"
           }
         }
       ]
