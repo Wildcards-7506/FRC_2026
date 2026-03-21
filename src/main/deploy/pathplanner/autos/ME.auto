@@ -5,27 +5,27 @@
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "step1c"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "Intake Down"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 0.2
-          }
-        },
-        {
-          "type": "sequential",
-          "data": {
-            "commands": []
+            "name": "Gun And Load 8"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "step2b"
+            "pathName": "step2c"
           }
         },
         {
@@ -35,13 +35,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Intake 6.5"
+                  "name": "Intake 1"
                 }
               },
               {
                 "type": "path",
                 "data": {
-                  "pathName": "step3b"
+                  "pathName": "step3c"
                 }
               }
             ]
@@ -50,32 +50,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "step 5b"
+            "pathName": "Step4c"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "step 6b"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Gun And Load 25"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Shake Ass"
-                }
-              }
-            ]
+            "name": "Gun And Load 25"
           }
         }
       ]

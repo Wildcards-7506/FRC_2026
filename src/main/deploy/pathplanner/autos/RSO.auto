@@ -13,7 +13,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.5
+            "waitTime": 0.2
           }
         },
         {
@@ -71,6 +71,25 @@
           "type": "named",
           "data": {
             "name": "Gun And Load 25"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Shake Ass"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Gun And Load 25"
+                }
+              }
+            ]
           }
         }
       ]

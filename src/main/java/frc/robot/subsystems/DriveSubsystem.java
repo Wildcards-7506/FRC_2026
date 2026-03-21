@@ -154,11 +154,6 @@ public class DriveSubsystem extends SubsystemBase {
    * @param speedMode         -1 = slow, 0 = normal, 1 = speedMode
    */
   public void driveRobot(double xSpeed, double ySpeed, double rotSpeed, int speedMode) {
-    boolean isFlipped =
-            DriverStation.getAlliance().isPresent()
-                    && DriverStation.getAlliance().get() == Alliance.Red;
-    double inversion = isFlipped ? -1.0 : 1.0;
-
     double driveSpeed = switch (speedMode) {
       case 2  -> DriveConstants.boostDriveSpeed;  // LT  — FULL BOOST
       case 1  -> DriveConstants.fullDriveSpeed;   // RT  — Full
@@ -171,8 +166,8 @@ public class DriveSubsystem extends SubsystemBase {
       default -> DriveConstants.fineTurnSpeed;
     };
 
-    double forwardSpeed  = inversion * xSpeed * driveSpeed;
-    double strafingSpeed = inversion * ySpeed * driveSpeed;
+    double forwardSpeed  = xSpeed * driveSpeed;
+    double strafingSpeed = ySpeed * driveSpeed;
     double rotationSpeed = rotSpeed * turnScale;
 
     forwardSpeed  = yLimiter.calculate(forwardSpeed);

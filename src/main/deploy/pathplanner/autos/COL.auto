@@ -9,12 +9,6 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "Prime Flywheel"
-                }
-              },
-              {
                 "type": "path",
                 "data": {
                   "pathName": "step1b"
@@ -32,12 +26,6 @@
                 "data": {
                   "name": "Intake Down"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake 1"
-                }
               }
             ]
           }
@@ -52,6 +40,37 @@
           "type": "path",
           "data": {
             "pathName": "clear left "
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": " intake Path"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake 1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "cls"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Gun And Load 25"
           }
         }
       ]

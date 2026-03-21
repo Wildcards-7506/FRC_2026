@@ -65,7 +65,7 @@ public final class Constants {
     public static final double fineTurnSpeed = 0.1; // Default
     public static final double fineDriveSpeed = 0.1; // Default
     public static final double boostDriveSpeed = 0.55; // LT
-    public static final double boostTurnSpeed = 0.35; // LT
+    public static final double boostTurnSpeed = 0.60; // LT
   }
 
   public static final class SuperStructureConstants{
