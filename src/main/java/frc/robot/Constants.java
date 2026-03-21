@@ -54,18 +54,18 @@ public final class Constants {
     
     public static final int kFrontRightTurningCanId = 14;
     public static final int kFrontRightDrivingCanId = 15;
-    
+
     public static final int kRearRightTurningCanId = 16;
     public static final int kRearRightDrivingCanId = 17;
 
     public static final boolean kGyroReversed = false;
 
-    public static final double fullTurnSpeed = 0.35; // current default state
-    public static final double fullDriveSpeed = 0.20; // current default state
-    public static final double fineTurnSpeed = 0.2; // Not usesd - 3/16/26 
-    public static final double fineDriveSpeed = 0.1; // Not usesd - 3/16/26
-    public static final double boostDriveSpeed = 0.7;
-    public static final double boostTurnSpeed = 0.35;
+    public static final double fullTurnSpeed = 0.25; // RT
+    public static final double fullDriveSpeed = 0.45; // RT
+    public static final double fineTurnSpeed = 0.1; // Default
+    public static final double fineDriveSpeed = 0.1; // Default
+    public static final double boostDriveSpeed = 0.55; // LT
+    public static final double boostTurnSpeed = 0.35; // LT
   }
 
   public static final class SuperStructureConstants{

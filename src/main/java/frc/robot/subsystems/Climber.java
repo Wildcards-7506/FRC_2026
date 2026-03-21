@@ -54,7 +54,7 @@ public class Climber extends SubsystemBase {
                 .apply(pidConfig);
 
         rightConfig
-                .inverted(true)
+                .inverted(false)
                 .smartCurrentLimit(Constants.ClimberConstants.kExtenderCurrentLimit)
 //                .apply(softLimits)
                 .apply(pidConfig);

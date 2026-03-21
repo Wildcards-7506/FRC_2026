@@ -26,12 +26,6 @@
                 "data": {
                   "name": "Intake Down"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake 1"
-                }
               }
             ]
           }
@@ -39,7 +33,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Gun And Load 8"
+            "name": "Gun And Load 25"
           }
         }
       ]

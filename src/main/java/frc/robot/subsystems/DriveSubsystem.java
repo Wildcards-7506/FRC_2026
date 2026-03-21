@@ -151,24 +151,28 @@ public class DriveSubsystem extends SubsystemBase {
    * @param xSpeed        Speed of the robot in the x direction (forward).
    * @param ySpeed        Speed of the robot in the y direction (sideways).
    * @param rotSpeed      Angular rate of the robot.
-   * @param boost         -1 = slow, 0 = normal, 1 = boost
+   * @param speedMode         -1 = slow, 0 = normal, 1 = speedMode
    */
-  public void driveRobot(double xSpeed, double ySpeed, double rotSpeed, int boost) {
+  public void driveRobot(double xSpeed, double ySpeed, double rotSpeed, int speedMode) {
     boolean isFlipped =
             DriverStation.getAlliance().isPresent()
                     && DriverStation.getAlliance().get() == Alliance.Red;
     double inversion = isFlipped ? -1.0 : 1.0;
 
-    double driveScale = boost > 0 ? DriveConstants.boostDriveSpeed
-            : boost < 0 ? DriveConstants.fineDriveSpeed
-            : DriveConstants.fullDriveSpeed;
+    double driveSpeed = switch (speedMode) {
+      case 2  -> DriveConstants.boostDriveSpeed;  // LT  — FULL BOOST
+      case 1  -> DriveConstants.fullDriveSpeed;   // RT  — Full
+      default -> DriveConstants.fineDriveSpeed;   // none — Fine
+    };
 
-    double turnScale  = boost > 0 ? DriveConstants.boostTurnSpeed
-            : boost < 0 ? DriveConstants.fineTurnSpeed
-            : DriveConstants.fullTurnSpeed;
+    double turnScale = switch (speedMode) {
+      case 2  -> DriveConstants.boostTurnSpeed;
+      case 1  -> DriveConstants.fullTurnSpeed;
+      default -> DriveConstants.fineTurnSpeed;
+    };
 
-    double forwardSpeed  = inversion * xSpeed * driveScale;
-    double strafingSpeed = inversion * ySpeed * driveScale;
+    double forwardSpeed  = inversion * xSpeed * driveSpeed;
+    double strafingSpeed = inversion * ySpeed * driveSpeed;
     double rotationSpeed = rotSpeed * turnScale;
 
     forwardSpeed  = yLimiter.calculate(forwardSpeed);

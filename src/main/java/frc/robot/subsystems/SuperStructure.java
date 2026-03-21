@@ -23,7 +23,7 @@ import frc.robot.Robot;
 import frc.robot.RobotContainer;
 
 public class SuperStructure extends SubsystemBase {
-    private final SparkMax intake = new SparkMax(SuperStructureConstants.kIntake1, MotorType.kBrushless);
+    public final SparkMax intake = new SparkMax(SuperStructureConstants.kIntake1, MotorType.kBrushless);
     private final SparkMax loader = new SparkMax(SuperStructureConstants.kLoader, MotorType.kBrushless);
     private final SparkFlex flywheel = new SparkFlex(SuperStructureConstants.kFlywheel, MotorType.kBrushless);
     private final SparkMax intake2 = new SparkMax(SuperStructureConstants.kIntake2, MotorType.kBrushless);

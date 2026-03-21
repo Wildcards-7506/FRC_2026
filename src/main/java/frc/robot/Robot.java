@@ -128,6 +128,8 @@ public class Robot extends TimedRobot {
         Optional<Alliance> alliances = DriverStation.getAlliance();
         boolean onBlueAlliance = alliances.isPresent() ? alliances.get() == DriverStation.Alliance.Blue : true;
 
+//        m_robotContainer.led.setColorType(LED.ColorType.ALLIANCE_FLOW);
+
         if (fieldLayout != null) {
             centerTagPose = fieldLayout.getTagPose(onBlueAlliance
                             ? Constants.limelightConstants.blueAlianceCeterTagNum
@@ -273,6 +275,11 @@ public class Robot extends TimedRobot {
             if (flywheelLowestRPM == 0 || currentRPM < flywheelLowestRPM) {
                 flywheelLowestRPM = currentRPM;
             }
+        }
+
+        if (loadingFuel && m_robotContainer.superStructure.intake.getEncoder().getVelocity() < 20) {
+            m_robotContainer.led.setColor(255, 0, 0);
+            m_robotContainer.led.setColorType(LED.ColorType.FLASH);
         }
     }
 

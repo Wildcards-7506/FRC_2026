@@ -5,46 +5,21 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Intake Down"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
           "type": "sequential",
           "data": {
             "commands": []
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "step1b"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake 1"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake Down"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Gun And Load 8"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Fire"
           }
         },
         {
@@ -72,7 +47,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Intake 5"
+                  "name": "Intake 6.5"
                 }
               }
             ]

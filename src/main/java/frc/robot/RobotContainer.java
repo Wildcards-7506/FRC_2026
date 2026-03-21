@@ -84,14 +84,9 @@ public class RobotContainer {
                                 controller0.getLeftY(),
                                 controller0.getLeftX(),
                                 controller0.getRightX(),
-                                // RightTrigger = boost |7777777777uuuuuuuuuuuuuuuuuuuuuuuuuuu6uuu7qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
-                                //
-                                //
-                                //
-                                //
-                                // LeftTrigger = fast
-                                controller0.getRightTriggerAxis() > 0.2 ?  1 :
-                                        controller0.getLeftTriggerAxis()  > 0.2 ? -1 : 0
+                                controller0.getLeftTriggerAxis()  > 0.2 ? 2 :   // FULL BOOST
+                                        controller0.getRightTriggerAxis() > 0.2 ? 1 :   // Full
+                                                0      // Fine (default)
                         ), drivetrain));
         controller0.b().onTrue(
                 Commands.runOnce(
@@ -129,7 +124,7 @@ public class RobotContainer {
         );
 
         // Reject Intake2, prevents jamming issue previously encountered
-        controller1.leftBumper().whileTrue(
+        controller1.rightBumper().whileTrue(
                 superStructure.rejectIntake2()
         );
 
@@ -177,6 +172,10 @@ public class RobotContainer {
         // Dead man button to bring up rotator while button is pressed
         controller1.povUp().whileTrue(
                 superStructure.bringUpRotator()
+        );
+//
+        controller1.leftBumper().whileTrue(
+                superStructure.rejectIntake()
         );
 
 //        controller1.povRight().whileTrue(

@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.5580595238095247,
-        "y": 5.6438452380952375
+        "x": 3.922610556348074,
+        "y": 7.393059523809412
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.514869047619049,
-        "y": 6.734404761904761
+        "x": 3.8794200801575984,
+        "y": 8.483619047618934
       },
       "isLocked": false,
       "linkedName": "endstep1b"
@@ -48,7 +48,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -33.69006752597976
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }
