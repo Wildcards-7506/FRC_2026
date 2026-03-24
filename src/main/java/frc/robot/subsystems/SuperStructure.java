@@ -37,9 +37,12 @@ public class SuperStructure extends SubsystemBase {
     private final SparkMaxConfig rotatorConfig = new SparkMaxConfig();
     private final SparkMaxConfig hoodConfig = new SparkMaxConfig();
 
+
     private final SparkClosedLoopController flywheelPID;
     private final SparkClosedLoopController rotatorPID;
     private final SparkClosedLoopController hoodPID;
+    private final SparkClosedLoopController loaderPID;
+
 
     private double rotatorSetpoint = 0;
     private double hoodSetpoint = SuperStructureConstants.hoodStart;
@@ -48,6 +51,7 @@ public class SuperStructure extends SubsystemBase {
         flywheelPID = flywheel.getClosedLoopController();
         rotatorPID = rotator.getClosedLoopController();
         hoodPID = hood.getClosedLoopController();
+        loaderPID = loader.getClosedLoopController();
 
         loaderConfig
                 .smartCurrentLimit(40)
@@ -56,6 +60,21 @@ public class SuperStructure extends SubsystemBase {
                 .softLimit
                 .forwardSoftLimitEnabled(false)
                 .reverseSoftLimitEnabled(false);
+
+        loaderConfig.encoder
+                .positionConversionFactor(1)
+                .velocityConversionFactor(1); // 1 is for RPM
+        loaderConfig.closedLoop
+                .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                .pid(0.001, 0, 0)
+                // 0.002 0 0.00
+                // 0.002 0 0.0012
+                // 0.0013 ,0, 0.003
+                // 0.0013 ,0, 0.009
+                // 0.0013 ,0, 0.015 SWEET SPOT - 3/7/26
+                // 0.0013 ,0, 0.016 TOO HIGH ?
+                .outputRange(-1, 1);
+
 
         flywheelConfig
                 .smartCurrentLimit(80)
@@ -262,8 +281,25 @@ public class SuperStructure extends SubsystemBase {
         );
     }
 
+    public Command runLoaderRPM(double rpm) {
+        return Commands.runEnd(
+                () -> setLoaderRPM(rpm),
+                () -> setLoaderRPM(0)
+        );
+    }
+
     //Control methods for all superstructure subsystems
     //Use these in the commands above to apply setpoints and voltages
+
+    public void setLoaderRPM(double rpm) {
+//        rpm = fixRPM(rpm); // basically pid with simple approximate feedforward
+        loaderPID.setSetpoint(rpm, ControlType.kVelocity);
+    }
+
+    public double getLoaderRPM() {
+        return loader.getEncoder().getVelocity();
+    }
+
     public void setFlywheelRPM(double rpm) {
         rpm = fixRPM(rpm); // basically pid with simple approximate feedforward
         flywheelPID.setSetpoint(rpm, ControlType.kVelocity);

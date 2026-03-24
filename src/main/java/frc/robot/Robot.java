@@ -30,6 +30,8 @@ import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.SuperStructure;
 import frc.robot.utils.LimelightHelpers;
 
+import static frc.robot.utils.LimelightHelpers.setLEDMode_ForceOff;
+
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to
@@ -98,6 +100,7 @@ public class Robot extends TimedRobot {
         m_robotContainer.led.periodic();
         m_robotContainer.led.setColorType(LED.ColorType.FLASH);
         m_robotContainer.led.setColors(new int[][]{{161, 33, 38}, {255, 255, 255}, {0, 0, 0}});
+        setLEDMode_ForceOff("limelight");
     }
 
     /**
@@ -124,6 +127,7 @@ public class Robot extends TimedRobot {
             fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
 
         limelightUpdateOdom();
+        setLEDMode_ForceOff("limelight");
 
         Optional<Alliance> alliances = DriverStation.getAlliance();
         boolean onBlueAlliance = alliances.isPresent() ? alliances.get() == DriverStation.Alliance.Blue : true;
@@ -217,6 +221,8 @@ public class Robot extends TimedRobot {
 
         SmartDashboard.putNumber("Hub X", hubPose.getX());
         SmartDashboard.putNumber("Hub Y", hubPose.getY());
+
+        SmartDashboard.putNumber("Loader RPM", m_robotContainer.superStructure.getLoaderRPM());
     }
 
     private void updateHeadingToHub() {
@@ -287,33 +293,19 @@ public class Robot extends TimedRobot {
         return Commands.either(
                 superStructure.runIntake()
                         .alongWith(useAuto ? superStructure.rejectLoaderAuto() : superStructure.rejectLoader())
-                        .alongWith(superStructure.runIntake2())
-                        .alongWith(Climber.crawlRight()),
+                        .alongWith(superStructure.runIntake2()),
+//                        .alongWith(Climber.crawlRight()),
                 Commands.waitUntil(() -> Robot.flywheelHitTarget)
                         .andThen(
                                 superStructure.runIntake()
                                         .alongWith(useAuto ? superStructure.rejectLoaderAuto() : superStructure.rejectLoader())
-                                        .alongWith(superStructure.runIntake2()))
-                        .alongWith(Climber.crawlRight()),
+                                        .alongWith(superStructure.runIntake2())),
+//                        .alongWith(Climber.crawlRight()),
                 () -> crippleMode);
     }
 
     public static Command primeAndRunGun(SuperStructure superStructure) {
-        return superStructure.primeFlywheel(4000)
-                .alongWith(
-                        Commands.either(
-                                superStructure.rejectLoaderAuto()
-                                        .alongWith(superStructure.runIntake())
-                                        .alongWith(superStructure.runIntake2())
-                                        .alongWith(Climber.crawlRight()),
-                                Commands.waitUntil(() -> Robot.flywheelHitTarget)
-                                        .andThen(
-                                                superStructure.rejectLoaderAuto()
-                                                        .alongWith(superStructure.runIntake())
-                                                        .alongWith(superStructure.runIntake2()))
-                                        .alongWith(Climber.crawlRight()),
-                                () -> crippleMode)
-                );
+        return superStructure.primeFlywheel(4000).alongWith(checkAndRunGun(superStructure, true));
     }
 
     public static void setHoodForCurrentDistance() {

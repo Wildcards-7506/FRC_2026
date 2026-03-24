@@ -178,6 +178,14 @@ public class RobotContainer {
                 superStructure.rejectIntake()
         );
 
+        controller1.back().whileTrue(
+            Climber.crawlRight()
+        );
+
+        controller1.povRight().whileTrue(
+            superStructure.runLoaderRPM(4000)
+        );
+
 //        controller1.povRight().whileTrue(
 //                Commands.startEnd(
 //                        () -> {
