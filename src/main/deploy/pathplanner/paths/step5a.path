@@ -9,7 +9,7 @@
       "prevControl": null,
       "nextControl": {
         "x": 7.736700129749381,
-        "y": 1.5887154407483703
+        "y": 1.5887154407483701
       },
       "isLocked": false,
       "linkedName": "endstep4a"
@@ -20,8 +20,8 @@
         "y": 0.6774179743223976
       },
       "prevControl": {
-        "x": 6.766722659542896,
-        "y": 2.7026621786641303
+        "x": 7.573150535300927,
+        "y": 0.6042252604166674
       },
       "nextControl": null,
       "isLocked": false,
