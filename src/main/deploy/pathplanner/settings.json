@@ -10,7 +10,11 @@
     "GENARIC PATHS POSITIONS ",
     "RSO"
   ],
-  "autoFolders": [],
+  "autoFolders": [
+    "CENTER FEILD ",
+    "CLEAR OUT ",
+    "DEPOT "
+  ],
   "defaultMaxVel": 6.0,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 540.0,
