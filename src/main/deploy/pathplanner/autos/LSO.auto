@@ -17,15 +17,9 @@
           }
         },
         {
-          "type": "sequential",
-          "data": {
-            "commands": []
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "step2b"
+            "pathName": "LSO 1"
           }
         },
         {
@@ -41,7 +35,26 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "step3b"
+                  "pathName": "LSO 2"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "LSO 3"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake 6.5"
                 }
               }
             ]
@@ -50,13 +63,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "step 5b"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "step 6b"
+            "pathName": "LSO 4"
           }
         },
         {

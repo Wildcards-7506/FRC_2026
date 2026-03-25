@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "step 1a"
+                  "pathName": "COR 1"
                 }
               }
             ]
@@ -38,7 +38,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "clear Right"
+            "pathName": "COR 2"
           }
         }
       ]

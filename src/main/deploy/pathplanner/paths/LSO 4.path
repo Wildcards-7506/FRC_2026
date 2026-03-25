@@ -3,32 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.51904761904762,
-        "y": 3.9918095238095237
+        "x": 5.920045454545455,
+        "y": 7.3537954545454545
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.6461461362637078,
-        "y": 3.996522762199776
+        "x": 2.5559940993386077,
+        "y": 7.560813999481262
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "new3bend"
     },
     {
       "anchor": {
-        "x": 2.83879761904762,
-        "y": 3.9918095238095237
+        "x": 2.968369047619048,
+        "y": 5.341511904761905
       },
       "prevControl": {
-        "x": 3.3158748129801876,
-        "y": 3.9925123838155425
+        "x": 1.1407988587731819,
+        "y": 7.431398002853067
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "end1ca"
+      "linkedName": "Left Shooting Position "
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": -0.8297529910905849
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -42,10 +47,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -37.87498365109819
   },
   "reversed": false,
-  "folder": null,
+  "folder": "LSO",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

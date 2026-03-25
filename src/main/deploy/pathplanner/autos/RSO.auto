@@ -23,7 +23,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "step3a "
+                  "pathName": "RSO 1 "
                 }
               }
             ]
@@ -42,7 +42,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "step4a"
+                  "pathName": "RSO 2"
                 }
               }
             ]
@@ -51,7 +51,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "step5a"
+            "pathName": "RSO 3"
           }
         },
         {
@@ -61,7 +61,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "step6a"
+                  "pathName": "RSO 4"
                 }
               }
             ]
