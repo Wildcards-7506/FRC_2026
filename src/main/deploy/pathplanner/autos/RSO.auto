@@ -23,7 +23,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "step3a "
+                  "pathName": "RSO 1 "
                 }
               }
             ]
@@ -36,22 +36,16 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Intake 6.5"
+                  "name": "intake on "
                 }
               },
               {
                 "type": "path",
                 "data": {
-                  "pathName": "step4a"
+                  "pathName": "RSO 2"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "step5a"
           }
         },
         {
@@ -61,7 +55,26 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "step6a"
+                  "pathName": "RSO 3"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "RSO 4"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intake off"
                 }
               }
             ]
@@ -96,6 +109,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "CENTER FEILD ",
   "choreoAuto": false
 }

@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "step1c"
+                  "pathName": "ME 1"
                 }
               }
             ]
@@ -40,6 +40,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "CLEAR OUT ",
   "choreoAuto": false
 }

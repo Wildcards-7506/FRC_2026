@@ -17,15 +17,9 @@
           }
         },
         {
-          "type": "sequential",
-          "data": {
-            "commands": []
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "step2b"
+            "pathName": "LSO 1"
           }
         },
         {
@@ -35,28 +29,48 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Intake 6.5"
+                  "name": "intake on "
                 }
               },
               {
                 "type": "path",
                 "data": {
-                  "pathName": "step3b"
+                  "pathName": "LSO 2"
                 }
               }
             ]
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "step 5b"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "LSO 3"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "step 6b"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "LSO 4"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intake off"
+                }
+              }
+            ]
           }
         },
         {
@@ -82,6 +96,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "CENTER FEILD ",
   "choreoAuto": false
 }
