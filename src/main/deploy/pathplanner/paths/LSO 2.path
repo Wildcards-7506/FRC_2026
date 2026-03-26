@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.569136363641361,
-        "y": 7.096124999998892
+        "x": 7.486681818181818,
+        "y": 7.291954545454546
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.558829545459542,
-        "y": 6.013909090907982
+        "x": 7.493149476911857,
+        "y": 6.446534743814034
       },
       "isLocked": false,
       "linkedName": "endstep1b"
     },
     {
       "anchor": {
-        "x": 7.558829545454545,
-        "y": 5.024454545454546
+        "x": 7.517602272727272,
+        "y": 5.055375000000001
       },
       "prevControl": {
-        "x": 7.57944318182318,
-        "y": 5.931454545453437
+        "x": 7.526069567227752,
+        "y": 6.428314495978221
       },
       "nextControl": null,
       "isLocked": false,
@@ -47,7 +47,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
+    "maxVelocity": 3.5,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -55,13 +55,13 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 6.0,
+    "velocity": 0.5,
     "rotation": -89.99999999939614
   },
   "reversed": false,
   "folder": "LSO",
   "idealStartingState": {
-    "velocity": 0.0,
+    "velocity": 2.0,
     "rotation": -90.0
   },
   "useDefaultConstraints": false

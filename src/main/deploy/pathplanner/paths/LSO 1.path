@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.8579172610556345,
-        "y": 7.4702139800285305
+        "x": 3.7453068181818177,
+        "y": 7.43625
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.569613636363636,
-        "y": 7.477477272727273
+        "x": 6.116639557126182,
+        "y": 7.391979201789651
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.569136363641361,
-        "y": 7.096124999998892
+        "x": 7.486681818181818,
+        "y": 7.291954545454546
       },
       "prevControl": {
-        "x": 6.260170454545454,
-        "y": 7.364102272727273
+        "x": 6.1777159090859115,
+        "y": 7.5599318181829265
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,7 +31,7 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.5,
-      "rotationDegrees": -179.88047737759067
+      "rotationDegrees": 179.65720416979502
     }
   ],
   "constraintZones": [
@@ -61,7 +61,7 @@
   },
   "goalEndState": {
     "velocity": 2.5,
-    "rotation": -90.0
+    "rotation": -90.00000000089607
   },
   "reversed": false,
   "folder": "LSO",

@@ -29,7 +29,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Intake 6.5"
+                  "name": "intake on "
                 }
               },
               {
@@ -50,20 +50,27 @@
                 "data": {
                   "pathName": "LSO 3"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake 6.5"
-                }
               }
             ]
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "LSO 4"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "LSO 4"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intake off"
+                }
+              }
+            ]
           }
         },
         {

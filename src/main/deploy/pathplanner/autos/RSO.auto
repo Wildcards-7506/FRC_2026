@@ -36,7 +36,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Intake 6.5"
+                  "name": "intake on "
                 }
               },
               {
@@ -49,9 +49,16 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "RSO 3"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "RSO 3"
+                }
+              }
+            ]
           }
         },
         {
@@ -62,6 +69,12 @@
                 "type": "path",
                 "data": {
                   "pathName": "RSO 4"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intake off"
                 }
               }
             ]
