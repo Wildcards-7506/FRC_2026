@@ -38,7 +38,6 @@ public class RobotContainer {
     // The robot's subsystems
     public final DriveSubsystem drivetrain;
     public final SuperStructure superStructure;
-    public final climberOLD climberOLD;
     public final Climber climber;
     public final LED led;
 
@@ -55,7 +54,6 @@ public class RobotContainer {
         drivetrain = new DriveSubsystem();
         superStructure = new SuperStructure();
         climber = new Climber();
-        climberOLD = new climberOLD();
         led = new LED(1, 14);
         autoMode = new AutoRoutines(this);
 
@@ -178,41 +176,20 @@ public class RobotContainer {
                 superStructure.rejectIntake()
         );
 
-        controller1.back().whileTrue(
-            Climber.crawlRight()
-        );
-
         controller1.povRight().whileTrue(
-            superStructure.runLoaderRPM(4000)
+                Commands.startEnd(
+                        () -> {
+                            climber.setSoftLimitsEnabled(false);
+                            climber.crawlLeft();
+                            climber.crawlRight();
+                        },
+                        () -> {
+                            climber.setSoftLimitsEnabled(true);
+                            climber.stopExtender();
+                        },
+                        climber
+                )
         );
-
-//        controller1.povRight().whileTrue(
-//                Commands.startEnd(
-//                        () -> {
-//                            climber.setSosftLimitsEnabled(false);
-//                            climber.crawlUp();
-//                        },
-//                        () -> {
-//                            climber.stopExtender();
-//                            climber.setSoftLimitsEnabled(true);
-//                        },
-//                        climber
-//                )
-//        );
-//
-//        controller1.povLeft().whileTrue(
-//                Commands.startEnd(
-//                        () -> {
-//                            climber.setSoftLimitsEnabled(false);
-//                            climber.crawlDown();
-//                        },
-//                        () -> {
-//                            climber.stopExtender();
-//                            climber.setSoftLimitsEnabled(true);
-//                        },
-//                        climber
-//                )
-//        );
     }
 
     /**

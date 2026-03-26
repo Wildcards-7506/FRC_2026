@@ -48,7 +48,7 @@ public class Climber extends SubsystemBase {
                 .reverseSoftLimitEnabled(true);
 
         leftConfig
-                .inverted(true)
+                .inverted(false)
                 .smartCurrentLimit(Constants.ClimberConstants.kExtenderCurrentLimit)
 //                .apply(softLimits)
                 .apply(pidConfig);
@@ -81,20 +81,31 @@ public class Climber extends SubsystemBase {
         extenderRight.configure(rightConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
-    public void setExtender(double setPoint) {
-        extenderLeftPID.setSetpoint(setPoint,  ControlType.kPosition);
-        extenderRightPID.setSetpoint(setPoint, ControlType.kPosition);
-        SmartDashboard.putNumber("Extender Setpoint", setPoint);
-    }
-
-    public void setExtenderRaw(double speed) {
-        extenderLeft.set(speed);
-        extenderRight.set(speed);
-    }
-
     public void stopExtender() {
         extenderLeft.stopMotor();
         extenderRight.stopMotor();
+    }
+
+    public Command crawlRight() {
+        return Commands.runEnd(
+                () -> {
+                    extenderRight.setVoltage(12);
+                },
+                () -> {
+                    extenderRight.setVoltage(0);
+                }
+        );
+    }
+
+    public Command crawlLeft() {
+        return Commands.runEnd(
+                () -> {
+                    extenderLeft.setVoltage(12);
+                },
+                () -> {
+                    extenderLeft.setVoltage(0);
+                }
+        );
     }
 
     public double getLeftPosition() {
@@ -105,33 +116,10 @@ public class Climber extends SubsystemBase {
         return extenderRightEncoder.getPosition();
     }
 
-    public void crawlUp() {
-//        setExtenderRaw(12);
-        extenderLeft.setVoltage(12);
-        extenderRight.setVoltage(12);
-    }
-
-    public void crawlDown() {
-//        setExtenderRaw(-12);
-        extenderLeft.setVoltage(-12);
-        extenderRight.setVoltage(-12);
-    }
-
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Extender Left Position",  getLeftPosition());
         SmartDashboard.putNumber("Extender Right Position", getRightPosition());
-    }
-
-    public static Command crawlRight() {
-        return Commands.runEnd(
-                () -> {
-                    extenderRight.setVoltage(12);
-                },
-                () -> {
-                    extenderRight.setVoltage(0);
-                }
-        );
     }
 
 }

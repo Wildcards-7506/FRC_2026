@@ -30,18 +30,15 @@ public class SuperStructure extends SubsystemBase {
     private final SparkMax rotator = new SparkMax(SuperStructureConstants.kRotator, MotorType.kBrushless);
     private final SparkMax hood = new SparkMax(SuperStructureConstants.kHood, MotorType.kBrushless);
 
-    private final SparkMaxConfig loaderConfig = new SparkMaxConfig(); // Neo
     private final SparkFlexConfig flywheelConfig = new SparkFlexConfig(); // Vortex
     private final SparkMaxConfig intakeConfig = new SparkMaxConfig(); // Neo
     private final SparkMaxConfig intake2Config = new SparkMaxConfig();
     private final SparkMaxConfig rotatorConfig = new SparkMaxConfig();
     private final SparkMaxConfig hoodConfig = new SparkMaxConfig();
 
-
     private final SparkClosedLoopController flywheelPID;
     private final SparkClosedLoopController rotatorPID;
     private final SparkClosedLoopController hoodPID;
-    private final SparkClosedLoopController loaderPID;
 
 
     private double rotatorSetpoint = 0;
@@ -51,30 +48,6 @@ public class SuperStructure extends SubsystemBase {
         flywheelPID = flywheel.getClosedLoopController();
         rotatorPID = rotator.getClosedLoopController();
         hoodPID = hood.getClosedLoopController();
-        loaderPID = loader.getClosedLoopController();
-
-        loaderConfig
-                .smartCurrentLimit(40)
-                .inverted(true)
-                .idleMode(IdleMode.kBrake)
-                .softLimit
-                .forwardSoftLimitEnabled(false)
-                .reverseSoftLimitEnabled(false);
-
-        loaderConfig.encoder
-                .positionConversionFactor(1)
-                .velocityConversionFactor(1); // 1 is for RPM
-        loaderConfig.closedLoop
-                .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                .pid(0.001, 0, 0)
-                // 0.002 0 0.00
-                // 0.002 0 0.0012
-                // 0.0013 ,0, 0.003
-                // 0.0013 ,0, 0.009
-                // 0.0013 ,0, 0.015 SWEET SPOT - 3/7/26
-                // 0.0013 ,0, 0.016 TOO HIGH ?
-                .outputRange(-1, 1);
-
 
         flywheelConfig
                 .smartCurrentLimit(80)
@@ -148,7 +121,6 @@ public class SuperStructure extends SubsystemBase {
                 .pid(0.1, 0, 0.05)
                 .outputRange(-1, 1);
 
-        loader.configure(loaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         flywheel.configure(flywheelConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         intake.configure(intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         intake2.configure(intake2Config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -279,25 +251,6 @@ public class SuperStructure extends SubsystemBase {
                     setLoaderVoltage(0);
                 }
         );
-    }
-
-    public Command runLoaderRPM(double rpm) {
-        return Commands.runEnd(
-                () -> setLoaderRPM(rpm),
-                () -> setLoaderRPM(0)
-        );
-    }
-
-    //Control methods for all superstructure subsystems
-    //Use these in the commands above to apply setpoints and voltages
-
-    public void setLoaderRPM(double rpm) {
-//        rpm = fixRPM(rpm); // basically pid with simple approximate feedforward
-        loaderPID.setSetpoint(rpm, ControlType.kVelocity);
-    }
-
-    public double getLoaderRPM() {
-        return loader.getEncoder().getVelocity();
     }
 
     public void setFlywheelRPM(double rpm) {
