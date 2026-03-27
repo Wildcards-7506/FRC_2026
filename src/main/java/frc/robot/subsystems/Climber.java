@@ -54,7 +54,7 @@ public class Climber extends SubsystemBase {
                 .apply(pidConfig);
 
         rightConfig
-                .inverted(false)
+                .inverted(true)
                 .smartCurrentLimit(Constants.ClimberConstants.kExtenderCurrentLimit)
 //                .apply(softLimits)
                 .apply(pidConfig);
@@ -89,7 +89,7 @@ public class Climber extends SubsystemBase {
     public Command crawlRight() {
         return Commands.runEnd(
                 () -> {
-                    extenderRight.setVoltage(12);
+                    extenderRight.setVoltage(3);
                 },
                 () -> {
                     extenderRight.setVoltage(0);
@@ -100,7 +100,7 @@ public class Climber extends SubsystemBase {
     public Command crawlLeft() {
         return Commands.runEnd(
                 () -> {
-                    extenderLeft.setVoltage(12);
+                    extenderLeft.setVoltage(3);
                 },
                 () -> {
                     extenderLeft.setVoltage(0);

@@ -176,19 +176,26 @@ public class RobotContainer {
                 superStructure.rejectIntake()
         );
 
+//        controller1.povRight().whileTrue(
+//                Commands.startEnd(
+//                        () -> {
+//                            climber.setSoftLimitsEnabled(false);
+//                            climber.crawlLeft();
+//                            climber.crawlRight();
+//                        },
+//                        () -> {
+//                            climber.setSoftLimitsEnabled(true);
+//                            climber.stopExtender();
+//                        },
+//                        climber
+//                )
+//        );
+
         controller1.povRight().whileTrue(
-                Commands.startEnd(
-                        () -> {
-                            climber.setSoftLimitsEnabled(false);
-                            climber.crawlLeft();
-                            climber.crawlRight();
-                        },
-                        () -> {
-                            climber.setSoftLimitsEnabled(true);
-                            climber.stopExtender();
-                        },
-                        climber
-                )
+                climber.crawlLeft()
+        );
+        controller1.povRight().whileTrue(
+                climber.crawlRight()
         );
     }
 

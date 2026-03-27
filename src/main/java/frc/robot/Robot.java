@@ -222,7 +222,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Hub X", hubPose.getX());
         SmartDashboard.putNumber("Hub Y", hubPose.getY());
 
-        SmartDashboard.putNumber("Loader RPM", m_robotContainer.superStructure.getAgitatorRPM());
+//        SmartDashboard.putNumber("Loader RPM", m_robotContainer.superStructure.getAgitatorRPM());
     }
 
     private void updateHeadingToHub() {
