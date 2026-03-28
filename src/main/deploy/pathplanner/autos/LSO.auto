@@ -69,6 +69,12 @@
                 "data": {
                   "name": "intake off"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Gun on "
+                }
               }
             ]
           }
@@ -80,16 +86,22 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Gun And Load 25"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Shake Ass"
+                  "name": "shoot "
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 5.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Gun off "
           }
         }
       ]
