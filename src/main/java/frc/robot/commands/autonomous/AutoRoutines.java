@@ -6,6 +6,7 @@ package frc.robot.commands.autonomous;
 
 import java.util.HashMap;
 import java.util.concurrent.TransferQueue;
+import java.util.function.BooleanSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -89,20 +90,31 @@ public final class AutoRoutines {
   private void setMarkers() {
     //Registers commands to run in autonomous. The Pathplanner application can take these
     //pre-defined commands and place them at specific points while moving.
-    NamedCommands.registerCommand("intake on", this.robotContainer.superStructure.enableIntakes()); // Use this as a guide for complex sequences
+    NamedCommands.registerCommand("intake on", this.robotContainer.superStructure.enableIntake().alongWith(this.robotContainer.superStructure.enableIntake2()).alongWith(this.robotContainer.superStructure.enableLoader())); // Use this as a guide for complex sequences
     NamedCommands.registerCommand("intake off", this.robotContainer.superStructure.disableIntakes()); // Use this as a guide for complex sequences
-  //  NamedCommands.registerCommand("gun on", this.robotContainer.superStructure.enableFlywheel(Constants.ShooterConstants.flywheelRPM)); // Use this as a guide for complex sequences
+   NamedCommands.registerCommand("gun on", this.robotContainer.superStructure.enableFlywheel(Constants.ShooterConstants.flywheelRPM)); // Use this as a guide for complex sequences
   //  NamedCommands.registerCommand("gun on", runGun()); // Use this as a guide for complex sequences
-   NamedCommands.registerCommand("shoot", new GunCommand()); // Use this as a guide for complex sequences
-   NamedCommands.registerCommand("gun off", gunOff()); // Use this as a guide for complex sequences
-   NamedCommands.registerCommand("gun on",  this.robotContainer.superStructure.enableFlywheel(Constants.ShooterConstants.flywheelRPM)); // Use this as a guide for complex sequences
+//  NamedCommands.registerCommand("shoot", new GunCommand()); // Use this as a guide for complex sequences
+   NamedCommands.registerCommand("shoot", 
+    Commands.waitUntil(() -> Robot.flywheelHitTarget)
+    .andThen(this.robotContainer.superStructure.enableRejectLoader())
+    .andThen(this.robotContainer.superStructure.enableIntake())
+    .andThen(this.robotContainer.superStructure.enableIntake2())
+  ); // Use this as a guide for complex sequences
+  NamedCommands.registerCommand("gun off", gunOff()); // Use this as a guide for complex sequences
+//   NamedCommands.registerCommand("gun on",  this.robotContainer.superStructure.enableFlywheel(Constants.ShooterConstants.flywheelRPM)); // Use this as a guide for complex sequences
 
     NamedCommands.registerCommand("Intake Down", new RotatorDownCommand(this.robotContainer)); // Use this as a guide for complex sequences
+    NamedCommands.registerCommand("Gun And Load 3", Robot.primeAndRunGun(this.robotContainer.superStructure).withTimeout(3)); // implement this
+    NamedCommands.registerCommand("Gun And Load 4", Robot.primeAndRunGun(this.robotContainer.superStructure).withTimeout(4)); // implement this
     NamedCommands.registerCommand("Gun And Load 5", Robot.primeAndRunGun(this.robotContainer.superStructure).withTimeout(5)); // implement this
     NamedCommands.registerCommand("Gun And Load 8", Robot.primeAndRunGun(this.robotContainer.superStructure).withTimeout(8)); // implement this
     NamedCommands.registerCommand("Gun And Load 25", Robot.primeAndRunGun(this.robotContainer.superStructure).withTimeout(25)); // implement this
     NamedCommands.registerCommand("Intake", new IntakeCommand(2)); // Use this as a guide
     NamedCommands.registerCommand("Intake 1", new IntakeCommand(2).withTimeout(1)); // Use this as a guide
+    NamedCommands.registerCommand("Intake 2", new IntakeCommand(2).withTimeout(2)); // Use this as a guide
+    NamedCommands.registerCommand("Intake 3", new IntakeCommand(2).withTimeout(3)); // Use this as a guide
+    NamedCommands.registerCommand("Intake 4", new IntakeCommand(2).withTimeout(4)); // Use this as a guide
     NamedCommands.registerCommand("Intake 5", new IntakeCommand(2).withTimeout(5)); // Use this as a guide
     NamedCommands.registerCommand("Intake 6.5", new IntakeCommand(2).withTimeout(6.5)); // Use this as a guide
 //    NamedCommands.registerCommand("Intake Down", this.robotContainer.superStructure.setRotator(SuperStructureConstants.rotatorMax)); // use this as a guide for simple actions
@@ -110,7 +122,8 @@ public final class AutoRoutines {
   }
 
   public Command gunOff() {
-      return Commands.runOnce(GunCommand::doStopGun).alongWith(this.robotContainer.superStructure.disableFlywheel());
+      return this.robotContainer.superStructure.disableIntakes()
+      .alongWith(this.robotContainer.superStructure.disableFlywheel());
   }
 
   /**

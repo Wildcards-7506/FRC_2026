@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.autonomous.AutoRoutines;
+import frc.robot.commands.autonomous.commands.GunCommand;
 import frc.robot.subsystems.*;
 import frc.robot.utils.LimelightHelpers;
 
@@ -216,6 +217,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Hub X", hubPose.getX());
         SmartDashboard.putNumber("Hub Y", hubPose.getY());
 
+        SmartDashboard.putBoolean("Stop Gun?", GunCommand.stopGun);
 //        SmartDashboard.putNumber("Loader RPM", m_robotContainer.superStructure.getAgitatorRPM());
     }
 

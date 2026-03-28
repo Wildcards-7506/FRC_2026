@@ -13,7 +13,43 @@
         {
           "type": "named",
           "data": {
+            "name": "Intake Down"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "gun on"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 3.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "gun off"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake on"
           }
         },
         {
@@ -25,13 +61,13 @@
         {
           "type": "named",
           "data": {
-            "name": "shoot"
+            "name": "intake off"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "PROGRAMMING TEST",
+  "folder": null,
   "choreoAuto": false
 }

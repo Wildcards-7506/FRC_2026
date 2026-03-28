@@ -187,7 +187,7 @@ public class SuperStructure extends SubsystemBase {
         );
     }
     public Command enableIntake2() {
-        return Commands.run(
+        return Commands.runOnce(
                 () -> setIntake2Voltage(12)
         );
     }
@@ -297,9 +297,21 @@ public class SuperStructure extends SubsystemBase {
         );
     }
 
+    public Command enableLoader() {
+        return Commands.runOnce(
+                () -> setLoaderVoltage(12)
+        );
+    }
+
     public Command enableRejectLoader() {
         return Commands.runOnce(
                 () -> setLoaderVoltage(-12)
+        );
+    }
+
+    public Command disableLoader() {
+        return Commands.runOnce(
+                () -> setLoaderVoltage(0)
         );
     }
 

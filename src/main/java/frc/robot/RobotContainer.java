@@ -186,7 +186,7 @@ public class RobotContainer {
 //                        },
 //                        () -> {
 //                            agitator.setSoftLimitsEnabled(true);
-//                            agitator.stopExtender();
+//                            agitator.stopMotors();
 //                        },
 //                        agitator
 //                )

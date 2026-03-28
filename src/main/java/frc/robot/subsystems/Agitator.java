@@ -4,12 +4,9 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.PersistMode;
 import com.revrobotics.spark.FeedbackSensor;
-import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.ClosedLoopConfig;
-import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -93,9 +90,16 @@ public class Agitator extends SubsystemBase {
         agitatorRight.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
-    public void stopExtender() {
+    public static void stopMotors() {
         agitatorLeft.stopMotor();
         agitatorRight.stopMotor();
+    }
+
+    public static Command stopMotorsCommand() {
+        return Commands.runOnce(() -> {
+            agitatorLeft.stopMotor();
+            agitatorRight.stopMotor();
+        });
     }
 
     public static Command runRight() {
@@ -112,7 +116,7 @@ public class Agitator extends SubsystemBase {
     }
 
     public static Command enableRight() {
-        return Commands.run(
+        return Commands.runOnce(
                 () -> {
                     agitatorRight.setVoltage(4.5);
 //                    agitatorRightPID.setSetpoint(1400, SparkBase.ControlType.kVelocity);
@@ -134,7 +138,7 @@ public class Agitator extends SubsystemBase {
     }
 
     public static Command enableLeft() {
-        return Commands.run(
+        return Commands.runOnce(
                 () -> {
                     agitatorLeft.setVoltage(4.5);
 //                    agitatorLeftPID.setSetpoint(1400, SparkBase.ControlType.kVelocity);
