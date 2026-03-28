@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.486681818181818,
-        "y": 7.291954545454546
+        "x": 7.472843133835565,
+        "y": 7.091082356770833
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.493149476911857,
-        "y": 6.446534743814034
+        "x": 7.479310792565604,
+        "y": 6.2456625551303215
       },
       "isLocked": false,
       "linkedName": "endstep1b"
@@ -62,7 +62,7 @@
   "folder": "LSO",
   "idealStartingState": {
     "velocity": 2.0,
-    "rotation": -90.0
+    "rotation": -89.76987338402543
   },
   "useDefaultConstraints": false
 }
