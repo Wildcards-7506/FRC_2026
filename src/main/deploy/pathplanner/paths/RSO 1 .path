@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.7349999999999994,
+        "x": 3.2058082798549106,
         "y": 0.6131363636363643
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.5080113636363635,
+        "x": 3.9788196434912746,
         "y": 0.63375
       },
       "isLocked": false,
-      "linkedName": "endstep2a"
+      "linkedName": "rso0.1"
     },
     {
       "anchor": {
@@ -46,8 +46,8 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.8997867803837984,
-      "rotationDegrees": -179.50516226040364
+      "waypointRelativePos": 0.9060902896081774,
+      "rotationDegrees": 0.9844213135996833
     }
   ],
   "constraintZones": [
@@ -83,7 +83,7 @@
   "folder": "RSO",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": false
 }

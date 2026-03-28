@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.7453068181818177,
+        "x": 3.3248949614025296,
         "y": 7.43625
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.220852632068452,
+        "x": 5.800440775289164,
         "y": 7.452267775762649
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "lso0.1"
     },
     {
       "anchor": {
@@ -31,7 +31,7 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.5,
-      "rotationDegrees": 179.07992463038926
+      "rotationDegrees": -5.8278677745686815
     }
   ],
   "constraintZones": [
@@ -67,7 +67,7 @@
   "folder": "LSO",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 179.13962645969596
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

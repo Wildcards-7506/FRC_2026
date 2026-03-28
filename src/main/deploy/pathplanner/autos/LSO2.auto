@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "LSO 0.1"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "Intake Down"
