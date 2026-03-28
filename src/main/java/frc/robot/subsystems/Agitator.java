@@ -38,13 +38,18 @@ public class Agitator extends SubsystemBase {
     public Agitator() {
         agitatorLeft  = new SparkMax(Constants.SuperStructureConstants.kLeftClimber, MotorType.kBrushless);
         agitatorRight = new SparkMax(Constants.SuperStructureConstants.kRightClimber, MotorType.kBrushless);
+        agitatorLeftEncoder  = agitatorLeft.getEncoder();
+        agitatorRightEncoder = agitatorRight.getEncoder();
 
-        SoftLimitConfig softLimits = new SoftLimitConfig()
-                .forwardSoftLimitEnabled(false)
-                .reverseSoftLimitEnabled(false);
+        agitatorLeftPID  = agitatorLeft.getClosedLoopController();
+        agitatorRightPID = agitatorRight.getClosedLoopController();
 
-        leftConfig.apply(softLimits);
-        rightConfig.apply(softLimits);
+//        SoftLimitConfig softLimits = new SoftLimitConfig()
+//                .forwardSoftLimitEnabled(false)
+//                .reverseSoftLimitEnabled(false);
+//
+//        leftConfig.apply(softLimits);
+//        rightConfig.apply(softLimits);
 
         leftConfig
                 .smartCurrentLimit(80)
@@ -86,24 +91,6 @@ public class Agitator extends SubsystemBase {
 
         agitatorLeft.configure(leftConfig,   ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         agitatorRight.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        
-        agitatorLeftEncoder  = agitatorLeft.getEncoder();
-        agitatorRightEncoder = agitatorRight.getEncoder();
-
-        agitatorLeftPID  = agitatorLeft.getClosedLoopController();
-        agitatorRightPID = agitatorRight.getClosedLoopController();
-    }
-
-    public void setSoftLimitsEnabled(boolean enabled) {
-        SoftLimitConfig softLimits = new SoftLimitConfig()
-                .forwardSoftLimitEnabled(enabled)
-                .reverseSoftLimitEnabled(enabled);
-
-        leftConfig.apply(softLimits);
-        rightConfig.apply(softLimits);
-
-        agitatorLeft.configure(leftConfig,   ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-        agitatorRight.configure(rightConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
     public void stopExtender() {
@@ -114,12 +101,12 @@ public class Agitator extends SubsystemBase {
     public static Command runRight() {
         return Commands.runEnd(
                 () -> {
-//                    agitatorRight.setVoltage(3);
-                    agitatorRightPID.setSetpoint(1400, SparkBase.ControlType.kVelocity);
+                    agitatorRight.setVoltage(4.5);
+//                    agitatorRightPID.setSetpoint(1400, SparkBase.ControlType.kVelocity);
                 },
                 () -> {
-                    agitatorRightPID.setSetpoint(0, SparkBase.ControlType.kVelocity);
-//                    agitatorRight.setVoltage(0);
+//                    agitatorRightPID.setSetpoint(0, SparkBase.ControlType.kVelocity);
+                    agitatorRight.setVoltage(0);
                 }
         );
     }
@@ -127,12 +114,12 @@ public class Agitator extends SubsystemBase {
     public static Command runLeft() {
         return Commands.runEnd(
                 () -> {
-//                    agitatorLeft.setVoltage(3);
-                    agitatorLeftPID.setSetpoint(1400, SparkBase.ControlType.kVelocity);
+                    agitatorLeft.setVoltage(4.5);
+//                    agitatorLeftPID.setSetpoint(1400, SparkBase.ControlType.kVelocity);
                 },
                 () -> {
-                    agitatorLeftPID.setSetpoint(0, SparkBase.ControlType.kVelocity);
-//                    agitatorLeft.setVoltage(0);
+//                    agitatorLeftPID.setSetpoint(0, SparkBase.ControlType.kVelocity);
+                    agitatorLeft.setVoltage(0);
                 }
         );
     }

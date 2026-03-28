@@ -68,8 +68,6 @@ public class Robot extends TimedRobot {
     public static int triggerPressCount = 0;
     public static double lastTriggerPressTime = -1;
     public static final double DOUBLE_PRESS_WINDOW = 0.25; // seconds
-
-    public static double targetFlywheelRPM = 4000;
     public static boolean useAutoHood = true;
 
     public static boolean loadingFuel = false;
@@ -186,7 +184,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Flywheel Lowest", flywheelLowestRPM);
         SmartDashboard.putNumber("Flywheel Highest", flywheelHighestRPM);
         SmartDashboard.putNumber("Flywheel RPM", m_robotContainer.superStructure.getRPM());
-        SmartDashboard.putNumber("Flywheel Target", targetFlywheelRPM);
+        SmartDashboard.putNumber("Flywheel Target", Constants.ShooterConstants.flywheelRPM);
 
         SmartDashboard.putNumber("Hood target", m_robotContainer.superStructure.getHoodTarget());
 
@@ -258,11 +256,11 @@ public class Robot extends TimedRobot {
     private void updateFlywheelLogs() {
         double currentRPM = m_robotContainer.superStructure.getRPM();
 
-        if (currentRPM > targetFlywheelRPM) {
+        if (currentRPM > Constants.ShooterConstants.flywheelRPM) {
             flywheelHitTarget = true;
             m_robotContainer.led.setColor(0, 255, 0);
             m_robotContainer.led.setColorType(LED.ColorType.FLASH);
-        } else if (currentRPM < (targetFlywheelRPM - 2000)) {
+        } else if (currentRPM < (Constants.ShooterConstants.flywheelRPM - 2000)) {
             flywheelHitTarget = false;
         }
 
@@ -290,8 +288,6 @@ public class Robot extends TimedRobot {
                 superStructure.runIntake()
                         .alongWith(useAuto ? superStructure.rejectLoaderAuto() : superStructure.rejectLoader())
                         .alongWith(superStructure.runIntake2()),
-//                        .alongWith(Agitator.runRight())
-//                        .alongWith(Agitator.runLeft()),
                 Commands.waitUntil(() -> Robot.flywheelHitTarget)
                         .andThen(
                                 superStructure.runIntake()
@@ -303,7 +299,8 @@ public class Robot extends TimedRobot {
     }
 
     public static Command primeAndRunGun(SuperStructure superStructure) {
-        return superStructure.primeFlywheel(4000).alongWith(checkAndRunGun(superStructure, true));
+//        return superStructure.primeFlywheel(4000).alongWith(checkAndRunGun(superStructure, true));
+        return superStructure.primeFlywheel(Constants.ShooterConstants.flywheelRPM).alongWith(checkAndRunGun(superStructure, true));
     }
 
     public static void setHoodForCurrentDistance() {

@@ -19,9 +19,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
+import frc.robot.commands.autonomous.commands.GunCommand;
 import frc.robot.commands.autonomous.commands.IntakeCommand;
 import frc.robot.commands.autonomous.commands.RotatorDownCommand;
 import frc.robot.Constants.SuperStructureConstants;
@@ -35,7 +37,7 @@ public final class AutoRoutines {
 
   // Autonomous selector on dashboard
   private final SendableChooser<Command> autoChooser;
-    
+
   // Load the RobotConfig from the GUI settings.
   RobotConfig config;
   
@@ -84,6 +86,12 @@ public final class AutoRoutines {
   private void setMarkers() {
     //Registers commands to run in autonomous. The Pathplanner application can take these
     //pre-defined commands and place them at specific points while moving.
+    NamedCommands.registerCommand("intake on", this.robotContainer.superStructure.enableIntakes()); // Use this as a guide for complex sequences
+    NamedCommands.registerCommand("intake off", this.robotContainer.superStructure.disableIntakes()); // Use this as a guide for complex sequences
+//    NamedCommands.registerCommand("gun on", this.robotContainer.superStructure.enableFlywheel(Constants.ShooterConstants.flywheelRPM)); // Use this as a guide for complex sequences
+//    NamedCommands.registerCommand("gun on", runGun()); // Use this as a guide for complex sequences
+//    NamedCommands.registerCommand("gun off", endGun()); // Use this as a guide for complex sequences
+
     NamedCommands.registerCommand("Intake Down", new RotatorDownCommand(this.robotContainer)); // Use this as a guide for complex sequences
     NamedCommands.registerCommand("Gun And Load 5", Robot.primeAndRunGun(this.robotContainer.superStructure).withTimeout(5)); // implement this
     NamedCommands.registerCommand("Gun And Load 8", Robot.primeAndRunGun(this.robotContainer.superStructure).withTimeout(8)); // implement this
@@ -92,9 +100,21 @@ public final class AutoRoutines {
     NamedCommands.registerCommand("Intake 1", new IntakeCommand(2).withTimeout(1)); // Use this as a guide
     NamedCommands.registerCommand("Intake 5", new IntakeCommand(2).withTimeout(5)); // Use this as a guide
     NamedCommands.registerCommand("Intake 6.5", new IntakeCommand(2).withTimeout(6.5)); // Use this as a guide
-    NamedCommands.registerCommand("Intake Down", this.robotContainer.superStructure.setRotator(SuperStructureConstants.rotatorMax)); // use this as a guide for simple actions
+//    NamedCommands.registerCommand("Intake Down", this.robotContainer.superStructure.setRotator(SuperStructureConstants.rotatorMax)); // use this as a guide for simple actions
     // NamedCommands.registerCommand("Prime Flywheel", ); // implement this
   }
+
+//  private RepeatCommand runGun() {
+//    this.gunRepeatingCommand = Robot.checkAndRunGun(this.robotContainer.superStructure, true).repeatedly();
+//    return this.gunRepeatingCommand;
+//  }
+//
+//  private Command endGun() {
+//    if (this.gunRepeatingCommand != null) {
+//      this.gunRepeatingCommand.end(true);
+//    };
+//    return Commands.run(() -> {});
+//  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

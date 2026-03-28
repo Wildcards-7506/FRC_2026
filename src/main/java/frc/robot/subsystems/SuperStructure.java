@@ -40,7 +40,6 @@ public class SuperStructure extends SubsystemBase {
     private final SparkClosedLoopController rotatorPID;
     private final SparkClosedLoopController hoodPID;
 
-
     private double rotatorSetpoint = 0;
     private double hoodSetpoint = SuperStructureConstants.hoodStart;
 
@@ -142,6 +141,18 @@ public class SuperStructure extends SubsystemBase {
         );
     }
 
+    public Command enableFlywheel(double desiredRPM) {
+        return Commands.run(() -> {
+            setFlywheelRPM(desiredRPM);
+        });
+    }
+
+    public Command disableFlywheel() {
+        return Commands.run(() -> {
+            setFlywheelRPM(0);
+        });
+    }
+
     //Intake Control Commands
     public Command runIntake() {
         return Commands.runEnd(
@@ -169,6 +180,30 @@ public class SuperStructure extends SubsystemBase {
                 () -> setIntake2Voltage(-12),
                 () -> setIntake2Voltage(0)
         );
+    }
+
+    public Command enableIntakes() {
+        return Commands.run(() -> {
+            setIntakeVoltage(12);
+            setIntake2Voltage(12);
+            setLoaderVoltage(12);
+        });
+    }
+
+    public Command rejectIntakes() {
+        return Commands.run(() -> {
+            setIntakeVoltage(-12);
+            setIntake2Voltage(-12);
+            setLoaderVoltage(-12);
+        });
+    }
+
+    public Command disableIntakes() {
+        return Commands.run(() -> {
+            setIntakeVoltage(0);
+            setIntake2Voltage(0);
+            setLoaderVoltage(0);
+        });
     }
 
     public Command longDistance() {
