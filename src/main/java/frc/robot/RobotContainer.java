@@ -38,7 +38,7 @@ public class RobotContainer {
     // The robot's subsystems
     public final DriveSubsystem drivetrain;
     public final SuperStructure superStructure;
-    public final Climber climber;
+    public final Agitator agitator;
     public final LED led;
 
     // The driver's controller
@@ -53,7 +53,7 @@ public class RobotContainer {
     public RobotContainer() {
         drivetrain = new DriveSubsystem();
         superStructure = new SuperStructure();
-        climber = new Climber();
+        agitator = new Agitator();
         led = new LED(1, 14);
         autoMode = new AutoRoutines(this);
 
@@ -150,7 +150,8 @@ public class RobotContainer {
         controller1.x().whileTrue(
 //       superStructure.primeFlywheel(3025) // rpms lag/drop down to about 2750
 //                superStructure.primeFlywheel(Robot.targetFlywheelRPM)
-                superStructure.primeFlywheel(4000)
+//                superStructure.primeFlywheel(4000)
+                superStructure.primeFlywheel(Constants.ShooterConstants.flywheelRPM)
         );
 
         // Long distance
@@ -176,20 +177,27 @@ public class RobotContainer {
                 superStructure.rejectIntake()
         );
 
-        controller1.povRight().whileTrue(
-                Commands.startEnd(
-                        () -> {
-                            climber.setSoftLimitsEnabled(false);
-                            climber.crawlLeft();
-                            climber.crawlRight();
-                        },
-                        () -> {
-                            climber.setSoftLimitsEnabled(true);
-                            climber.stopExtender();
-                        },
-                        climber
-                )
-        );
+//        controller1.povRight().whileTrue(
+//                Commands.startEnd(
+//                        () -> {
+//                            agitator.setSoftLimitsEnabled(false);
+//                            agitator.runLeft();
+//                            agitator.runRight();
+//                        },
+//                        () -> {
+//                            agitator.setSoftLimitsEnabled(true);
+//                            agitator.stopExtender();
+//                        },
+//                        agitator
+//                )
+//        );
+
+//        controller1.povRight().whileTrue(
+//                agitator.runLeft()
+//        );
+//        controller1.povRight().whileTrue(
+//                agitator.runRight()
+//        );
     }
 
     /**
