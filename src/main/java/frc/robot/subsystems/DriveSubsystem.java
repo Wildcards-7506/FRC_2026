@@ -204,7 +204,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("BotHeading", getHeading());
     SmartDashboard.putNumber("HeadingToTarget", targetDeg);
-    SmartDashboard.putNumber("HeadingToTarget2", Robot.angleToHub.getDegrees());
+    SmartDashboard.putNumber("HeadingToTarget2", Robot. angleToHub.getDegrees());
 
     double err = MathUtil.inputModulus(targetDeg - getHeading(), -180, 180);
 

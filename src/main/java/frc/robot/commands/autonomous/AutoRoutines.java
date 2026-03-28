@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -92,8 +93,9 @@ public final class AutoRoutines {
     NamedCommands.registerCommand("intake off", this.robotContainer.superStructure.disableIntakes()); // Use this as a guide for complex sequences
   //  NamedCommands.registerCommand("gun on", this.robotContainer.superStructure.enableFlywheel(Constants.ShooterConstants.flywheelRPM)); // Use this as a guide for complex sequences
   //  NamedCommands.registerCommand("gun on", runGun()); // Use this as a guide for complex sequences
-   NamedCommands.registerCommand("gun on", new GunCommand()); // Use this as a guide for complex sequences
-   NamedCommands.registerCommand("gun off", Commands.runOnce(() -> GunCommand.doStopGun())); // Use this as a guide for complex sequences
+   NamedCommands.registerCommand("shoot", new GunCommand()); // Use this as a guide for complex sequences
+   NamedCommands.registerCommand("gun off", gunOff()); // Use this as a guide for complex sequences
+   NamedCommands.registerCommand("gun on",  this.robotContainer.superStructure.enableFlywheel(Constants.ShooterConstants.flywheelRPM)); // Use this as a guide for complex sequences
 
     NamedCommands.registerCommand("Intake Down", new RotatorDownCommand(this.robotContainer)); // Use this as a guide for complex sequences
     NamedCommands.registerCommand("Gun And Load 5", Robot.primeAndRunGun(this.robotContainer.superStructure).withTimeout(5)); // implement this
@@ -107,16 +109,8 @@ public final class AutoRoutines {
     // NamedCommands.registerCommand("Prime Flywheel", ); // implement this
   }
 
-//  private RepeatCommand runGun() {
-//    this.gunRepeatingCommand = Robot.checkAndRunGun(this.robotContainer.superStructure, true).repeatedly();
-//    return this.gunRepeatingCommand;
-//  }
-
- private Command endGun() {
-    if (this.gunRepeatingCommand != null) {
-      this.gunRepeatingCommand.end(true);
-    };
-    return Commands.run(() -> {});
+  public Command gunOff() {
+      return Commands.runOnce(GunCommand::doStopGun).alongWith(this.robotContainer.superStructure.disableFlywheel());
   }
 
   /**

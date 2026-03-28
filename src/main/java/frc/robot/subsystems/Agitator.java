@@ -111,6 +111,15 @@ public class Agitator extends SubsystemBase {
         );
     }
 
+    public static Command enableRight() {
+        return Commands.run(
+                () -> {
+                    agitatorRight.setVoltage(4.5);
+//                    agitatorRightPID.setSetpoint(1400, SparkBase.ControlType.kVelocity);
+                }
+            );
+    }
+
     public static Command runLeft() {
         return Commands.runEnd(
                 () -> {
@@ -122,6 +131,15 @@ public class Agitator extends SubsystemBase {
                     agitatorLeft.setVoltage(0);
                 }
         );
+    }
+
+    public static Command enableLeft() {
+        return Commands.run(
+                () -> {
+                    agitatorLeft.setVoltage(4.5);
+//                    agitatorLeftPID.setSetpoint(1400, SparkBase.ControlType.kVelocity);
+                }
+            );
     }
 
     public double getLeftPosition() {

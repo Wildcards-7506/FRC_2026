@@ -39,25 +39,33 @@ public class GunCommand extends Command {
 //                                        .alongWith(superStructure.runIntake2()))
 //                        .alongWith(Agitator.runRight())
 //                        .alongWith(Agitator.runLeft());
-        superStructure.runIntake();
-        superStructure.rejectLoaderAuto();
-        superStructure.runIntake2();
+        superStructure.enableIntake();
+        superStructure.enableIntake2();
+        Robot.loadingFuel = true;
+        superStructure.enableRejectLoader();
+//        superStructure.runIntake2();
         if (Robot.flywheelHitTarget) {
-            Agitator.runRight();
-            Agitator.runLeft();
+            Agitator.enableRight();
+            Agitator.enableLeft();
         }
     }
     
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        Robot.m_robotContainer.superStructure.setIntakeVoltage(0);
-        Robot.m_robotContainer.superStructure.setIntake2Voltage(0);
-        Robot.m_robotContainer.superStructure.setLoaderVoltage(0);
+//        Robot.m_robotContainer.superStructure.setIntakeVoltage(0);
+//        Robot.m_robotContainer.superStructure.disableIntake();
+//        Robot.m_robotContainer.superStructure.disableIntake2();
+//        Robot.m_robotContainer.superStructure.setIntake2Voltage(0);
+//        Robot.m_robotContainer.superStructure.setLoaderVoltage(0);
+        Robot.m_robotContainer.superStructure.disableIntakes();
+        Robot.loadingFuel = false;
+        Robot.m_robotContainer.superStructure.setFlywheelRPM(0);
     }
 
     @Override
     public boolean isFinished() {
+        Robot.loadingFuel = false;
         return stopGun;
     }
 

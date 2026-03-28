@@ -142,13 +142,13 @@ public class SuperStructure extends SubsystemBase {
     }
 
     public Command enableFlywheel(double desiredRPM) {
-        return Commands.run(() -> {
+        return Commands.runOnce(() -> {
             setFlywheelRPM(desiredRPM);
         });
     }
 
     public Command disableFlywheel() {
-        return Commands.run(() -> {
+        return Commands.runOnce(() -> {
             setFlywheelRPM(0);
         });
     }
@@ -157,6 +157,18 @@ public class SuperStructure extends SubsystemBase {
     public Command runIntake() {
         return Commands.runEnd(
                 () -> setIntakeVoltage(12),
+                () -> setIntakeVoltage(0)
+        );
+    }
+
+    public Command enableIntake() {
+        return Commands.runOnce(
+                () -> setIntakeVoltage(12)
+        );
+    }
+
+    public Command disableIntake() {
+        return Commands.runOnce(
                 () -> setIntakeVoltage(0)
         );
     }
@@ -174,6 +186,11 @@ public class SuperStructure extends SubsystemBase {
                 () -> setIntake2Voltage(0)
         );
     }
+    public Command enableIntake2() {
+        return Commands.run(
+                () -> setIntake2Voltage(12)
+        );
+    }
 
     public Command rejectIntake2() {
         return Commands.runEnd(
@@ -181,9 +198,14 @@ public class SuperStructure extends SubsystemBase {
                 () -> setIntake2Voltage(0)
         );
     }
+    public Command disableIntake2() {
+        return Commands.run(
+                () -> setIntake2Voltage(0)
+        );
+    }
 
     public Command enableIntakes() {
-        return Commands.run(() -> {
+        return Commands.runOnce(() -> {
             setIntakeVoltage(12);
             setIntake2Voltage(12);
             setLoaderVoltage(12);
@@ -191,7 +213,7 @@ public class SuperStructure extends SubsystemBase {
     }
 
     public Command rejectIntakes() {
-        return Commands.run(() -> {
+        return Commands.runOnce(() -> {
             setIntakeVoltage(-12);
             setIntake2Voltage(-12);
             setLoaderVoltage(-12);
@@ -199,7 +221,7 @@ public class SuperStructure extends SubsystemBase {
     }
 
     public Command disableIntakes() {
-        return Commands.run(() -> {
+        return Commands.runOnce(() -> {
             setIntakeVoltage(0);
             setIntake2Voltage(0);
             setLoaderVoltage(0);
@@ -272,6 +294,12 @@ public class SuperStructure extends SubsystemBase {
         return Commands.runEnd(
                 () -> setLoaderVoltage(-12),
                 () -> setLoaderVoltage(0)
+        );
+    }
+
+    public Command enableRejectLoader() {
+        return Commands.runOnce(
+                () -> setLoaderVoltage(-12)
         );
     }
 
