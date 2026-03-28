@@ -69,12 +69,6 @@
                 "data": {
                   "name": "intake off"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "gun on"
-                }
               }
             ]
           }
@@ -86,22 +80,10 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "shoot "
+                  "name": "Gun And Load 25"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 5.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "gun off "
           }
         }
       ]
