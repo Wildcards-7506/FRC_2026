@@ -73,7 +73,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Gun on "
+                  "name": "gun on"
                 }
               }
             ]
@@ -101,7 +101,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Gun off "
+            "name": "gun off "
           }
         }
       ]
