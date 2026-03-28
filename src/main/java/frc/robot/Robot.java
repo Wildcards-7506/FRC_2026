@@ -17,17 +17,13 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.autonomous.AutoRoutines;
-import frc.robot.subsystems.Climber;
-import frc.robot.subsystems.LED;
-import frc.robot.subsystems.Limelight;
-import frc.robot.subsystems.SuperStructure;
+import frc.robot.subsystems.*;
 import frc.robot.utils.LimelightHelpers;
 
 import static frc.robot.utils.LimelightHelpers.setLEDMode_ForceOff;
@@ -294,13 +290,15 @@ public class Robot extends TimedRobot {
                 superStructure.runIntake()
                         .alongWith(useAuto ? superStructure.rejectLoaderAuto() : superStructure.rejectLoader())
                         .alongWith(superStructure.runIntake2()),
-//                        .alongWith(Climber.crawlRight()),
+//                        .alongWith(Agitator.runRight())
+//                        .alongWith(Agitator.runLeft()),
                 Commands.waitUntil(() -> Robot.flywheelHitTarget)
                         .andThen(
                                 superStructure.runIntake()
                                         .alongWith(useAuto ? superStructure.rejectLoaderAuto() : superStructure.rejectLoader())
-                                        .alongWith(superStructure.runIntake2())),
-//                        .alongWith(Climber.crawlRight()),
+                                        .alongWith(superStructure.runIntake2()))
+                                        .alongWith(Agitator.runRight())
+                                        .alongWith(Agitator.runLeft()),
                 () -> crippleMode);
     }
 

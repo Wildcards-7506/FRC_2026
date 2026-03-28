@@ -38,7 +38,7 @@ public class RobotContainer {
     // The robot's subsystems
     public final DriveSubsystem drivetrain;
     public final SuperStructure superStructure;
-    public final Climber climber;
+    public final Agitator agitator;
     public final LED led;
 
     // The driver's controller
@@ -53,7 +53,7 @@ public class RobotContainer {
     public RobotContainer() {
         drivetrain = new DriveSubsystem();
         superStructure = new SuperStructure();
-        climber = new Climber();
+        agitator = new Agitator();
         led = new LED(1, 14);
         autoMode = new AutoRoutines(this);
 
@@ -179,24 +179,24 @@ public class RobotContainer {
 //        controller1.povRight().whileTrue(
 //                Commands.startEnd(
 //                        () -> {
-//                            climber.setSoftLimitsEnabled(false);
-//                            climber.crawlLeft();
-//                            climber.crawlRight();
+//                            agitator.setSoftLimitsEnabled(false);
+//                            agitator.runLeft();
+//                            agitator.runRight();
 //                        },
 //                        () -> {
-//                            climber.setSoftLimitsEnabled(true);
-//                            climber.stopExtender();
+//                            agitator.setSoftLimitsEnabled(true);
+//                            agitator.stopExtender();
 //                        },
-//                        climber
+//                        agitator
 //                )
 //        );
 
-        controller1.povRight().whileTrue(
-                climber.crawlLeft()
-        );
-        controller1.povRight().whileTrue(
-                climber.crawlRight()
-        );
+//        controller1.povRight().whileTrue(
+//                agitator.runLeft()
+//        );
+//        controller1.povRight().whileTrue(
+//                agitator.runRight()
+//        );
     }
 
     /**
