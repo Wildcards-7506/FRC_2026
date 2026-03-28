@@ -10,6 +10,7 @@ import frc.robot.subsystems.SuperStructure;
 public class GunCommand extends Command {
     private final Timer timer = new Timer();
 //    private double duration;
+    private static boolean stopGun;
 
     public GunCommand() {
 //        this.duration = duration;
@@ -20,6 +21,7 @@ public class GunCommand extends Command {
     public void initialize() {
         timer.reset();
         timer.start();
+        stopGun = false;
     }
     
     // Called every time the scheduler runs while the command is scheduled.
@@ -52,14 +54,14 @@ public class GunCommand extends Command {
         Robot.m_robotContainer.superStructure.setIntakeVoltage(0);
         Robot.m_robotContainer.superStructure.setIntake2Voltage(0);
         Robot.m_robotContainer.superStructure.setLoaderVoltage(0);
-        timer.stop();
     }
 
     @Override
     public boolean isFinished() {
-        // Timeout in seconds
-        // return timer.get() > duration || timer.get()>0.5 && Robot.crane.getSuckerCurrent() > 20;
-//        return timer.get() > duration;
-        return false;
+        return stopGun;
+    }
+
+    public static void doStopGun() {
+        stopGun = true;
     }
 }

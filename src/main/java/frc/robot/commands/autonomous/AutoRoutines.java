@@ -40,6 +40,8 @@ public final class AutoRoutines {
 
   // Load the RobotConfig from the GUI settings.
   RobotConfig config;
+
+  private RepeatCommand gunRepeatingCommand = null;
   
   public AutoRoutines(RobotContainer robotContainer) {
     this.robotContainer = robotContainer;
@@ -88,9 +90,10 @@ public final class AutoRoutines {
     //pre-defined commands and place them at specific points while moving.
     NamedCommands.registerCommand("intake on", this.robotContainer.superStructure.enableIntakes()); // Use this as a guide for complex sequences
     NamedCommands.registerCommand("intake off", this.robotContainer.superStructure.disableIntakes()); // Use this as a guide for complex sequences
-//    NamedCommands.registerCommand("gun on", this.robotContainer.superStructure.enableFlywheel(Constants.ShooterConstants.flywheelRPM)); // Use this as a guide for complex sequences
-//    NamedCommands.registerCommand("gun on", runGun()); // Use this as a guide for complex sequences
-//    NamedCommands.registerCommand("gun off", endGun()); // Use this as a guide for complex sequences
+  //  NamedCommands.registerCommand("gun on", this.robotContainer.superStructure.enableFlywheel(Constants.ShooterConstants.flywheelRPM)); // Use this as a guide for complex sequences
+  //  NamedCommands.registerCommand("gun on", runGun()); // Use this as a guide for complex sequences
+   NamedCommands.registerCommand("gun on", new GunCommand()); // Use this as a guide for complex sequences
+   NamedCommands.registerCommand("gun off", Commands.runOnce(() -> GunCommand.doStopGun())); // Use this as a guide for complex sequences
 
     NamedCommands.registerCommand("Intake Down", new RotatorDownCommand(this.robotContainer)); // Use this as a guide for complex sequences
     NamedCommands.registerCommand("Gun And Load 5", Robot.primeAndRunGun(this.robotContainer.superStructure).withTimeout(5)); // implement this
@@ -108,13 +111,13 @@ public final class AutoRoutines {
 //    this.gunRepeatingCommand = Robot.checkAndRunGun(this.robotContainer.superStructure, true).repeatedly();
 //    return this.gunRepeatingCommand;
 //  }
-//
-//  private Command endGun() {
-//    if (this.gunRepeatingCommand != null) {
-//      this.gunRepeatingCommand.end(true);
-//    };
-//    return Commands.run(() -> {});
-//  }
+
+ private Command endGun() {
+    if (this.gunRepeatingCommand != null) {
+      this.gunRepeatingCommand.end(true);
+    };
+    return Commands.run(() -> {});
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
