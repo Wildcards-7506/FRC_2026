@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "RSO 0.1"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "Intake Down"
@@ -76,6 +82,12 @@
                 "data": {
                   "name": "intake off"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "gun on "
+                }
               }
             ]
           }
@@ -87,10 +99,22 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Gun And Load 25"
+                  "name": "shoot "
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 4.0
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "gun off"
           }
         }
       ]
