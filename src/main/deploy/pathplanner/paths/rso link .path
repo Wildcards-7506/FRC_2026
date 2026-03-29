@@ -3,37 +3,32 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.238630527817403,
-        "y": 7.431398002853067
+        "x": 2.741619047619048,
+        "y": 2.361369047619048
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.874579172610556,
-        "y": 7.638416547788874
+        "x": 2.4476034236804565,
+        "y": 1.5443081312410847
       },
       "isLocked": false,
-      "linkedName": "new3bend"
+      "linkedName": "rso4"
     },
     {
       "anchor": {
-        "x": 2.968369047619048,
-        "y": 5.341511904761905
+        "x": 3.2058082798549106,
+        "y": 0.6131363636363643
       },
       "prevControl": {
-        "x": 1.1407988587731819,
-        "y": 7.431398002853067
+        "x": 2.2058082798549106,
+        "y": 0.6131363636363645
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Left Shooting Position "
+      "linkedName": "rso0.1"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.5,
-      "rotationDegrees": -0.8297529910905849
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -46,14 +41,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": -37.87498365109819
+    "velocity": 1.0,
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "LSO",
+  "folder": "RSO",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 43.21008939175381
   },
   "useDefaultConstraints": true
 }

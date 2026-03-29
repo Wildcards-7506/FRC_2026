@@ -21,11 +21,11 @@
       },
       "prevControl": {
         "x": 1.3966380524247217,
-        "y": 0.39178758889080356
+        "y": 0.3917875888908038
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "right shooting position"
+      "linkedName": "rso4"
     }
   ],
   "rotationTargets": [

@@ -42,7 +42,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "intake on "
+                  "name": "intake on"
                 }
               },
               {
@@ -86,7 +86,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "gun on "
+                  "name": "gun on"
                 }
               }
             ]
@@ -99,7 +99,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "shoot "
+                  "name": "shoot"
                 }
               },
               {
@@ -115,6 +115,62 @@
           "type": "named",
           "data": {
             "name": "gun off"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "rso link "
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RSO 1 "
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "RSO 2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intake on"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RSO 3"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "RSO 4"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intake off"
+                }
+              }
+            ]
           }
         }
       ]

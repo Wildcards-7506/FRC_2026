@@ -51,8 +51,8 @@ public class GunCommand extends Command {
             superStructure.setIntakeVoltage(12);
             superStructure.setLoaderVoltage(-12);
             superStructure.setIntake2Voltage(12);
-            Agitator.agitatorLeft.setVoltage(3.5);
-            Agitator.agitatorRight.setVoltage(3.5);
+            Agitator.agitatorLeft.setVoltage(4.5);
+            Agitator.agitatorRight.setVoltage(4.5);
 //            CommandScheduler.getInstance().schedule(
 //                    Agitator.enableRight().alongWith(Agitator.enableLeft())
 //            );

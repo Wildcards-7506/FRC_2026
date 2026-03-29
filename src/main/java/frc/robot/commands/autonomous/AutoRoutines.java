@@ -90,7 +90,7 @@ public final class AutoRoutines {
   private void setMarkers() {
     //Registers commands to run in autonomous. The Pathplanner application can take these
     //pre-defined commands and place them at specific points while moving.
-    NamedCommands.registerCommand("intake on", this.robotContainer.superStructure.enableIntake().alongWith(this.robotContainer.superStructure.enableIntake2()).alongWith(this.robotContainer.superStructure.enableLoader())); // Use this as a guide for complex sequences
+    NamedCommands.registerCommand("intake on", this.robotContainer.superStructure.enableIntakes()); // Use this as a guide for complex sequences
     NamedCommands.registerCommand("intake off", this.robotContainer.superStructure.disableIntakes()); // Use this as a guide for complex sequences
    NamedCommands.registerCommand("gun on", this.robotContainer.superStructure.enableFlywheel(Constants.ShooterConstants.flywheelRPM)); // Use this as a guide for complex sequences
   //  NamedCommands.registerCommand("gun on", runGun()); // Use this as a guide for complex sequences

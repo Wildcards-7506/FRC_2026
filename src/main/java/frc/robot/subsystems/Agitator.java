@@ -102,6 +102,19 @@ public class Agitator extends SubsystemBase {
         });
     }
 
+    public static Command runReject() {
+        return Commands.runEnd(
+                () -> {
+                    agitatorRight.setVoltage(4.5);
+                    agitatorLeft.setVoltage(-4.5);
+                },
+                () -> {
+                    agitatorRight.setVoltage(0);
+                    agitatorLeft.setVoltage(0);
+                }
+        );
+    }
+
     public static Command runRight() {
         return Commands.runEnd(
                 () -> {

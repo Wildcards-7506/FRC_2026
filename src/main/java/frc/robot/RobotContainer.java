@@ -177,6 +177,10 @@ public class RobotContainer {
                 superStructure.rejectIntake()
         );
 
+        controller1.povRight().whileTrue(
+                Agitator.runReject()
+        );
+
 //        controller1.povRight().whileTrue(
 //                Commands.startEnd(
 //                        () -> {
