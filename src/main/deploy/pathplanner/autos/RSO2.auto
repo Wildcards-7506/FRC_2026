@@ -5,21 +5,9 @@
     "data": {
       "commands": [
         {
-          "type": "path",
-          "data": {
-            "pathName": "RSO 0.1"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "Intake Down"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.2
           }
         },
         {
@@ -52,12 +40,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0
           }
         },
         {

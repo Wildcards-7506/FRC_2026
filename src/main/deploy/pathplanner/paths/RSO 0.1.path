@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.99343023390997,
-        "y": 0.571749267578125
+        "x": 3.485493987546706,
+        "y": 0.6288446337402642
       },
       "isLocked": false,
       "linkedName": "rso1start"
     },
     {
       "anchor": {
-        "x": 3.2058082798549106,
+        "x": 3.524222412109375,
         "y": 0.6131363636363643
       },
       "prevControl": {
-        "x": 4.105228794642858,
-        "y": 0.6057012067522327
+        "x": 3.774078697147138,
+        "y": 0.6216120245031107
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "RSO",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.3226848609858451
