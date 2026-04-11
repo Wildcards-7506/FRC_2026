@@ -14,11 +14,15 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.IOConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SuperStructureConstants;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
@@ -64,6 +68,8 @@ public class SuperStructure extends SubsystemBase {
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                 // .pid(0.0013, 0, 0.016)
                 .pid(0.002, 0, 0.016)
+                // .pid(0.002, 0, 0.0)
+                // .pid(0.0, 0, 0.0)
                 .outputRange(0, 1);
 
         intakeConfig
@@ -121,6 +127,13 @@ public class SuperStructure extends SubsystemBase {
         intake2.configure(intake2Config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         rotator.configure(rotatorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         hood.configure(hoodConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    // public static final double flywheelRPM = 3300; // 60 inches
+    // public static final double flywheelRPM = 3500; // 70 inches
+    // public static final double flywheelRPM = 3700; // 80 inches
+    // public static final double flywheelRPM = 3900; // 90 inches
+    // public static final double flywheelRPM = 4100; // 100 inches
+    // public static final double flywheelRPM = 4300; // 110 inches
+    // public static final double flywheelRPM = 4500; // 120 inches
     }
 
     //Flywheel Commands
@@ -131,8 +144,15 @@ public class SuperStructure extends SubsystemBase {
 //                flywheelConfig.closedLoop.pid(SmartDashboard.getNumber("pidp", 0), 0, SmartDashboard.getNumber("pidd", 0));
 //                flywheel.configure(flywheelConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 //                    SmartDashboard.putBoolean("does work", true);
-                    // setFlywheelRPM(desiredRPM);
-                    setFlywheelRPM_FF(desiredRPM);
+                    if(!Robot.useAutoHood) {
+                        ShooterConstants.flywheelRPM = 4500;
+                        setFlywheelRPM(ShooterConstants.flywheelRPM);
+                    } else if (Robot.distanceToHub < 130.0) { // less than 130 inches then do this
+                        setFlywheelRPM_FF_Short(Constants.ShooterConstants.flywheelRPM);
+                    } else { // greater than 130 then do this
+                        ShooterConstants.flywheelRPM = 4500;
+                        setFlywheelRPM_FF_Far(desiredRPM);
+                    }
                 },
                 () -> setFlywheelRPM(0)
         );
@@ -330,9 +350,14 @@ public class SuperStructure extends SubsystemBase {
         flywheelPID.setSetpoint(rpm, ControlType.kVelocity);
     }
 
-    public void setFlywheelRPM_FF(double rpm) {
+    public void setFlywheelRPM_FF_Far(double rpm) {
         // rpm = fixRPM(rpm); // basically pid with simple approximate feedforward
-        flywheelPID.setSetpoint(rpm, ControlType.kVelocity, ClosedLoopSlot.kSlot0, 7.2);
+        flywheelPID.setSetpoint(rpm, ControlType.kVelocity, ClosedLoopSlot.kSlot0, 8.5);
+    }
+
+    public void setFlywheelRPM_FF_Short(double rpm) {
+        // rpm = fixRPM(rpm); // basically pid with simple approximate feedforward
+        flywheelPID.setSetpoint(rpm, ControlType.kVelocity, ClosedLoopSlot.kSlot0, 6);
     }
 
     public void setIntakeVoltage(double voltage) {
