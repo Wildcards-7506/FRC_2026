@@ -256,7 +256,7 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Hold Y CurrPose", currPose.getY());
     SmartDashboard.putNumber("Hold X SavedPose", this.savedPose.getX());
     SmartDashboard.putNumber("Hold Y SavedPose", this.savedPose.getY());
-    // drive(ySpeed, xSpeed, rotSpeed, true);
+    drive(-ySpeed, xSpeed, rotSpeed, true);
   }
 
     /**
