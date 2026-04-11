@@ -29,6 +29,7 @@ import frc.robot.Constants.IOConstants;
 import frc.robot.Robot;
 
 public class DriveSubsystem extends SubsystemBase {
+  Pose2d recordedPose = null;
   public boolean isFieldRel = true;
 
   // Create MAXSwerveModules
@@ -213,6 +214,40 @@ public class DriveSubsystem extends SubsystemBase {
     double speed = filterValue(err, -rotSpeed, rotSpeed);
 
     drive(0, 0, speed, true);
+  }
+
+  public void recordPose() {
+    this.recordedPose = this.getPose();
+  }
+
+  // public Command alignToTarget(Supplier<Pose2d> targetSupplier) {
+  public void alignToTargetHold(Pose2d targetSupplier) {
+    double rotSpeed = 0.4;
+
+    Pose2d botPose = getPose();
+    // Pose2d target = targetSupplier.get();
+    Pose2d target = targetSupplier;
+
+    double dX = target.getX() - botPose.getX();
+    double dY = target.getY() - botPose.getY();
+    double targetDeg = Math.toDegrees(Math.atan2(dY, dX));
+
+    SmartDashboard.putNumber("BotHeading", getHeading());
+    SmartDashboard.putNumber("HeadingToTarget", targetDeg);
+    SmartDashboard.putNumber("HeadingToTarget2", Robot. angleToHub.getDegrees());
+
+    double err = MathUtil.inputModulus(targetDeg - getHeading(), -180, 180);
+
+    err = err / 50;
+
+    rotSpeed = filterValue(err, -rotSpeed, rotSpeed);
+
+    Pose2d currPose = getPose();
+
+    double xSpeed = Math.min(0.3, Math.max(-0.3, this.recordedPose.getX() - currPose.getX()));
+    double ySpeed = Math.min(0.3, Math.max(-0.3, this.recordedPose.getY() - currPose.getY()));
+
+    drive(ySpeed, xSpeed, rotSpeed, true);
   }
 
     /**

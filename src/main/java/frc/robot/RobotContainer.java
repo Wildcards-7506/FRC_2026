@@ -108,6 +108,23 @@ public class RobotContainer {
                         }, drivetrain)
 
         );
+
+        controller0.x().whileTrue(
+            Commands.sequence(
+                Commands.runOnce(
+                    () -> {
+                        drivetrain.recordPose();
+                    }
+                ),
+                Commands.runEnd(
+                        () -> {
+                            drivetrain.alignToTargetHold(Robot.hubPose);
+                        },
+                        () -> {
+                            drivetrain.drive(0, 0, 0, true);
+                        }, drivetrain)
+            )
+        );
     }
 
     private void operatorController() {
