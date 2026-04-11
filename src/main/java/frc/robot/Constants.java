@@ -130,7 +130,8 @@ public final class Constants {
     }
 
   public static final class ShooterConstants {
-    public static final double flywheelRPM = 4000;
+    // public static final double flywheelRPM = 4000;
+    public static final double flywheelRPM = 4500;
   }
 
   public static final class NeoMotorConstants {

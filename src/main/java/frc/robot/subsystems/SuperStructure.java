@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -61,13 +62,8 @@ public class SuperStructure extends SubsystemBase {
                 .velocityConversionFactor(1); // 1 is for RPM
         flywheelConfig.closedLoop
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                .pid(0.0013, 0, 0.016)
-                // 0.002 0 0.00
-                // 0.002 0 0.0012
-                // 0.0013 ,0, 0.003
-                // 0.0013 ,0, 0.009
-                // 0.0013 ,0, 0.015 SWEET SPOT - 3/7/26
-                // 0.0013 ,0, 0.016 TOO HIGH ?
+                // .pid(0.0013, 0, 0.016)
+                .pid(0.002, 0, 0.016)
                 .outputRange(0, 1);
 
         intakeConfig
@@ -135,7 +131,8 @@ public class SuperStructure extends SubsystemBase {
 //                flywheelConfig.closedLoop.pid(SmartDashboard.getNumber("pidp", 0), 0, SmartDashboard.getNumber("pidd", 0));
 //                flywheel.configure(flywheelConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 //                    SmartDashboard.putBoolean("does work", true);
-                    setFlywheelRPM(desiredRPM);
+                    // setFlywheelRPM(desiredRPM);
+                    setFlywheelRPM_FF(desiredRPM);
                 },
                 () -> setFlywheelRPM(0)
         );
@@ -331,6 +328,11 @@ public class SuperStructure extends SubsystemBase {
     public void setFlywheelRPM(double rpm) {
         rpm = fixRPM(rpm); // basically pid with simple approximate feedforward
         flywheelPID.setSetpoint(rpm, ControlType.kVelocity);
+    }
+
+    public void setFlywheelRPM_FF(double rpm) {
+        // rpm = fixRPM(rpm); // basically pid with simple approximate feedforward
+        flywheelPID.setSetpoint(rpm, ControlType.kVelocity, ClosedLoopSlot.kSlot0, 7.2);
     }
 
     public void setIntakeVoltage(double voltage) {

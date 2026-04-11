@@ -29,7 +29,7 @@ import frc.robot.Constants.IOConstants;
 import frc.robot.Robot;
 
 public class DriveSubsystem extends SubsystemBase {
-  // public double testCounter = 0; // Used to test if command chaining is correct, e.g. runOnce does runOnce, runEnd does run again until end
+  public double testCounter = 0; // Used to test if command chaining is correct, e.g. runOnce does runOnce, runEnd does run again until end
   Pose2d savedPose = null;
   public boolean isFieldRel = true;
 

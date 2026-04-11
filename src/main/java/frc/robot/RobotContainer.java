@@ -115,21 +115,22 @@ public class RobotContainer {
                 Commands.runOnce(
                     () -> {
                         SmartDashboard.putBoolean("Holding Pose", true);
-                        // drivetrain.testCounter += 1;
-                        // SmartDashboard.putNumber("Test Counter", drivetrain.testCounter);
                         drivetrain.savePose();
                     }
                     ),
                     Commands.runEnd(
                         () -> {
-                            drivetrain.alignToTargetHoldPose(Robot.hubPose);
-                        },
-                        () -> {
-                            SmartDashboard.putBoolean("Holding Pose", false);
-                            // drivetrain.testCounter = 0;
-                            // SmartDashboard.putNumber("Test Counter", drivetrain.testCounter);
-                            drivetrain.drive(0, 0, 0, true);
-                        }, drivetrain)
+                        // drivetrain.testCounter += 1;
+                        // SmartDashboard.putNumber("Test Counter", drivetrain.testCounter);
+                        drivetrain.alignToTargetHoldPose(Robot.hubPose);
+                    },
+                    () -> {
+                        SmartDashboard.putBoolean("Holding Pose", false);
+                        // drivetrain.testCounter = 0;
+                        // SmartDashboard.putNumber("Test Counter", drivetrain.testCounter);
+                        drivetrain.drive(0, 0, 0, true);
+                    }, drivetrain
+                )
             )
         );
     }
