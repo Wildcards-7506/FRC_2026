@@ -29,6 +29,9 @@ import frc.robot.utils.LimelightHelpers;
 
 import static frc.robot.utils.LimelightHelpers.setLEDMode_ForceOff;
 
+import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
+import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
+
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to
@@ -51,6 +54,8 @@ public class Robot extends TimedRobot {
     public static double tagDistance = 0.0;
 
     public static Pose2d targetPose = new Pose2d(0, 0, new Rotation2d());
+
+    public static PolynomialSplineFunction hoodSpline;
 
     double currentHeading = 0.0;
     double targetHeading = 0.0;
@@ -149,7 +154,8 @@ public class Robot extends TimedRobot {
 
         if (useAutoHood) {
             // Robot.setRPMForCurrentDistance();
-            Robot.setHoodForCurrentDistance();
+            // Robot.setHoodForCurrentDistance();
+              Robot.cubicSpliceHoodPos();
         }
 
         if (!useAutoHood && !loadingFuel) {
@@ -318,6 +324,35 @@ public class Robot extends TimedRobot {
 
         m_robotContainer.superStructure.setHoodPos(hoodTable.get(distanceToHub));
     }
+
+    public static void calculateCublicSpline() {
+      
+      double[] xDist = {1.651, 1.9558, 2.2606, 2.5654, 2.8702, 3.157, 3.4789, 4.191};
+      double[] yPos  = {-7.61, -5.9, -4.835, -2.93, -0.2, 1.02564, 4.102, 7.326};
+
+      hoodSpline = new SplineInterpolator().interpolate(xDist, yPos);
+
+    }
+
+    public static void cubicSpliceHoodPos() {
+        var chassisSpeeds = m_robotContainer.drivetrain.getRobotRelativeSpeeds();
+        double vx = chassisSpeeds.vxMetersPerSecond;
+        double vy = chassisSpeeds.vyMetersPerSecond;
+
+        double timeOfFlight = 0.55; 
+        double virtualDistance = distanceToHub - (vx * timeOfFlight);
+
+        double clampedDist = Math.max(1.651, Math.min(4.191, virtualDistance));
+
+        // Calculate interpolated position via Cubic Spline
+        double targetPos = hoodSpline.value(clampedDist);
+
+         m_robotContainer.superStructure.setHoodPos(targetPos);
+
+
+    }
+
+
 
     /**
      * This function is called once each time the robot enters Disabled mode.
