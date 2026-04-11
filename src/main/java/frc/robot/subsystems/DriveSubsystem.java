@@ -29,6 +29,8 @@ import frc.robot.Constants.IOConstants;
 import frc.robot.Robot;
 
 public class DriveSubsystem extends SubsystemBase {
+  // public double testCounter = 0; // Used to test if command chaining is correct, e.g. runOnce does runOnce, runEnd does run again until end
+  Pose2d savedPose = null;
   public boolean isFieldRel = true;
 
   // Create MAXSwerveModules
@@ -213,6 +215,48 @@ public class DriveSubsystem extends SubsystemBase {
     double speed = filterValue(err, -rotSpeed, rotSpeed);
 
     drive(0, 0, speed, true);
+  }
+
+  public void savePose() {
+    this.savedPose = this.getPose();
+  }
+
+  // public Command alignToTarget(Supplier<Pose2d> targetSupplier) {
+  public void alignToTargetHoldPose(Pose2d targetSupplier) {
+    double rotSpeed = 0.4;
+
+    Pose2d botPose = getPose();
+    // Pose2d target = targetSupplier.get();
+    Pose2d target = targetSupplier;
+
+    double dX = target.getX() - botPose.getX();
+    double dY = target.getY() - botPose.getY();
+    double targetDeg = Math.toDegrees(Math.atan2(dY, dX));
+
+    SmartDashboard.putNumber("BotHeading", getHeading());
+    SmartDashboard.putNumber("HeadingToTarget", targetDeg);
+    SmartDashboard.putNumber("HeadingToTarget2", Robot.angleToHub.getDegrees());
+    
+    double err = MathUtil.inputModulus(targetDeg - getHeading(), -180, 180);
+    
+    err = err / 50;
+    
+    rotSpeed = filterValue(err, -rotSpeed, rotSpeed);
+    
+    Pose2d currPose = getPose();
+
+    double maxSpeed = 0.3;
+    
+    double xSpeed = Math.min(maxSpeed, Math.max(-maxSpeed, this.savedPose.getX() - currPose.getX()));
+    double ySpeed = Math.min(maxSpeed, Math.max(-maxSpeed, this.savedPose.getY() - currPose.getY()));
+    
+    SmartDashboard.putNumber("Hold X Input", xSpeed);
+    SmartDashboard.putNumber("Hold Y Input", ySpeed);
+    SmartDashboard.putNumber("Hold X CurrPose", currPose.getX());
+    SmartDashboard.putNumber("Hold Y CurrPose", currPose.getY());
+    SmartDashboard.putNumber("Hold X SavedPose", this.savedPose.getX());
+    SmartDashboard.putNumber("Hold Y SavedPose", this.savedPose.getY());
+    // drive(ySpeed, xSpeed, rotSpeed, true);
   }
 
     /**

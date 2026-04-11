@@ -18,6 +18,7 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -107,6 +108,29 @@ public class RobotContainer {
                             drivetrain.drive(0, 0, 0, true);
                         }, drivetrain)
 
+        );
+
+        controller0.x().whileTrue(
+            Commands.sequence(
+                Commands.runOnce(
+                    () -> {
+                        SmartDashboard.putBoolean("Holding Pose", true);
+                        // drivetrain.testCounter += 1;
+                        // SmartDashboard.putNumber("Test Counter", drivetrain.testCounter);
+                        drivetrain.savePose();
+                    }
+                    ),
+                    Commands.runEnd(
+                        () -> {
+                            drivetrain.alignToTargetHoldPose(Robot.hubPose);
+                        },
+                        () -> {
+                            SmartDashboard.putBoolean("Holding Pose", false);
+                            // drivetrain.testCounter = 0;
+                            // SmartDashboard.putNumber("Test Counter", drivetrain.testCounter);
+                            drivetrain.drive(0, 0, 0, true);
+                        }, drivetrain)
+            )
         );
     }
 
