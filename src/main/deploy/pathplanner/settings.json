@@ -13,7 +13,8 @@
   "autoFolders": [
     "CENTER FEILD ",
     "CLEAR OUT ",
-    "DEPOT "
+    "DEPOT ",
+    "UNTESTED AUTOS "
   ],
   "defaultMaxVel": 6.0,
   "defaultMaxAccel": 3.0,

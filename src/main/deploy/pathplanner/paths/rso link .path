@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.741619047619048,
-        "y": 2.361369047619048
+        "x": 2.933988850911458,
+        "y": 2.6330296107700892
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.4476034236804565,
-        "y": 1.5443081312410847
+        "x": 1.8782670665922616,
+        "y": 1.3230251348586317
       },
       "isLocked": false,
       "linkedName": "rso4"
@@ -20,8 +20,8 @@
         "y": 0.6131363636363643
       },
       "prevControl": {
-        "x": 2.524222412109375,
-        "y": 0.6131363636363644
+        "x": 2.1154718308221727,
+        "y": 0.3020709519159233
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,7 +48,7 @@
   "folder": "RSO",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 43.21008939175381
+    "rotation": 46.573171112417775
   },
   "useDefaultConstraints": true
 }

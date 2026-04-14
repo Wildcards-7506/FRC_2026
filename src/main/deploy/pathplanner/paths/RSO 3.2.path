@@ -12,20 +12,20 @@
         "y": 0.06085865291027748
       },
       "isLocked": false,
-      "linkedName": "endstep4a"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.166713053390936,
-        "y": 0.5206174432675299
+        "x": 6.17466575985863,
+        "y": 0.48457536969866166
       },
       "prevControl": {
-        "x": 8.032247144300028,
-        "y": 0.7782878978129848
+        "x": 8.040199850767728,
+        "y": 0.7422458242441166
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "end5a"
+      "linkedName": "rso3.2"
     }
   ],
   "rotationTargets": [
@@ -61,7 +61,7 @@
   },
   "goalEndState": {
     "velocity": 2.0,
-    "rotation": 0.12864783503107183
+    "rotation": 90.53634724107265
   },
   "reversed": false,
   "folder": "RSO",
