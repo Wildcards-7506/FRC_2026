@@ -29,6 +29,7 @@ import frc.robot.commands.autonomous.commands.GunCommand;
 import frc.robot.commands.autonomous.commands.IntakeCommand;
 import frc.robot.commands.autonomous.commands.RotatorDownCommand;
 import frc.robot.Constants.SuperStructureConstants;
+import frc.robot.subsystems.Agitator;
 
 @SuppressWarnings("unused")
 public final class AutoRoutines {
@@ -100,6 +101,8 @@ public final class AutoRoutines {
     .andThen(this.robotContainer.superStructure.enableRejectLoader())
     .andThen(this.robotContainer.superStructure.enableIntake())
     .andThen(this.robotContainer.superStructure.enableIntake2())
+            .andThen(Agitator.enableRight())
+            .andThen(Agitator.enableLeft())
   ); // Use this as a guide for complex sequences
   NamedCommands.registerCommand("gun off", gunOff()); // Use this as a guide for complex sequences
 //   NamedCommands.registerCommand("gun on",  this.robotContainer.superStructure.enableFlywheel(Constants.ShooterConstants.flywheelRPM)); // Use this as a guide for complex sequences
@@ -123,7 +126,8 @@ public final class AutoRoutines {
 
   public Command gunOff() {
       return this.robotContainer.superStructure.disableIntakes()
-      .alongWith(this.robotContainer.superStructure.disableFlywheel());
+      .alongWith(this.robotContainer.superStructure.disableFlywheel())
+              .andThen(Agitator.stopMotorsCommand());
   }
 
   /**

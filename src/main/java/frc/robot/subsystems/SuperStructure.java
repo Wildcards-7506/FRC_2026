@@ -278,6 +278,18 @@ public class SuperStructure extends SubsystemBase {
         );
     }
 
+    public Command bringUpRotatorOnce() {
+        return Commands.runOnce(
+                () -> setRotatorPos(SuperStructureConstants.rotatorMax)
+        );
+    }
+
+    public Command bringDownRotatorOnce() {
+        return Commands.runOnce(
+                () -> setRotatorPos(SuperStructureConstants.rotatorMin)
+        );
+    }
+
     public Command setRotator(double pos) {
         return Commands.runOnce(() -> setRotatorPos(pos));
     }
