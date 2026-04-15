@@ -131,7 +131,14 @@ public final class Constants {
 
   public static final class ShooterConstants {
     // public static final double flywheelRPM = 4000;
-    public static final double flywheelRPM = 4500;
+    // public static final double flywheelRPM = 4500;
+    // public static final double flywheelRPM = 3300; // 60 inches
+    // public static final double flywheelRPM = 3500; // 70 inches
+    // public static final double flywheelRPM = 3700; // 80 inches
+    // public static final double flywheelRPM = 3900; // 90 inches
+    // public static final double flywheelRPM = 4100; // 100 inches
+    // public static final double flywheelRPM = 4300; // 110 inches
+    public static double flywheelRPM = 4500; // 120 inches
   }
 
   public static final class NeoMotorConstants {
