@@ -76,6 +76,8 @@ public class Robot extends TimedRobot {
     public static InterpolatingDoubleTreeMap hoodTable = new InterpolatingDoubleTreeMap();
     public static InterpolatingDoubleTreeMap flywheelTable = new InterpolatingDoubleTreeMap();
 
+    public static boolean bootyBumpEnabled = false;
+
     /**
      * This function is run when the robot is first started up and should be used
      * for any

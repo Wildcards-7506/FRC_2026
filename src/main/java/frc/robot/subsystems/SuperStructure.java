@@ -295,16 +295,18 @@ public class SuperStructure extends SubsystemBase {
         );
     }
 
-    public Command bringUpRotatorOnce() {
-        return Commands.runOnce(
-                () -> setRotatorPos(SuperStructureConstants.rotatorMax)
-        );
-    }
-
-    public Command bringDownRotatorOnce() {
-        return Commands.runOnce(
-                () -> setRotatorPos(SuperStructureConstants.rotatorMin)
-        );
+    public Command bootyBumpCommand(double cycleUpDurationMs, double cycleDownDurationMs) {
+        double cycleUpSeconds = cycleUpDurationMs / 1000.0;
+        double cycleDownSeconds = cycleDownDurationMs / 1000.0;
+        return Commands.sequence(
+                        Commands.runOnce(() -> setRotatorPos(SuperStructureConstants.rotatorMin)),
+                        Commands.waitSeconds(cycleUpSeconds),
+                        Commands.runOnce(() -> setRotatorPos(SuperStructureConstants.rotatorMax)),
+                        Commands.waitSeconds(cycleDownSeconds)
+                )
+                .repeatedly()
+                .until(() -> !Robot.bootyBumpEnabled)
+                .finallyDo(() -> setRotatorPos(SuperStructureConstants.rotatorMax));
     }
 
     public Command setRotator(double pos) {
