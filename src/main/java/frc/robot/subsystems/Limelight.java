@@ -7,7 +7,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class Limelight extends SubsystemBase{
+public class Limelight extends SubsystemBase {
 
     //PID for distance
     public final PIDController xController = new PIDController(1.5, 0.0, 0.01);
@@ -15,13 +15,13 @@ public class Limelight extends SubsystemBase{
     public final PIDController thetaController = new PIDController(1.5, 0.0, 0.01);
 
     public Limelight() {
-    //Distance code: Untested
-    xController.setTolerance(0.02);
-    yController.setTolerance(0.02);
-    
+        //Distance code: Untested
+        xController.setTolerance(0.02);
+        yController.setTolerance(0.02);
 
-    thetaController.enableContinuousInput(-180, 180);
-    thetaController.setTolerance(2.0); // 2 degree tolerance
+
+        thetaController.enableContinuousInput(-180, 180);
+        thetaController.setTolerance(2.0); // 2 degree tolerance
     }
 
     public double get_trig_distance() {

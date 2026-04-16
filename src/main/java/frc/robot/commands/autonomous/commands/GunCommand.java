@@ -10,7 +10,7 @@ import frc.robot.subsystems.SuperStructure;
 
 public class GunCommand extends Command {
     private final Timer timer = new Timer();
-//    private double duration;
+    //    private double duration;
     public static boolean stopGun;
 
     public GunCommand() {
@@ -24,7 +24,7 @@ public class GunCommand extends Command {
         timer.start();
         stopGun = false;
     }
-    
+
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {

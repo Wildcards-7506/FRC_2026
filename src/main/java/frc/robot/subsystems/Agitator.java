@@ -26,19 +26,19 @@ public class Agitator extends SubsystemBase {
     private static SparkClosedLoopController agitatorLeftPID;
     private static SparkClosedLoopController agitatorRightPID;
 
-    private final SparkMaxConfig leftConfig  = new SparkMaxConfig();
+    private final SparkMaxConfig leftConfig = new SparkMaxConfig();
     private final SparkMaxConfig rightConfig = new SparkMaxConfig();
 
     public static final double FORWARD_SOFT_LIMIT = 0;
     public static final double REVERSE_SOFT_LIMIT = -22;
 
     public Agitator() {
-        agitatorLeft  = new SparkMax(Constants.SuperStructureConstants.kLeftClimber, MotorType.kBrushless);
+        agitatorLeft = new SparkMax(Constants.SuperStructureConstants.kLeftClimber, MotorType.kBrushless);
         agitatorRight = new SparkMax(Constants.SuperStructureConstants.kRightClimber, MotorType.kBrushless);
-        agitatorLeftEncoder  = agitatorLeft.getEncoder();
+        agitatorLeftEncoder = agitatorLeft.getEncoder();
         agitatorRightEncoder = agitatorRight.getEncoder();
 
-        agitatorLeftPID  = agitatorLeft.getClosedLoopController();
+        agitatorLeftPID = agitatorLeft.getClosedLoopController();
         agitatorRightPID = agitatorRight.getClosedLoopController();
 
 //        SoftLimitConfig softLimits = new SoftLimitConfig()
@@ -86,7 +86,7 @@ public class Agitator extends SubsystemBase {
                 .pid(0.0013, 0, 0.016)
                 .outputRange(-1, 1);
 
-        agitatorLeft.configure(leftConfig,   ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        agitatorLeft.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         agitatorRight.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
@@ -134,7 +134,7 @@ public class Agitator extends SubsystemBase {
                     agitatorRight.setVoltage(4.5);
 //                    agitatorRightPID.setSetpoint(1400, SparkBase.ControlType.kVelocity);
                 }
-            );
+        );
     }
 
     public static Command runLeft() {
@@ -156,7 +156,7 @@ public class Agitator extends SubsystemBase {
                     agitatorLeft.setVoltage(4.5);
 //                    agitatorLeftPID.setSetpoint(1400, SparkBase.ControlType.kVelocity);
                 }
-            );
+        );
     }
 
     public double getLeftPosition() {
@@ -169,7 +169,7 @@ public class Agitator extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Extender Left Position",  getLeftPosition());
+        SmartDashboard.putNumber("Extender Left Position", getLeftPosition());
         SmartDashboard.putNumber("Extender Right Position", getRightPosition());
     }
 

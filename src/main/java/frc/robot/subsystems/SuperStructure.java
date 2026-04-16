@@ -127,13 +127,13 @@ public class SuperStructure extends SubsystemBase {
         intake2.configure(intake2Config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         rotator.configure(rotatorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         hood.configure(hoodConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    // public static final double flywheelRPM = 3300; // 60 inches
-    // public static final double flywheelRPM = 3500; // 70 inches
-    // public static final double flywheelRPM = 3700; // 80 inches
-    // public static final double flywheelRPM = 3900; // 90 inches
-    // public static final double flywheelRPM = 4100; // 100 inches
-    // public static final double flywheelRPM = 4300; // 110 inches
-    // public static final double flywheelRPM = 4500; // 120 inches
+        // public static final double flywheelRPM = 3300; // 60 inches
+        // public static final double flywheelRPM = 3500; // 70 inches
+        // public static final double flywheelRPM = 3700; // 80 inches
+        // public static final double flywheelRPM = 3900; // 90 inches
+        // public static final double flywheelRPM = 4100; // 100 inches
+        // public static final double flywheelRPM = 4300; // 110 inches
+        // public static final double flywheelRPM = 4500; // 120 inches
     }
 
     //Flywheel Commands
@@ -144,7 +144,7 @@ public class SuperStructure extends SubsystemBase {
 //                flywheelConfig.closedLoop.pid(SmartDashboard.getNumber("pidp", 0), 0, SmartDashboard.getNumber("pidd", 0));
 //                flywheel.configure(flywheelConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 //                    SmartDashboard.putBoolean("does work", true);
-                    if(!Robot.useAutoHood) {
+                    if (!Robot.useAutoHood) {
                         ShooterConstants.flywheelRPM = 4500;
                         setFlywheelRPM(ShooterConstants.flywheelRPM);
                     } else if (Robot.distanceToHub < 130.0) { // less than 130 inches then do this
@@ -203,6 +203,7 @@ public class SuperStructure extends SubsystemBase {
                 () -> setIntake2Voltage(0)
         );
     }
+
     public Command enableIntake2() {
         return Commands.runOnce(
                 () -> setIntake2Voltage(12)
@@ -215,6 +216,7 @@ public class SuperStructure extends SubsystemBase {
                 () -> setIntake2Voltage(0)
         );
     }
+
     public Command disableIntake2() {
         return Commands.run(
                 () -> setIntake2Voltage(0)

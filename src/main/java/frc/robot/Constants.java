@@ -22,158 +22,158 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static final class DriveConstants {
-    // Driving Parameters - Note that these are not the maximum capable speeds of
-    // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = 4.8;
-    public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
+    public static final class DriveConstants {
+        // Driving Parameters - Note that these are not the maximum capable speeds of
+        // the robot, rather the allowed maximum speeds
+        public static final double kMaxSpeedMetersPerSecond = 4.8;
+        public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
 
-    // Chassis configuration
-    public static final double kTrackWidth = Units.inchesToMeters(23.75);
-    // Distance between centers of right and left wheels on robot
-    public static final double kWheelBase = Units.inchesToMeters(24);
-    // Distance between front and back wheels on robot
-    public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
-        new Translation2d(kWheelBase / 2, kTrackWidth / 2),
-        new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
-        new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
-        new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
+        // Chassis configuration
+        public static final double kTrackWidth = Units.inchesToMeters(23.75);
+        // Distance between centers of right and left wheels on robot
+        public static final double kWheelBase = Units.inchesToMeters(24);
+        // Distance between front and back wheels on robot
+        public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
+                new Translation2d(kWheelBase / 2, kTrackWidth / 2),
+                new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
+                new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
+                new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
 
-    // Angular offsets of the modules relative to the chassis in radians
-    public static final double kFrontLeftChassisAngularOffset = -Math.PI / 2;
-    public static final double kFrontRightChassisAngularOffset = 0;
-    public static final double kBackLeftChassisAngularOffset = Math.PI;
-    public static final double kBackRightChassisAngularOffset = Math.PI / 2;
+        // Angular offsets of the modules relative to the chassis in radians
+        public static final double kFrontLeftChassisAngularOffset = -Math.PI / 2;
+        public static final double kFrontRightChassisAngularOffset = 0;
+        public static final double kBackLeftChassisAngularOffset = Math.PI;
+        public static final double kBackRightChassisAngularOffset = Math.PI / 2;
 
-    // SPARK MAX CAN IDs
-    public static final int kFrontLeftTurningCanId = 10;
-    public static final int kFrontLeftDrivingCanId = 11;
-    
-    public static final int kRearLeftTurningCanId = 12;
-    public static final int kRearLeftDrivingCanId = 13;
-    
-    public static final int kFrontRightTurningCanId = 14;
-    public static final int kFrontRightDrivingCanId = 15;
+        // SPARK MAX CAN IDs
+        public static final int kFrontLeftTurningCanId = 10;
+        public static final int kFrontLeftDrivingCanId = 11;
 
-    public static final int kRearRightTurningCanId = 16;
-    public static final int kRearRightDrivingCanId = 17;
+        public static final int kRearLeftTurningCanId = 12;
+        public static final int kRearLeftDrivingCanId = 13;
 
-    public static final boolean kGyroReversed = false;
+        public static final int kFrontRightTurningCanId = 14;
+        public static final int kFrontRightDrivingCanId = 15;
 
-    public static final double fullTurnSpeed = 0.25; // RT
-    public static final double fullDriveSpeed = 0.45; // RT
-    public static final double fineTurnSpeed = 0.1; // Default
-    public static final double fineDriveSpeed = 0.1; // Default
-    public static final double boostDriveSpeed = 0.55; // LT
-    public static final double boostTurnSpeed = 0.60; // LT
-  }
+        public static final int kRearRightTurningCanId = 16;
+        public static final int kRearRightDrivingCanId = 17;
 
-  public static final class SuperStructureConstants{
-    public static final int kIntake1 = 1;
-    public static final int kLoader = 2;
-    public static final int kFlywheel = 3;
-    public static final int kRotator = 4;
-    public static final int kIntake2 = 5;
-    public static final int kHood = 6;
-    public static final int kLeftClimber = 7;
-    public static final int kRightClimber = 8;
-    
-    public static final double rotatorMin = 3;
-    public static final double rotatorMax = 82;
+        public static final boolean kGyroReversed = false;
 
-    public static final double hoodStart = 0;
-    public static final double hoodMin = hoodStart - 7.5; // negative because we start at mid position (easier setup at init)
-    public static final double hoodMax = hoodStart + 7.5;
-
-    // 21.6 range
-    public static final double hoodShortDistance = hoodMin;
-    public static final double hoodMidDistance = hoodStart;
-    public static final double hoodLongDistance = hoodMax;
-  }
-
-  public static final class ModuleConstants {
-    // The MAXSwerve module can be configured with one of three pinion gears: 12T,
-    // 13T, or 14T. This changes the drive speed of the module (a pinion gear with
-    // more teeth will result in a robot that drives faster).
-    // public static final int kDrivingMotorPinionTeeth = 14;
-    public static final int kDrivingMotorPinionTeeth = 12;
-
-    // Calculations required for driving motor conversion factors and feed forward
-    public static final double kDrivingMotorFreeSpeedRps = NeoMotorConstants.kFreeSpeedRpm / 60;
-    public static final double kWheelDiameterMeters = 0.0762;
-    public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
-    // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15
-    // teeth on the bevel pinion
-    public static final double kDrivingMotorReduction = (45.0 * 22) / (kDrivingMotorPinionTeeth * 15);
-    public static final double kDriveWheelFreeSpeedRps = (kDrivingMotorFreeSpeedRps * kWheelCircumferenceMeters)
-        / kDrivingMotorReduction;
-  }
-
-  public static final class IOConstants {
-    public static final int kDriverControllerPort = 0;
-    public static final double kDriveDeadband = 0.05; // 5%
-  }
-
-  public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 3;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 3;
-    public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
-    public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
-
-    public static final double kPXController = 1;
-    public static final double kPYController = 1;
-    public static final double kPThetaController = 1;
-
-    // Constraint for the motion profiled robot angle controller
-      public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
-              kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+        public static final double fullTurnSpeed = 0.25; // RT
+        public static final double fullDriveSpeed = 0.45; // RT
+        public static final double fineTurnSpeed = 0.1; // Default
+        public static final double fineDriveSpeed = 0.1; // Default
+        public static final double boostDriveSpeed = 0.55; // LT
+        public static final double boostTurnSpeed = 0.60; // LT
     }
 
-  public static final class ShooterConstants {
-    // public static final double flywheelRPM = 4000;
-    // public static final double flywheelRPM = 4500;
-    // public static final double flywheelRPM = 3300; // 60 inches
-    // public static final double flywheelRPM = 3500; // 70 inches
-    // public static final double flywheelRPM = 3700; // 80 inches
-    // public static final double flywheelRPM = 3900; // 90 inches
-    // public static final double flywheelRPM = 4100; // 100 inches
-    // public static final double flywheelRPM = 4300; // 110 inches
-    public static double flywheelRPM = 4500; // 120 inches
-  }
+    public static final class SuperStructureConstants {
+        public static final int kIntake1 = 1;
+        public static final int kLoader = 2;
+        public static final int kFlywheel = 3;
+        public static final int kRotator = 4;
+        public static final int kIntake2 = 5;
+        public static final int kHood = 6;
+        public static final int kLeftClimber = 7;
+        public static final int kRightClimber = 8;
 
-  public static final class NeoMotorConstants {
-    public static final double kFreeSpeedRpm = 5676;
-  }
+        public static final double rotatorMin = 3;
+        public static final double rotatorMax = 82;
 
-  public final class limelightConstants { //The wrong values, meant to be placeholders!
-    public static final double MountingAngleDegrees = 25.0;
-    public static final double limelightHeightInches = 20.0;
-    public static final double goalHeightInches = 60.0;
+        public static final double hoodStart = 0;
+        public static final double hoodMin = hoodStart - 7.5; // negative because we start at mid position (easier setup at init)
+        public static final double hoodMax = hoodStart + 7.5;
 
-    public static final double yawOutputMultiplier = 0.01;
+        // 21.6 range
+        public static final double hoodShortDistance = hoodMin;
+        public static final double hoodMidDistance = hoodStart;
+        public static final double hoodLongDistance = hoodMax;
+    }
 
-    // will be dynamic value based on hood (LATER)
-    public static final double targetDistance = 115.0;
+    public static final class ModuleConstants {
+        // The MAXSwerve module can be configured with one of three pinion gears: 12T,
+        // 13T, or 14T. This changes the drive speed of the module (a pinion gear with
+        // more teeth will result in a robot that drives faster).
+        // public static final int kDrivingMotorPinionTeeth = 14;
+        public static final int kDrivingMotorPinionTeeth = 12;
 
-    public static final int blueAlianceCeterTagNum = 26;
-    public static final int redAlianceCeterTagNum = 10;
-  }
+        // Calculations required for driving motor conversion factors and feed forward
+        public static final double kDrivingMotorFreeSpeedRps = NeoMotorConstants.kFreeSpeedRpm / 60;
+        public static final double kWheelDiameterMeters = 0.0762;
+        public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
+        // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15
+        // teeth on the bevel pinion
+        public static final double kDrivingMotorReduction = (45.0 * 22) / (kDrivingMotorPinionTeeth * 15);
+        public static final double kDriveWheelFreeSpeedRps = (kDrivingMotorFreeSpeedRps * kWheelCircumferenceMeters)
+                / kDrivingMotorReduction;
+    }
 
-  public static final class ClimberConstants {
-    public static final double kWinchEncoderDistancePerPulse = 360.0 * 1/5 * 1/3 * 1/3 * 1/3; // degrees
-    public static final double kAnchorEncoderDistancePerPulse = 1.0/4.0/8.0; // inches
+    public static final class IOConstants {
+        public static final int kDriverControllerPort = 0;
+        public static final double kDriveDeadband = 0.05; // 5%
+    }
 
-    // Agitator limits
-    public static final int kExtenderCurrentLimit = 40;
-    public static final double kAnchorHardDeck = 0.25;
-    public static final double kAnchorCeiling = 6.25; // inches
-    public static final double kExtenderKP = 0.1;
+    public static final class AutoConstants {
+        public static final double kMaxSpeedMetersPerSecond = 3;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 3;
+        public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
+        public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
 
-    // Winch limits
-    public static final double kWinchCeiling = 780; // Bringing the agitator out limit in degrees
-    public static final double kWinchHardDeck = 0; // Retraction limit when cage is coming into the robot
-    // Prevent agitator from retracting too far with cage acquired
-    public static final double kWinchHoldLimit = 300; // The final retraction limit
-  }
+        public static final double kPXController = 1;
+        public static final double kPYController = 1;
+        public static final double kPThetaController = 1;
+
+        // Constraint for the motion profiled robot angle controller
+        public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
+                kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+    }
+
+    public static final class ShooterConstants {
+        // public static final double flywheelRPM = 4000;
+        // public static final double flywheelRPM = 4500;
+        // public static final double flywheelRPM = 3300; // 60 inches
+        // public static final double flywheelRPM = 3500; // 70 inches
+        // public static final double flywheelRPM = 3700; // 80 inches
+        // public static final double flywheelRPM = 3900; // 90 inches
+        // public static final double flywheelRPM = 4100; // 100 inches
+        // public static final double flywheelRPM = 4300; // 110 inches
+        public static double flywheelRPM = 4500; // 120 inches
+    }
+
+    public static final class NeoMotorConstants {
+        public static final double kFreeSpeedRpm = 5676;
+    }
+
+    public final class limelightConstants { //The wrong values, meant to be placeholders!
+        public static final double MountingAngleDegrees = 25.0;
+        public static final double limelightHeightInches = 20.0;
+        public static final double goalHeightInches = 60.0;
+
+        public static final double yawOutputMultiplier = 0.01;
+
+        // will be dynamic value based on hood (LATER)
+        public static final double targetDistance = 115.0;
+
+        public static final int blueAlianceCeterTagNum = 26;
+        public static final int redAlianceCeterTagNum = 10;
+    }
+
+    public static final class ClimberConstants {
+        public static final double kWinchEncoderDistancePerPulse = 360.0 * 1 / 5 * 1 / 3 * 1 / 3 * 1 / 3; // degrees
+        public static final double kAnchorEncoderDistancePerPulse = 1.0 / 4.0 / 8.0; // inches
+
+        // Agitator limits
+        public static final int kExtenderCurrentLimit = 40;
+        public static final double kAnchorHardDeck = 0.25;
+        public static final double kAnchorCeiling = 6.25; // inches
+        public static final double kExtenderKP = 0.1;
+
+        // Winch limits
+        public static final double kWinchCeiling = 780; // Bringing the agitator out limit in degrees
+        public static final double kWinchHardDeck = 0; // Retraction limit when cage is coming into the robot
+        // Prevent agitator from retracting too far with cage acquired
+        public static final double kWinchHoldLimit = 300; // The final retraction limit
+    }
 
 }
