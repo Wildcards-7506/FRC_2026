@@ -106,11 +106,16 @@ public final class AutoRoutines {
 
         NamedCommands.registerCommand("start booty bump", Commands.runOnce(() -> {
             Robot.bootyBumpEnabled = true;
-            CommandScheduler.getInstance().schedule(this.robotContainer.superStructure.bootyBumpCommand(150, 680));
+//            CommandScheduler.getInstance().schedule(this.robotContainer.superStructure.bootyBumpCommand(150, 680));
+            CommandScheduler.getInstance().schedule(this.robotContainer.superStructure.bootyBumpCommand(150, 1200));
         }));
 
         NamedCommands.registerCommand("end booty bump", Commands.runOnce(() -> {
+            SmartDashboard.putBoolean("Should I stop?", true);
+            System.out.println("Ended booty bump.");
+//            Robot.bootyBumpEnabled = false;
             Robot.bootyBumpEnabled = false;
+            CommandScheduler.getInstance().schedule(this.robotContainer.superStructure.disableBootyBump());
         }));
 
         NamedCommands.registerCommand("Intake Down", new RotatorDownCommand(this.robotContainer)); // Use this as a guide for complex sequences
