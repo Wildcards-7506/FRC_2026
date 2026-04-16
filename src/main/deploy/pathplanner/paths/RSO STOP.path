@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.933988850911458,
-        "y": 2.6330296107700892
-      },
-      "prevControl": null,
-      "nextControl": {
-        "x": 1.8782670665922616,
-        "y": 1.3230251348586317
-      },
-      "isLocked": false,
-      "linkedName": "rso4"
-    },
-    {
-      "anchor": {
         "x": 3.3818866598195045,
         "y": 0.6131363636363643
       },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.4200746130181905,
+        "y": 0.6382703835635744
+      },
+      "isLocked": true,
+      "linkedName": "rso0.1"
+    },
+    {
+      "anchor": {
+        "x": 5.89550537109375,
+        "y": 0.6131363636363643
+      },
       "prevControl": {
-        "x": 1.9731360785323022,
-        "y": 0.3020709519159233
+        "x": 4.780180205601653,
+        "y": 0.6161027217595098
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "rso0.1"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -37,18 +37,18 @@
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
-    "nominalVoltage": 1.0,
+    "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 1.0,
-    "rotation": 0.0
+    "velocity": 1.5,
+    "rotation": -0.4462976775494398
   },
   "reversed": false,
   "folder": "RSO",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 46.573171112417775
+    "rotation": 0.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

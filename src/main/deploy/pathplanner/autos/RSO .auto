@@ -17,6 +17,12 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -139,6 +145,12 @@
           "type": "path",
           "data": {
             "pathName": "RSO STOP"
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": []
           }
         }
       ]
