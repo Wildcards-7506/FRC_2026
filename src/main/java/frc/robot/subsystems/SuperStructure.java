@@ -16,6 +16,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -298,6 +299,7 @@ public class SuperStructure extends SubsystemBase {
     }
 
     public Command bootyBumpCommand(double cycleUpDurationMs, double cycleDownDurationMs) {
+        SmartDashboard.putBoolean("Booty Bump Enabled", true);
         double cycleUpSeconds = cycleUpDurationMs / 1000.0;
         double cycleDownSeconds = cycleDownDurationMs / 1000.0;
         return Commands.sequence(
@@ -308,7 +310,10 @@ public class SuperStructure extends SubsystemBase {
                 )
                 .repeatedly()
                 .until(() -> !Robot.bootyBumpEnabled)
-                .finallyDo(() -> setRotatorPos(SuperStructureConstants.rotatorMax));
+                .finallyDo(() -> {
+                    SmartDashboard.putBoolean("Booty Bump Enabled", false);
+                    setRotatorPos(SuperStructureConstants.rotatorMax);
+                });
     }
 
     public Command setRotator(double pos) {
