@@ -5,9 +5,21 @@
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "RSO 0.1"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "Intake Down"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
           }
         },
         {
@@ -91,6 +103,12 @@
                 }
               },
               {
+                "type": "named",
+                "data": {
+                  "name": "start booty bump"
+                }
+              },
+              {
                 "type": "wait",
                 "data": {
                   "waitTime": 8.0
@@ -103,6 +121,12 @@
           "type": "named",
           "data": {
             "name": "gun off"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "end booty bump "
           }
         },
         {
@@ -121,6 +145,12 @@
           "type": "path",
           "data": {
             "pathName": "RSO STOP"
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": []
           }
         }
       ]
