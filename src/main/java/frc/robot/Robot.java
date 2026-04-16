@@ -141,7 +141,8 @@ public class Robot extends TimedRobot {
         }
 
         double offsetToHubCenter = Units.inchesToMeters(23.5); // eyeballed at 2 feet from tag 26 to hub center, x direction wpi
-        hubPose = centerTagPose.transformBy(new Transform2d(offsetToHubCenter, 0, new Rotation2d()));
+//        hubPose = centerTagPose.transformBy(new Transform2d(offsetToHubCenter, 0, new Rotation2d()));
+        hubPose = centerTagPose.transformBy(new Transform2d(-offsetToHubCenter, 0, new Rotation2d()));
 
         SmartDashboard.putNumber("Tag Pose Offset X", offsetToHubCenter);
         SmartDashboard.putNumber("Center Tag Pose X", centerTagPose.getX());
@@ -285,18 +286,18 @@ public class Robot extends TimedRobot {
                 m_robotContainer.led.setColor(0, 255, 0);
                 m_robotContainer.led.setColorType(LED.ColorType.FLASH);
             }
-            
+
             if (flywheelLowestRPM == 0 || currentRPM < flywheelLowestRPM) {
                 flywheelLowestRPM = currentRPM;
             }
         }
-        
+
         if (loadingFuel && m_robotContainer.superStructure.intake.getEncoder().getVelocity() < 20) {
             m_robotContainer.led.setColor(255, 0, 0);
             m_robotContainer.led.setColorType(LED.ColorType.FLASH);
         }
     }
-    
+
     public static Command checkAndRunGun(SuperStructure superStructure, Boolean useAuto) {
         return Commands.either(
                 superStructure.runIntake()
@@ -307,8 +308,8 @@ public class Robot extends TimedRobot {
                                 superStructure.runIntake()
                                         .alongWith(useAuto ? superStructure.rejectLoaderAuto() : superStructure.rejectLoader())
                                         .alongWith(superStructure.runIntake2()))
-                                        .alongWith(Agitator.runRight())
-                                        .alongWith(Agitator.runLeft()),
+                        .alongWith(Agitator.runRight())
+                        .alongWith(Agitator.runLeft()),
                 () -> crippleMode);
     }
 
@@ -317,7 +318,7 @@ public class Robot extends TimedRobot {
         return superStructure.primeFlywheel(Constants.ShooterConstants.flywheelRPM).alongWith(checkAndRunGun(superStructure, true));
     }
 
-    public static void setHoodForCurrentDistance() {        
+    public static void setHoodForCurrentDistance() {
         hoodTable.put(215.0, 7.277);
         hoodTable.put(200.0, 5.665);
         hoodTable.put(190.0, 3.614);
