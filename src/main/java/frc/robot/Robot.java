@@ -74,6 +74,7 @@ public class Robot extends TimedRobot {
     public static boolean loadingFuel = false;
 
     public static InterpolatingDoubleTreeMap hoodTable = new InterpolatingDoubleTreeMap();
+    public static InterpolatingDoubleTreeMap flywheelTable = new InterpolatingDoubleTreeMap();
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -126,7 +127,7 @@ public class Robot extends TimedRobot {
 
         Optional<Alliance> alliances = DriverStation.getAlliance();
         boolean onBlueAlliance = alliances.isPresent() ? alliances.get() == DriverStation.Alliance.Blue : true;
-
+        // double offsetToHubCenter = 0.0;
 //        m_robotContainer.led.setColorType(LED.ColorType.ALLIANCE_FLOW);
 
         if (fieldLayout != null) {
@@ -134,10 +135,15 @@ public class Robot extends TimedRobot {
                             ? Constants.limelightConstants.blueAlianceCeterTagNum
                             : Constants.limelightConstants.redAlianceCeterTagNum)
                     .get().toPose2d();
+            // offsetToHubCenter = Units.inchesToMeters(23.5) * (onBlueAlliance ? 1 : -1);
         }
 
-        double offsetToHubCenter = Units.inchesToMeters(-23.5); // eyeballed at 2 feet from tag 26 to hub center, x direction wpi
+        double offsetToHubCenter = Units.inchesToMeters(23.5); // eyeballed at 2 feet from tag 26 to hub center, x direction wpi
         hubPose = centerTagPose.transformBy(new Transform2d(offsetToHubCenter, 0, new Rotation2d()));
+
+        SmartDashboard.putNumber("Tag Pose Offset X", offsetToHubCenter);
+        SmartDashboard.putNumber("Center Tag Pose X", centerTagPose.getX());
+        SmartDashboard.putNumber("Hub Pose X", hubPose.getX());
 
         CommandScheduler.getInstance().run();
 
@@ -150,6 +156,9 @@ public class Robot extends TimedRobot {
         if (useAutoHood) {
             // Robot.setRPMForCurrentDistance();
             Robot.setHoodForCurrentDistance();
+            Robot.setFlywheelForCurrentDistance();
+        } else {
+
         }
 
         if (!useAutoHood && !loadingFuel) {
@@ -210,6 +219,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Field Robot Pose Y", m_field.getRobotPose().getY());
 
         SmartDashboard.putNumber("DistanceToHub", Units.metersToInches(distanceToHub));
+        SmartDashboard.putNumber("DistanceToHubMeters", distanceToHub);
         SmartDashboard.putNumber("AngleToHub", angleToHub.getDegrees());
 
         SmartDashboard.putBoolean("Crippled?", crippleMode);
@@ -258,7 +268,7 @@ public class Robot extends TimedRobot {
     private void updateFlywheelLogs() {
         double currentRPM = m_robotContainer.superStructure.getRPM();
 
-        if (currentRPM > Constants.ShooterConstants.flywheelRPM) {
+        if (currentRPM > Constants.ShooterConstants.flywheelRPM - 200) {
             flywheelHitTarget = true;
             m_robotContainer.led.setColor(0, 255, 0);
             m_robotContainer.led.setColorType(LED.ColorType.FLASH);
@@ -273,18 +283,18 @@ public class Robot extends TimedRobot {
                 m_robotContainer.led.setColor(0, 255, 0);
                 m_robotContainer.led.setColorType(LED.ColorType.FLASH);
             }
-
+            
             if (flywheelLowestRPM == 0 || currentRPM < flywheelLowestRPM) {
                 flywheelLowestRPM = currentRPM;
             }
         }
-
+        
         if (loadingFuel && m_robotContainer.superStructure.intake.getEncoder().getVelocity() < 20) {
             m_robotContainer.led.setColor(255, 0, 0);
             m_robotContainer.led.setColorType(LED.ColorType.FLASH);
         }
     }
-
+    
     public static Command checkAndRunGun(SuperStructure superStructure, Boolean useAuto) {
         return Commands.either(
                 superStructure.runIntake()
@@ -305,18 +315,29 @@ public class Robot extends TimedRobot {
         return superStructure.primeFlywheel(Constants.ShooterConstants.flywheelRPM).alongWith(checkAndRunGun(superStructure, true));
     }
 
-    public static void setHoodForCurrentDistance() {
-        // Taken from flywheel verbose
-        hoodTable.put(1.651, -7.61);
-        hoodTable.put(1.9558, -5.9);
-        hoodTable.put(2.2606, -4.835);
-        hoodTable.put(2.5654, -2.93);
-        hoodTable.put(2.8702, -0.2);
-        hoodTable.put(3.157, 1.02564);
-        hoodTable.put(3.4789, 4.102);
-        hoodTable.put(4.191, 7.32600);
+    public static void setHoodForCurrentDistance() {        
+        hoodTable.put(215.0, 7.277);
+        hoodTable.put(200.0, 5.665);
+        hoodTable.put(190.0, 3.614);
+        hoodTable.put(180.0, 1.172);
+        hoodTable.put(170.0, -0.88);
+        hoodTable.put(160.0, -2.54);
+        hoodTable.put(150.0, -3.663);
+        hoodTable.put(140.0, -4.786);
+        hoodTable.put(130.0, -6.642);
+        m_robotContainer.superStructure.setHoodPos(hoodTable.get(Units.metersToInches(distanceToHub)));
+    }
 
-        m_robotContainer.superStructure.setHoodPos(hoodTable.get(distanceToHub));
+    public static void setFlywheelForCurrentDistance() {
+        flywheelTable.put(215.0, 4500.0);
+        flywheelTable.put(120.0, 4500.0);
+        flywheelTable.put(110.0, 4300.0);
+        flywheelTable.put(100.0, 4100.0);
+        flywheelTable.put(90.0, 3900.0);
+        flywheelTable.put(80.0, 3700.0);
+        flywheelTable.put(70.0, 3500.0);
+        flywheelTable.put(60.0, 3300.0);
+        Constants.ShooterConstants.flywheelRPM = flywheelTable.get(Units.metersToInches(Robot.distanceToHub));
     }
 
     /**
