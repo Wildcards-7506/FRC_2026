@@ -332,14 +332,27 @@ public class Robot extends TimedRobot {
     }
 
     public static void setFlywheelForCurrentDistance() {
-        flywheelTable.put(215.0, 4500.0);
-        flywheelTable.put(120.0, 4500.0);
-        flywheelTable.put(110.0, 4300.0);
-        flywheelTable.put(100.0, 4100.0);
-        flywheelTable.put(90.0, 3900.0);
-        flywheelTable.put(80.0, 3700.0);
-        flywheelTable.put(70.0, 3500.0);
-        flywheelTable.put(60.0, 3300.0);
+        // PRE STATE
+//        flywheelTable.put(215.0, 4500.0);
+//        flywheelTable.put(120.0, 4500.0);
+//        flywheelTable.put(110.0, 4300.0);
+//        flywheelTable.put(100.0, 4100.0);
+//        flywheelTable.put(90.0, 3900.0);
+//        flywheelTable.put(80.0, 3700.0);
+//        flywheelTable.put(70.0, 3500.0);
+//        flywheelTable.put(60.0, 3300.0);
+
+
+
+        // POST STATE
+        flywheelTable.put(215.0, 4600.0);
+        flywheelTable.put(120.0, 4600.0);
+        flywheelTable.put(110.0, 4400.0);
+        flywheelTable.put(100.0, 4200.0);
+        flywheelTable.put(90.0, 4000.0);
+        flywheelTable.put(80.0, 3800.0);
+        flywheelTable.put(70.0, 3600.0);
+        flywheelTable.put(60.0, 3400.0);
         Constants.ShooterConstants.flywheelRPM = flywheelTable.get(Units.metersToInches(Robot.distanceToHub));
     }
 
