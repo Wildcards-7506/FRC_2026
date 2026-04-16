@@ -1,213 +1,210 @@
 {
-	"3/16/26-4:25": [
-		{
-			"flywheelrpm": {
-				"speed": 4350,
-				"target": 4000,
-				"highest": 4588,
-				"lowest": 4027
-			},
-			"limelight": {
-				"targetDistanceTagInch": 65,
-				"targetDistanceTargetCenter": -1
-			},
-			"hood": {
-				"targetDeg": -1,
-				"hoodDeg": -7.61
-			},
-			"targets": {
-				"made": -1,
-				"total": -1,
-				"overallAccuracy": "NA"
-			}
-		}
-	],
-	"3/16/26-4:23": [
-		{
-			"flywheelrpm": {
-				"speed": 4300,
-				"target": 4000,
-				"highest": 4589,
-				"lowest": 4007
-			},
-			"limelight": {
-				"targetDistanceTagInch": 77,
-				"targetDistanceTargetCenter": -1
-			},
-			"hood": {
-				"targetDeg": -1,
-				"hoodDeg": -5.9
-			},
-			"targets": {
-				"made": -1,
-				"total": -1,
-				"overallAccuracy": "NA"
-			}
-		}
-	],
-	"3/16/26-4:21": [
-		{
-			"flywheelrpm": {
-				"speed": 4400,
-				"target": 4000,
-				"highest": 4592,
-				"lowest": 3886
-			},
-			"limelight": {
-				"targetDistanceTagInch": 89,
-				"targetDistanceTargetCenter": -1
-			},
-			"hood": {
-				"targetDeg": -1,
-				"hoodDeg": -4.835
-			},
-			"targets": {
-				"made": -1,
-				"total": -1,
-				"overallAccuracy": "NA"
-			}
-		}
-	],
-	"3/16/26-4:15": [
-		{
-			"flywheelrpm": {
-				"speed": 4200,
-				"target": 4000,
-				"highest": 4422,
-				"lowest": 3994
-			},
-			"limelight": {
-				"targetDistanceTagInch": 101,
-				"targetDistanceTargetCenter": -1
-			},
-			"hood": {
-				"targetDeg": -1,
-				"hoodDeg": -2.93
-			},
-			"targets": {
-				"made": -1,
-				"total": -1,
-				"overallAccuracy": "NA"
-			}
-		}
-	],
-	"3/16/26-4:11": [
-		{
-			"flywheelrpm": {
-				"speed": 4200,
-				"target": 4000,
-				"highest": 4444,
-				"lowest": 3996
-			},
-			"limelight": {
-				"targetDistanceTagInch": 113	,
-				"targetDistanceTargetCenter": -1
-			},
-			"hood": {
-				"targetDeg": -1,
-				"hoodDeg": -0.2
-			},
-			"targets": {
-				"made": -1,
-				"total": -1,
-				"overallAccuracy": "NA"
-			}
-		}
-	],
-	"3/16/26-4:07": [
-		{
-			"flywheelrpm": {
-				"speed": 4200,
-				"target": 4000,
-				"highest": 4444,
-				"lowest": 3991
-			},
-			"limelight": {
-				"targetDistanceTagInch": 125,
-				"targetDistanceTargetCenter": -1
-			},
-			"hood": {
-				"targetDeg": -1,
-				"hoodDeg": 1.02564
-			},
-			"targets": {
-				"made": -1,
-				"total": -1,
-				"overallAccuracy": "NA"
-			}
-		}
-	],
-	"3/16/26-4:05": [
-		{
-			"flywheelrpm": {
-				"speed": 4200,
-				"target": 4000,
-				"highest": 4454,
-				"lowest": 3995
-			},
-			"limelight": {
-				"targetDistanceTagInch": 137,
-				"targetDistanceTargetCenter": -1
-			},
-			"hood": {
-				"targetDeg": -1,
-				"hoodDeg": 4.102
-			},
-			"targets": {
-				"made": -1,
-				"total": -1,
-				"overallAccuracy": "NA"
-			}
-		}
-	],
-	"3/16/26-4:01": [
-		{
-			"flywheelrpm": {
-				"speed": 4200,
-				"target": 4000,
-				"highest": 4844,
-				"lowest": 3913
-			},
-			"limelight": {
-				"targetDistanceTagInch": 165,
-				"targetDistanceTargetCenter": 148
-			},
-			"hood": {
-				"targetDeg": 7,
-				"hoodDeg": 7.32600
-			},
-			"targets": {
-				"made": 5,
-				"total": 5,
-				"overallAccuracy": "NA"
-			}
-		}
-	],
-
-
-	"------------------------": "-------------------------",
-
-	"BELOW IS AN EXAMPLE": "Lots of these values will not be recorded each time, but this is an example of what the data will look like when it is recorded",
-	"3/16/26-1:05": [
-		{
-			"flywheelrpm": {
-				"speed": 0,
-				"target": 0,
-				"highest": 0,
-				"lowest": 0
-			},
-			"limelight": {
-				"targetDistanceInch": 0
-			},
-			"hood": {
-				"targetDeg": 0,
-				"hoodDeg": 0
-			},
-			"targets": {
-				"made": 0,
-				"total": 0,
-				"overallAccuracy": "0/10 - Value is based on what the programmer thinks"
-			}
-		}
-	]
+  "3/16/26-4:25": [
+    {
+      "flywheelrpm": {
+        "speed": 4350,
+        "target": 4000,
+        "highest": 4588,
+        "lowest": 4027
+      },
+      "limelight": {
+        "targetDistanceTagInch": 65,
+        "targetDistanceTargetCenter": -1
+      },
+      "hood": {
+        "targetDeg": -1,
+        "hoodDeg": -7.61
+      },
+      "targets": {
+        "made": -1,
+        "total": -1,
+        "overallAccuracy": "NA"
+      }
+    }
+  ],
+  "3/16/26-4:23": [
+    {
+      "flywheelrpm": {
+        "speed": 4300,
+        "target": 4000,
+        "highest": 4589,
+        "lowest": 4007
+      },
+      "limelight": {
+        "targetDistanceTagInch": 77,
+        "targetDistanceTargetCenter": -1
+      },
+      "hood": {
+        "targetDeg": -1,
+        "hoodDeg": -5.9
+      },
+      "targets": {
+        "made": -1,
+        "total": -1,
+        "overallAccuracy": "NA"
+      }
+    }
+  ],
+  "3/16/26-4:21": [
+    {
+      "flywheelrpm": {
+        "speed": 4400,
+        "target": 4000,
+        "highest": 4592,
+        "lowest": 3886
+      },
+      "limelight": {
+        "targetDistanceTagInch": 89,
+        "targetDistanceTargetCenter": -1
+      },
+      "hood": {
+        "targetDeg": -1,
+        "hoodDeg": -4.835
+      },
+      "targets": {
+        "made": -1,
+        "total": -1,
+        "overallAccuracy": "NA"
+      }
+    }
+  ],
+  "3/16/26-4:15": [
+    {
+      "flywheelrpm": {
+        "speed": 4200,
+        "target": 4000,
+        "highest": 4422,
+        "lowest": 3994
+      },
+      "limelight": {
+        "targetDistanceTagInch": 101,
+        "targetDistanceTargetCenter": -1
+      },
+      "hood": {
+        "targetDeg": -1,
+        "hoodDeg": -2.93
+      },
+      "targets": {
+        "made": -1,
+        "total": -1,
+        "overallAccuracy": "NA"
+      }
+    }
+  ],
+  "3/16/26-4:11": [
+    {
+      "flywheelrpm": {
+        "speed": 4200,
+        "target": 4000,
+        "highest": 4444,
+        "lowest": 3996
+      },
+      "limelight": {
+        "targetDistanceTagInch": 113,
+        "targetDistanceTargetCenter": -1
+      },
+      "hood": {
+        "targetDeg": -1,
+        "hoodDeg": -0.2
+      },
+      "targets": {
+        "made": -1,
+        "total": -1,
+        "overallAccuracy": "NA"
+      }
+    }
+  ],
+  "3/16/26-4:07": [
+    {
+      "flywheelrpm": {
+        "speed": 4200,
+        "target": 4000,
+        "highest": 4444,
+        "lowest": 3991
+      },
+      "limelight": {
+        "targetDistanceTagInch": 125,
+        "targetDistanceTargetCenter": -1
+      },
+      "hood": {
+        "targetDeg": -1,
+        "hoodDeg": 1.02564
+      },
+      "targets": {
+        "made": -1,
+        "total": -1,
+        "overallAccuracy": "NA"
+      }
+    }
+  ],
+  "3/16/26-4:05": [
+    {
+      "flywheelrpm": {
+        "speed": 4200,
+        "target": 4000,
+        "highest": 4454,
+        "lowest": 3995
+      },
+      "limelight": {
+        "targetDistanceTagInch": 137,
+        "targetDistanceTargetCenter": -1
+      },
+      "hood": {
+        "targetDeg": -1,
+        "hoodDeg": 4.102
+      },
+      "targets": {
+        "made": -1,
+        "total": -1,
+        "overallAccuracy": "NA"
+      }
+    }
+  ],
+  "3/16/26-4:01": [
+    {
+      "flywheelrpm": {
+        "speed": 4200,
+        "target": 4000,
+        "highest": 4844,
+        "lowest": 3913
+      },
+      "limelight": {
+        "targetDistanceTagInch": 165,
+        "targetDistanceTargetCenter": 148
+      },
+      "hood": {
+        "targetDeg": 7,
+        "hoodDeg": 7.32600
+      },
+      "targets": {
+        "made": 5,
+        "total": 5,
+        "overallAccuracy": "NA"
+      }
+    }
+  ],
+  "------------------------": "-------------------------",
+  "BELOW IS AN EXAMPLE": "Lots of these values will not be recorded each time, but this is an example of what the data will look like when it is recorded",
+  "3/16/26-1:05": [
+    {
+      "flywheelrpm": {
+        "speed": 0,
+        "target": 0,
+        "highest": 0,
+        "lowest": 0
+      },
+      "limelight": {
+        "targetDistanceInch": 0
+      },
+      "hood": {
+        "targetDeg": 0,
+        "hoodDeg": 0
+      },
+      "targets": {
+        "made": 0,
+        "total": 0,
+        "overallAccuracy": "0/10 - Value is based on what the programmer thinks"
+      }
+    }
+  ]
 }

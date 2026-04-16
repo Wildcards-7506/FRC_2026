@@ -30,11 +30,11 @@ import frc.robot.commands.autonomous.AutoRoutines;
 import frc.robot.subsystems.*;
 
 /*
-* This class is where the bulk of the robot should be declared.  Since Command-based is a
-* "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
-* periodic methods (other than the scheduler calls).  Instead, the structure of the robot
-* (including subsystems, commands, and button mappings) should be declared here.
-*/
+ * This class is where the bulk of the robot should be declared.  Since Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
+ * periodic methods (other than the scheduler calls).  Instead, the structure of the robot
+ * (including subsystems, commands, and button mappings) should be declared here.
+ */
 public class RobotContainer {
     // The robot's subsystems
     public final DriveSubsystem drivetrain;
@@ -99,39 +99,72 @@ public class RobotContainer {
         controller0.rightBumper().whileTrue(
                 superStructure.bringUpRotator());
 
-        controller0.povUp().whileTrue(
-                Commands.runEnd(
-                        () -> {
-                            drivetrain.alignToTarget(Robot.hubPose);
-                        },
-                        () -> {
-                            drivetrain.drive(0, 0, 0, true);
-                        }, drivetrain)
+//        controller0.povUp().whileTrue(
+//                Commands.runEnd(
+//                        () -> {
+//                            drivetrain.alignToTarget(Robot.hubPose);
+//                        },
+//                        () -> {
+//                            drivetrain.drive(0, 0, 0, true);
+//                        }, drivetrain)
+//
+//        );
+//
+//        controller0.x().whileTrue(
+//                Commands.sequence(
+//                        Commands.runOnce(
+//                                () -> {
+//                                    SmartDashboard.putBoolean("Holding Pose", true);
+//                                    drivetrain.savePose();
+//                                }
+//                        ),
+//                        Commands.runEnd(
+//                                () -> {
+//                                    // drivetrain.testCounter += 1;
+//                                    // SmartDashboard.putNumber("Test Counter", drivetrain.testCounter);
+//                                    drivetrain.alignToTargetHoldPose(Robot.hubPose);
+//                                },
+//                                () -> {
+//                                    SmartDashboard.putBoolean("Holding Pose", false);
+//                                    // drivetrain.testCounter = 0;
+//                                    // SmartDashboard.putNumber("Test Counter", drivetrain.testCounter);
+//                                    drivetrain.drive(0, 0, 0, true);
+//                                }, drivetrain
+//                        )
+//                )
+//        );
 
+        controller0.y().whileTrue(
+                Commands.runEnd(
+                        () -> drivetrain.alignToTarget(Robot.hubPose),
+                        () -> drivetrain.drive(0, 0, 0, true),
+                        drivetrain
+                )
         );
 
         controller0.x().whileTrue(
-            Commands.sequence(
-                Commands.runOnce(
-                    () -> {
-                        SmartDashboard.putBoolean("Holding Pose", true);
-                        drivetrain.savePose();
-                    }
-                    ),
-                    Commands.runEnd(
-                        () -> {
-                        // drivetrain.testCounter += 1;
-                        // SmartDashboard.putNumber("Test Counter", drivetrain.testCounter);
-                        drivetrain.alignToTargetHoldPose(Robot.hubPose);
-                    },
-                    () -> {
-                        SmartDashboard.putBoolean("Holding Pose", false);
-                        // drivetrain.testCounter = 0;
-                        // SmartDashboard.putNumber("Test Counter", drivetrain.testCounter);
-                        drivetrain.drive(0, 0, 0, true);
-                    }, drivetrain
+                Commands.sequence(
+                        Commands.runOnce(() -> {
+                            SmartDashboard.putBoolean("Holding Pose", true);
+                            drivetrain.savePose();
+                        }),
+                        Commands.runEnd(
+                                () -> drivetrain.holdSavedPose(),
+                                () -> {
+                                    SmartDashboard.putBoolean("Holding Pose", false);
+                                    drivetrain.drive(0, 0, 0, true);
+                                },
+                                drivetrain
+                        )
                 )
-            )
+        );
+
+        controller0.povUp().whileTrue(
+                Commands.runEnd(
+                        () -> drivetrain.alignToTarget(Robot.hubPose),
+                        () -> drivetrain.drive(0, 0, 0, true),
+                        drivetrain
+                )
         );
     }
 

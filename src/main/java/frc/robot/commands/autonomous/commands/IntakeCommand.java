@@ -10,9 +10,9 @@ public class IntakeCommand extends Command {
 
     /**
      * Creates a new AutoSpinSucker command. Stops the sucker after a given duration.
-     * 
+     *
      * @param duration Time in seconds to run the command.
-     * @param volts Voltage to run the sucker.
+     * @param volts    Voltage to run the sucker.
      */
     public IntakeCommand(double duration) {
         this.duration = duration;
@@ -24,7 +24,7 @@ public class IntakeCommand extends Command {
         timer.reset();
         timer.start();
     }
-    
+
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
@@ -32,7 +32,7 @@ public class IntakeCommand extends Command {
         Robot.m_robotContainer.superStructure.setIntake2Voltage(12);
         Robot.m_robotContainer.superStructure.setLoaderVoltage(12);
     }
-    
+
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
