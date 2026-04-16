@@ -19,13 +19,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 5.0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "LSO 1"
+            "waitTime": 0.5
           }
         },
         {
@@ -35,16 +29,22 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "LSO 2"
+                  "pathName": "LSO 1"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "intake on "
+                  "name": "intake on"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LSO 2"
           }
         },
         {
@@ -102,6 +102,18 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LSO LINK"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LSO END"
           }
         }
       ]

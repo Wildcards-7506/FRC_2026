@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.238630527817403,
-        "y": 7.431398002853067
+        "x": 6.695135119207975,
+        "y": 7.496762989964979
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.874579172610556,
-        "y": 7.638416547788874
+        "x": 3.3310837640011277,
+        "y": 7.703781534900786
       },
       "isLocked": false,
       "linkedName": "new3bend"
@@ -25,7 +25,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Left Shooting Position "
+      "linkedName": "lsoend"
     }
   ],
   "rotationTargets": [
