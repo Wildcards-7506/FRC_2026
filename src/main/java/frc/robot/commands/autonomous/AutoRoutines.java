@@ -106,7 +106,7 @@ public final class AutoRoutines {
 
         NamedCommands.registerCommand("start booty bump", Commands.runOnce(() -> {
             Robot.bootyBumpEnabled = true;
-            CommandScheduler.getInstance().schedule(this.robotContainer.superStructure.bootyBumpCommand(450, 550));
+            CommandScheduler.getInstance().schedule(this.robotContainer.superStructure.bootyBumpCommand(150, 680));
         }));
 
         NamedCommands.registerCommand("end booty bump", Commands.runOnce(() -> {
