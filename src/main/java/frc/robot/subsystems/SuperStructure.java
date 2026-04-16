@@ -316,6 +316,13 @@ public class SuperStructure extends SubsystemBase {
                 });
     }
 
+    public Command disableBootyBump() {
+        return Commands.runOnce(() -> {
+                Robot.bootyBumpEnabled  = false;
+            }
+        );
+    }
+
     public Command setRotator(double pos) {
         return Commands.runOnce(() -> setRotatorPos(pos));
     }
