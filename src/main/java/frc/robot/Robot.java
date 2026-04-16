@@ -141,8 +141,8 @@ public class Robot extends TimedRobot {
         }
 
         double offsetToHubCenter = Units.inchesToMeters(23.5); // eyeballed at 2 feet from tag 26 to hub center, x direction wpi
-//        hubPose = centerTagPose.transformBy(new Transform2d(offsetToHubCenter, 0, new Rotation2d()));
-        hubPose = centerTagPose.transformBy(new Transform2d(-offsetToHubCenter, 0, new Rotation2d()));
+        hubPose = centerTagPose.transformBy(new Transform2d(offsetToHubCenter, 0, new Rotation2d()));
+//        hubPose = centerTagPose.transformBy(new Transform2d(-offsetToHubCenter, 0, new Rotation2d()));
 
         SmartDashboard.putNumber("Tag Pose Offset X", offsetToHubCenter);
         SmartDashboard.putNumber("Center Tag Pose X", centerTagPose.getX());
