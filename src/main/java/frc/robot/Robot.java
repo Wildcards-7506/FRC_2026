@@ -140,7 +140,7 @@ public class Robot extends TimedRobot {
             // offsetToHubCenter = Units.inchesToMeters(23.5) * (onBlueAlliance ? 1 : -1);
         }
 
-        double offsetToHubCenter = Units.inchesToMeters(23.5); // eyeballed at 2 feet from tag 26 to hub center, x direction wpi
+        double offsetToHubCenter = Units.inchesToMeters(-23.5); // eyeballed at 2 feet from tag 26 to hub center, x direction wpi
         hubPose = centerTagPose.transformBy(new Transform2d(offsetToHubCenter, 0, new Rotation2d()));
 //        hubPose = centerTagPose.transformBy(new Transform2d(-offsetToHubCenter, 0, new Rotation2d()));
 
@@ -157,12 +157,14 @@ public class Robot extends TimedRobot {
         updateFlywheelLogs();
 
         if (useAutoHood) {
-            // Robot.setRPMForCurrentDistance();
+//             Robot.setRPMForCurrentDistance();
             Robot.setHoodForCurrentDistance();
             Robot.setFlywheelForCurrentDistance();
         } else {
 
         }
+
+        m_field.getObject("currentTarget").setPose(hubPose);
 
         if (!useAutoHood && !loadingFuel) {
             m_robotContainer.led.setColorType(LED.ColorType.SOLID);
@@ -342,17 +344,15 @@ public class Robot extends TimedRobot {
 //        flywheelTable.put(70.0, 3500.0);
 //        flywheelTable.put(60.0, 3300.0);
 
-
-
         // POST STATE
-        flywheelTable.put(215.0, 4600.0);
-        flywheelTable.put(120.0, 4600.0);
-        flywheelTable.put(110.0, 4400.0);
-        flywheelTable.put(100.0, 4200.0);
-        flywheelTable.put(90.0, 4000.0);
-        flywheelTable.put(80.0, 3800.0);
-        flywheelTable.put(70.0, 3600.0);
-        flywheelTable.put(60.0, 3400.0);
+        flywheelTable.put(215.0, 4500.0);
+        flywheelTable.put(120.0, 4500.0);
+        flywheelTable.put(110.0, 4375.0);
+        flywheelTable.put(100.0, 4175.0);
+        flywheelTable.put(90.0, 3975.0);
+        flywheelTable.put(80.0, 3775.0);
+        flywheelTable.put(70.0, 3575.0);
+        flywheelTable.put(60.0, 3300.0);
         Constants.ShooterConstants.flywheelRPM = flywheelTable.get(Units.metersToInches(Robot.distanceToHub));
     }
 
