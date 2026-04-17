@@ -146,12 +146,12 @@ public class SuperStructure extends SubsystemBase {
 //                flywheel.configure(flywheelConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 //                    SmartDashboard.putBoolean("does work", true);
                     if (!Robot.useAutoHood) {
-                        ShooterConstants.flywheelRPM = 4500;
+//                        ShooterConstants.flywheelRPM = 4500;
                         setFlywheelRPM(ShooterConstants.flywheelRPM);
                     } else if (Robot.distanceToHub < 130.0) { // less than 130 inches then do this
-                        setFlywheelRPM_FF_Short(Constants.ShooterConstants.flywheelRPM);
+                        setFlywheelRPM_FF_Short(ShooterConstants.flywheelRPM);
                     } else { // greater than 130 then do this
-                        ShooterConstants.flywheelRPM = 4500;
+//                        ShooterConstants.flywheelRPM = 4500;
                         setFlywheelRPM_FF_Far(desiredRPM);
                     }
                 },

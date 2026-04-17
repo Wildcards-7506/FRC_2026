@@ -28,6 +28,8 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.Robot;
 
+import static frc.robot.Robot.m_field;
+
 public class DriveSubsystem extends SubsystemBase {
     public double testCounter = 0; // Used to test if command chaining is correct, e.g. runOnce does runOnce, runEnd does run again until end
     Pose2d savedPose = null;
@@ -219,6 +221,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     public void savePose() {
         this.savedPose = this.getPose();
+        m_field.getObject("BotSavedPosition").setPose(this.savedPose);
     }
 
     public void holdSavedPose() {
