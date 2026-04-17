@@ -5,9 +5,22 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "ME 1"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "ME 1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "gun on"
+                }
+              }
+            ]
           }
         },
         {
@@ -17,9 +30,33 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake on"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "Gun And Load 8"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 4.0
           }
         },
         {
@@ -32,12 +69,6 @@
           "type": "parallel",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake 1"
-                }
-              },
               {
                 "type": "path",
                 "data": {
