@@ -350,8 +350,8 @@ public class Robot extends TimedRobot {
         flywheelTable.put(110.0, 4375.0);
         flywheelTable.put(100.0, 4175.0);
         flywheelTable.put(90.0, 3975.0);
-        flywheelTable.put(80.0, 3775.0);
-        flywheelTable.put(70.0, 3575.0);
+        flywheelTable.put(80.0, 3800.0);
+        flywheelTable.put(70.0, 3600.0);
         flywheelTable.put(60.0, 3300.0);
         Constants.ShooterConstants.flywheelRPM = flywheelTable.get(Units.metersToInches(Robot.distanceToHub));
     }
