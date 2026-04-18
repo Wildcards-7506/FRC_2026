@@ -49,7 +49,7 @@ public class Agitator extends SubsystemBase {
 //        rightConfig.apply(softLimits);
 
         leftConfig
-                .smartCurrentLimit(80)
+                .smartCurrentLimit(50)
                 .inverted(false)
                 .idleMode(SparkBaseConfig.IdleMode.kCoast)
                 .softLimit
@@ -68,7 +68,7 @@ public class Agitator extends SubsystemBase {
                 .outputRange(-1, 1);
 
         rightConfig
-                .smartCurrentLimit(80)
+                .smartCurrentLimit(50)
                 .inverted(false)
                 .idleMode(SparkBaseConfig.IdleMode.kCoast)
                 .softLimit
