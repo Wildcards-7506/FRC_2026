@@ -48,15 +48,15 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "Gun And Load 8"
+            "waitTime": 5.0
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 4.0
+            "name": "gun off"
           }
         },
         {
